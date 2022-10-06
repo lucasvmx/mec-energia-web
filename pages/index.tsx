@@ -7,9 +7,9 @@ import Header from "../src/components/Header";
 
 const Home: NextPage = () => {
   return (
-    <div>
-      <Header/>
-    </div>
+    <>
+      <Header />
+    </>
   );
 };
 
