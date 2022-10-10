@@ -6,6 +6,8 @@ import { selectIsDrawerOpen, setIsDrawerOpen } from "../store/appSlice";
 import Link from 'next/link'
 import { Link as MUILink } from '@mui/material';
 
+const drawerWidth = 240;
+
 const Header = () => {
   const dispatch = useDispatch();
   const isDrawerOpen = useSelector(selectIsDrawerOpen);
