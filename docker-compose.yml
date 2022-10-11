@@ -1,0 +1,18 @@
+version: '3.6'
+services:
+  front:
+    build:
+      context: "./"
+      dockerfile: Dockerfile
+    networks:
+      - mec-energia
+    environment:
+      APP_ENV: development
+    volumes:
+      - "./src:/app/src"
+    ports:
+      - "3000:3000"
+
+networks:
+  mec-energia:
+    name: mec-energia-network
