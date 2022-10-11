@@ -10,7 +10,7 @@ export type RootState = ReturnType<Store["getState"]>;
 type Store = ReturnType<typeof makeStore>;
 
 const initialState: AppState = {
-  isDrawerOpen: false,
+  isDrawerOpen: true,
 };
 
 export const appSlice = createSlice({
