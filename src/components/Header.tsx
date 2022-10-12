@@ -20,20 +20,22 @@ import WbIncandescentIcon from "@mui/icons-material/WbIncandescent";
 import BusinessIcon from "@mui/icons-material/Business";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
-
-const drawerWidth = 240;
+import { useDispatch, useSelector } from "react-redux";
+import { selectIsDrawerOpen, setIsDrawerOpen } from "../store/appSlice";
 
 const Header = () => {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(true);
+  const dispatch = useDispatch();
+  const isDrawerOpen = useSelector(selectIsDrawerOpen);
 
   const toggleDrawer = () => {
-    setIsDrawerOpen(!isDrawerOpen);
+    dispatch(setIsDrawerOpen(!isDrawerOpen));
   };
 
   return (
     <>
       <AppBar
-        position="fixed"
+        position="sticky"
+        elevation={0}
         sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
       >
         <Toolbar>
@@ -46,88 +48,6 @@ const Header = () => {
           <Typography variant="h6">MEC Energia</Typography>
         </Toolbar>
       </AppBar>
-
-      <Drawer
-        open={isDrawerOpen}
-        onClose={toggleDrawer}
-        variant="persistent"
-        anchor="left"
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          [`& .MuiDrawer-paper`]: {
-            width: drawerWidth,
-            boxSizing: "border-box",
-          },
-        }}
-      >
-        <Toolbar />
-
-        <Box
-          height="100%"
-          display="flex"
-          flexDirection="column"
-          justifyContent="space-between"
-        >
-          <List>
-            <ListItem>
-              <ListItemButton>
-                <ListItemIcon>
-                  <ViewModuleIcon />
-                </ListItemIcon>
-
-                <ListItemText>Painel</ListItemText>
-              </ListItemButton>
-            </ListItem>
-
-            <ListItem>
-              <ListItemButton>
-                <ListItemIcon>
-                  <WbIncandescentIcon />
-                </ListItemIcon>
-
-                <ListItemText>Unidades Consumidoras</ListItemText>
-              </ListItemButton>
-            </ListItem>
-
-            <ListItem>
-              <ListItemButton>
-                <ListItemIcon>
-                  <BusinessIcon />
-                </ListItemIcon>
-
-                <ListItemText>Operadoras</ListItemText>
-              </ListItemButton>
-            </ListItem>
-          </List>
-
-          <List>
-            <ListItem>
-              <ListItemButton>
-                <ListItemIcon>
-                  <AccountCircleIcon />
-                </ListItemIcon>
-
-                <ListItemText>John Doe</ListItemText>
-              </ListItemButton>
-            </ListItem>
-          </List>
-        </Box>
-
-        <Divider />
-
-        <List>
-          <ListItem>
-            <ListItemButton>
-              <ListItemIcon>
-                <LogoutIcon />
-              </ListItemIcon>
-
-              <ListItemText>Sair</ListItemText>
-            </ListItemButton>
-          </ListItem>
-        </List>
-      </Drawer>
     </>
   );
 };
