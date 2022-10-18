@@ -10,7 +10,7 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import theme from "../../theme";
-import ConsumerUnitCardGrid from "../../components/ConsumerUnitCardGrid";
+import ConsumerUnitCardGrid from "../../components/ConsumerUnit/CardGrid";
 import DefaultTemplate from "../../templates/DefaultTemplate";
 
 const ConsumerUnitPage: NextPage = () => {
