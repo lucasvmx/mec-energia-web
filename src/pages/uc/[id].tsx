@@ -2,8 +2,8 @@ import { NextPage } from "next";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
-  ConsumerUnitFormEnum,
-  setOpenedConsumerUnitFormType,
+  setIsConsumerUnitCreateFormOpen,
+  setIsConsumerUnitEditFormOpen,
 } from "../../store/appSlice";
 
 import {
@@ -19,77 +19,70 @@ import StarBorderIcon from "@mui/icons-material/StarBorder";
 import theme from "../../theme";
 import ConsumerUnitCardGrid from "../../components/ConsumerUnit/CardGrid";
 import DefaultTemplate from "../../templates/DefaultTemplate";
-import ConsumerUnitForm from "../../components/ConsumerUnit/Form";
+import ConsumerUnitCreateForm from "../../components/ConsumerUnit/Form/Create";
 
 const ConsumerUnitPage: NextPage = () => {
   const dispatch = useDispatch();
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
 
   const handleCreateConsumerUnitClick = () => {
-    dispatch(setOpenedConsumerUnitFormType(ConsumerUnitFormEnum.CREATE));
+    dispatch(setIsConsumerUnitCreateFormOpen(true));
   };
 
   const handleEditConsumerUnitClick = () => {
-    dispatch(setOpenedConsumerUnitFormType(ConsumerUnitFormEnum.EDIT));
+    dispatch(setIsConsumerUnitEditFormOpen(true));
   };
 
   return (
-    <>
-      <DefaultTemplate disableGutters>
-        <Box display="flex" height="100%">
-          {isDesktop && (
-            <Box width="350px" borderRight="1px solid rgba(0, 0, 0, 0.12)">
-              <Toolbar
-                sx={{
-                  borderBottom: "1px solid rgba(0, 0, 0, 0.12)",
-                  justifyContent: "end",
-                }}
+    <DefaultTemplate disableGutters>
+      <Box display="flex" height="100%">
+        {isDesktop && (
+          <Box width="350px" borderRight="1px solid rgba(0, 0, 0, 0.12)">
+            <Toolbar
+              sx={{
+                borderBottom: "1px solid rgba(0, 0, 0, 0.12)",
+                justifyContent: "end",
+              }}
+            >
+              <Button
+                variant="outlined"
+                onClick={handleCreateConsumerUnitClick}
               >
-                <Button
-                  variant="outlined"
-                  onClick={handleCreateConsumerUnitClick}
-                >
-                  Adicionar
-                </Button>
-              </Toolbar>
+                Adicionar
+              </Button>
+            </Toolbar>
 
-              <Box position="relative" width="350px" height="calc(100% - 64px)">
-                <Box
-                  sx={{ inset: 0 }}
-                  position="absolute"
-                  overflow="auto"
-                  p={3}
-                >
-                  <ConsumerUnitCardGrid />
-                </Box>
+            <Box position="relative" width="350px" height="calc(100% - 64px)">
+              <Box sx={{ inset: 0 }} position="absolute" overflow="auto" p={3}>
+                <ConsumerUnitCardGrid />
               </Box>
             </Box>
-          )}
+          </Box>
+        )}
 
-          <Box p={3}>
-            <Box display="flex">
-              <Typography variant="h3">Campus Gama</Typography>
+        <Box p={3}>
+          <Box display="flex">
+            <Typography variant="h3">Campus Gama</Typography>
 
-              <IconButton color="inherit" onClick={handleEditConsumerUnitClick}>
-                <EditIcon fontSize="large" />
-              </IconButton>
+            <IconButton color="inherit" onClick={handleEditConsumerUnitClick}>
+              <EditIcon fontSize="large" />
+            </IconButton>
 
-              <IconButton color="inherit">
-                <StarBorderIcon fontSize="large" />
-              </IconButton>
-            </Box>
+            <IconButton color="inherit">
+              <StarBorderIcon fontSize="large" />
+            </IconButton>
+          </Box>
 
-            <Box mt={1}>
-              <Typography>
-                Unidade consumidora: <strong>10/979389-4</strong>
-              </Typography>
-            </Box>
+          <Box mt={1}>
+            <Typography>
+              Unidade consumidora: <strong>10/979389-4</strong>
+            </Typography>
           </Box>
         </Box>
-      </DefaultTemplate>
+      </Box>
 
-      <ConsumerUnitForm />
-    </>
+      <ConsumerUnitCreateForm />
+    </DefaultTemplate>
   );
 };
 

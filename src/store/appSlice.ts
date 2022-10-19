@@ -10,7 +10,10 @@ type ConsumerUnitFormType = ConsumerUnitFormEnum | null;
 
 export interface AppState {
   isDrawerOpen: boolean;
-  openedConsumerUnitFormType: ConsumerUnitFormType;
+  consumerUnit: {
+    isCreateFormOpen: boolean;
+    isEditFormOpen: boolean;
+  };
 }
 
 export type AppDispatch = Store["dispatch"];
@@ -19,7 +22,10 @@ type Store = ReturnType<typeof makeStore>;
 
 const initialState: AppState = {
   isDrawerOpen: false,
-  openedConsumerUnitFormType: null,
+  consumerUnit: {
+    isCreateFormOpen: false,
+    isEditFormOpen: false,
+  },
 };
 
 export const appSlice = createSlice({
@@ -29,28 +35,34 @@ export const appSlice = createSlice({
     setIsDrawerOpen: (state, action: PayloadAction<boolean>) => {
       state.isDrawerOpen = action.payload;
     },
-    setOpenedConsumerUnitFormType: (
+    setIsConsumerUnitCreateFormOpen: (
       state,
-      action: PayloadAction<ConsumerUnitFormType>
+      action: PayloadAction<boolean>
     ) => {
-      state.openedConsumerUnitFormType = action.payload;
+      state.consumerUnit.isCreateFormOpen = action.payload;
+    },
+    setIsConsumerUnitEditFormOpen: (state, action: PayloadAction<boolean>) => {
+      state.consumerUnit.isEditFormOpen = action.payload;
     },
   },
 });
 
 export default appSlice.reducer;
 
-export const { setIsDrawerOpen, setOpenedConsumerUnitFormType } =
-  appSlice.actions;
+export const {
+  setIsDrawerOpen,
+  setIsConsumerUnitCreateFormOpen,
+  setIsConsumerUnitEditFormOpen,
+} = appSlice.actions;
 
 export const selectIsDrawerOpen = (state: RootState) => {
   return state.app.isDrawerOpen;
 };
 
-export const selectOpenedConsumerUnitFormType = (state: RootState) => {
-  return state.app.openedConsumerUnitFormType;
+export const selectIsConsumerUnitCreateFormOpen = (state: RootState) => {
+  return state.app.consumerUnit.isCreateFormOpen;
 };
 
-export const selectIsConsumerUnitFormOpen = (state: RootState) => {
-  return state.app.openedConsumerUnitFormType !== null;
+export const selectIsConsumerUnitEditFormOpen = (state: RootState) => {
+  return state.app.consumerUnit.isEditFormOpen;
 };
