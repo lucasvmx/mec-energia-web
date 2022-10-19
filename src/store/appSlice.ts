@@ -52,5 +52,5 @@ export const selectOpenedConsumerUnitFormType = (state: RootState) => {
 };
 
 export const selectIsConsumerUnitFormOpen = (state: RootState) => {
-  return state.app.openedConsumerUnitFormType != null;
+  return state.app.openedConsumerUnitFormType !== null;
 };
