@@ -1,4 +1,11 @@
 import { NextPage } from "next";
+import { useDispatch, useSelector } from "react-redux";
+
+import {
+  setIsConsumerUnitCreateFormOpen,
+  setIsConsumerUnitEditFormOpen,
+} from "../../store/appSlice";
+
 import {
   Box,
   Button,
@@ -12,9 +19,20 @@ import StarBorderIcon from "@mui/icons-material/StarBorder";
 import theme from "../../theme";
 import ConsumerUnitCardGrid from "../../components/ConsumerUnit/CardGrid";
 import DefaultTemplate from "../../templates/DefaultTemplate";
+import ConsumerUnitCreateForm from "../../components/ConsumerUnit/Form/Create";
+import ConsumerUnitEditForm from "../../components/ConsumerUnit/Form/Edit";
 
 const ConsumerUnitPage: NextPage = () => {
+  const dispatch = useDispatch();
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
+
+  const handleCreateConsumerUnitClick = () => {
+    dispatch(setIsConsumerUnitCreateFormOpen(true));
+  };
+
+  const handleEditConsumerUnitClick = () => {
+    dispatch(setIsConsumerUnitEditFormOpen(true));
+  };
 
   return (
     <DefaultTemplate disableGutters>
@@ -27,7 +45,12 @@ const ConsumerUnitPage: NextPage = () => {
                 justifyContent: "end",
               }}
             >
-              <Button variant="outlined">Adicionar</Button>
+              <Button
+                variant="outlined"
+                onClick={handleCreateConsumerUnitClick}
+              >
+                Adicionar
+              </Button>
             </Toolbar>
 
             <Box position="relative" width="350px" height="calc(100% - 64px)">
@@ -42,7 +65,7 @@ const ConsumerUnitPage: NextPage = () => {
           <Box display="flex">
             <Typography variant="h3">Campus Gama</Typography>
 
-            <IconButton color="inherit">
+            <IconButton color="inherit" onClick={handleEditConsumerUnitClick}>
               <EditIcon fontSize="large" />
             </IconButton>
 
@@ -58,6 +81,9 @@ const ConsumerUnitPage: NextPage = () => {
           </Box>
         </Box>
       </Box>
+
+      <ConsumerUnitCreateForm />
+      <ConsumerUnitEditForm />
     </DefaultTemplate>
   );
 };
