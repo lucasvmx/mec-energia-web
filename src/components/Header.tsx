@@ -1,25 +1,6 @@
-import { useState } from "react";
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  Drawer,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  List,
-  IconButton,
-  Box,
-  ListItem,
-  Divider,
-} from "@mui/material";
+import { AppBar, Toolbar, Typography, IconButton, Box } from "@mui/material";
 
 import MenuIcon from "@mui/icons-material/Menu";
-import ViewModuleIcon from "@mui/icons-material/ViewModule";
-import WbIncandescentIcon from "@mui/icons-material/WbIncandescent";
-import BusinessIcon from "@mui/icons-material/Business";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import LogoutIcon from "@mui/icons-material/Logout";
 import { useDispatch, useSelector } from "react-redux";
 import { selectIsDrawerOpen, setIsDrawerOpen } from "../store/appSlice";
 
