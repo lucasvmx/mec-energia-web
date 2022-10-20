@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectIsDrawerOpen, setIsDrawerOpen } from "../store/appSlice";
 
@@ -27,6 +27,10 @@ const Drawer = () => {
   const dispatch = useDispatch();
   const isDrawerOpen = useSelector(selectIsDrawerOpen);
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
+
+  useEffect(() => {
+    dispatch(setIsDrawerOpen(isDesktop));
+  }, [isDesktop]);
 
   const onCloseDrawer = () => {
     dispatch(setIsDrawerOpen(!isDrawerOpen));

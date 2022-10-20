@@ -1,22 +1,25 @@
-import { Container, styled, Toolbar, useMediaQuery } from "@mui/material";
-import { useEffect } from "react";
+import { ReactNode, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import ConsumerUnitCardGrid from "../components/ConsumerUnitCardGrid";
+import { selectIsDrawerOpen, setIsDrawerOpen } from "../store/appSlice";
+import { Box, styled, useMediaQuery } from "@mui/material";
+import theme from "../theme";
 import Drawer, { drawerWidth } from "../components/Drawer";
 import Header from "../components/Header";
-import { selectIsDrawerOpen, setIsDrawerOpen } from "../store/appSlice";
-import theme from "../theme";
 
 const Main = styled("main", {
-  shouldForwardProp: (prop) => prop !== "isDrawerOpen" && prop !== "isDesktop",
+  shouldForwardProp: (prop) =>
+    prop !== "isDrawerOpen" &&
+    prop !== "isDesktop" &&
+    prop !== "disableGutters",
 })<{
   isDrawerOpen?: boolean;
   isDesktop?: boolean;
-}>(({ theme, isDrawerOpen, isDesktop }) => {
+  disableGutters?: boolean;
+}>(({ theme, isDrawerOpen, isDesktop, disableGutters }) => {
   return {
+    height: `calc(100% - ${theme.breakpoints.up("sm") ? "64px" : "56px"})`,
     flexGrow: 1,
-    overflowY: "visible",
-    padding: theme.spacing(3),
+    padding: theme.spacing(disableGutters ? 0 : 3),
     transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -33,7 +36,15 @@ const Main = styled("main", {
   };
 });
 
-const DefaultTemplate = () => {
+interface DefaultTemplateProps {
+  children: ReactNode;
+  disableGutters?: boolean;
+}
+
+const DefaultTemplate = ({
+  children,
+  disableGutters,
+}: DefaultTemplateProps) => {
   const dispatch = useDispatch();
   const isDrawerOpen = useSelector(selectIsDrawerOpen);
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
@@ -46,17 +57,19 @@ const DefaultTemplate = () => {
     dispatch(setIsDrawerOpen(true));
   }, [isDesktop]);
   return (
-    <>
+    <Box height="100vh">
       <Header />
 
       <Drawer />
 
-      <Main isDrawerOpen={isDrawerOpen} isDesktop={isDesktop}>
-        <Container disableGutters>
-          <ConsumerUnitCardGrid />
-        </Container>
+      <Main
+        isDrawerOpen={isDrawerOpen}
+        isDesktop={isDesktop}
+        disableGutters={disableGutters}
+      >
+        {children}
       </Main>
-    </>
+    </Box>
   );
 };
 

@@ -73,6 +73,7 @@ const ConsumerUnitCardGrid = () => {
       {mockedConsumerUnits.map((consumerUnit) => (
         <ConsumerUnitCard
           key={consumerUnit.id}
+          id={consumerUnit.id}
           title={consumerUnit.title}
           pendencies={consumerUnit.pendencies}
           disabled={consumerUnit.disabled}

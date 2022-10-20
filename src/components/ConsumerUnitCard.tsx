@@ -1,3 +1,6 @@
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import Link from "next/link";
 import {
   Badge,
   Box,
@@ -10,7 +13,6 @@ import {
   Typography,
 } from "@mui/material";
 import { Receipt, Star, StarOutline, TrendingUp } from "@mui/icons-material";
-import { useEffect, useState } from "react";
 
 interface Pendency {
   month: number;
@@ -18,6 +20,7 @@ interface Pendency {
 }
 
 interface ConsumerUnitCardProps {
+  id: number;
   title: string;
   disabled?: boolean;
   favorite?: boolean;
@@ -25,13 +28,16 @@ interface ConsumerUnitCardProps {
 }
 
 const ConsumerUnitCard = ({
+  id,
   title,
   disabled = false,
   favorite = false,
   pendencies = [],
 }: ConsumerUnitCardProps) => {
+  const router = useRouter();
   const [longMonth, setLongMonth] = useState("");
   const [badgeCount, setBadgeCount] = useState(0);
+  const consumerUnitUrl = `/uc/${id}`;
 
   useEffect(() => {
     if (pendencies.length == 0) {
@@ -47,14 +53,26 @@ const ConsumerUnitCard = ({
     setBadgeCount(pendencies.length - 1);
   }, [pendencies]);
 
+  useEffect(() => {
+    if (favorite) {
+      router.prefetch(consumerUnitUrl);
+    }
+  }, [favorite]);
+
+  const handleCardClick = () => {
+    router.push(consumerUnitUrl);
+  };
+
   return (
     <Card
-      variant={disabled ? "outlined" : "elevation"}
       sx={{
         height: 196,
         display: "flex",
         flexDirection: "column",
+        cursor: "pointer",
       }}
+      variant={disabled ? "outlined" : "elevation"}
+      onClick={handleCardClick}
     >
       {!disabled && (
         <CardActions>
@@ -90,7 +108,9 @@ const ConsumerUnitCard = ({
                 <Typography>Em dia</Typography>
               </Box>
             ) : (
-              <Button variant="outlined">{longMonth}</Button>
+              <Button variant="outlined" size="small">
+                Lançar {longMonth}
+              </Button>
             )}
 
             <Box>

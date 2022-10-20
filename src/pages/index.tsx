@@ -1,7 +1,11 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 
+import { Container } from "@mui/material";
+
+import ConsumerUnitCardGrid from "../components/ConsumerUnitCardGrid";
 import DefaultTemplate from "../templates/DefaultTemplate";
+import Header from "../components/Header";
 
 const Home: NextPage = () => {
   return (
@@ -10,7 +14,11 @@ const Home: NextPage = () => {
         <title>Dashboard</title>
       </Head>
 
-      <DefaultTemplate />
+      <DefaultTemplate>
+        <Container disableGutters>
+          <ConsumerUnitCardGrid />
+        </Container>
+      </DefaultTemplate>
     </>
   );
 };
