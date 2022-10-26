@@ -33,10 +33,7 @@ const ConsumerUnitCreateForm = () => {
   };
 
   return (
-    <FormDrawer
-      open={isCreateFormOpen}
-      handleCloseDrawer={handleCloseDrawer}
-    >
+    <FormDrawer open={isCreateFormOpen} handleCloseDrawer={handleCloseDrawer}>
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <Typography variant="h4">Adicionar Unidade Consumidora</Typography>
@@ -75,6 +72,10 @@ const ConsumerUnitCreateForm = () => {
         </Grid>
 
         <Grid item xs={12}>
+          <Typography variant="h5">Contrato</Typography>
+        </Grid>
+
+        <Grid item xs={12}>
           <Controller
             name="beginDate"
             control={control}
@@ -87,12 +88,14 @@ const ConsumerUnitCreateForm = () => {
                     <em>None</em>
                   </MenuItem>
                 </Select>
+
+                <FormHelperText> </FormHelperText>
               </FormControl>
             )}
           />
         </Grid>
 
-        <Grid item xs={8}>
+        <Grid item xs={12} sm={6}>
           {/* TODO Handle responsive datepicker */}
           <Controller
             name="provided"
@@ -105,7 +108,12 @@ const ConsumerUnitCreateForm = () => {
                 minDate={moment("2010")}
                 disableFuture
                 renderInput={(params) => (
-                  <TextField {...params} fullWidth defaultValue={0} />
+                  <TextField
+                    {...params}
+                    fullWidth
+                    defaultValue={0}
+                    helperText=" "
+                  />
                 )}
                 onChange={onChange}
               />
@@ -113,44 +121,48 @@ const ConsumerUnitCreateForm = () => {
           />
         </Grid>
 
-        <Grid item xs={12} sm={6}>
-          <Controller
-            name="contracted"
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <TextField
-                value={value}
-                label="Tensão de fornecimento"
-                fullWidth
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">kV</InputAdornment>
-                  ),
-                }}
-                onChange={onChange}
-              />
-            )}
-          />
-        </Grid>
+        <Grid item container xs={12} spacing={3}>
+          <Grid item xs={12} sm={6}>
+            <Controller
+              name="contracted"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <TextField
+                  value={value}
+                  label="Tensão de fornecimento"
+                  fullWidth
+                  helperText=" "
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">kV</InputAdornment>
+                    ),
+                  }}
+                  onChange={onChange}
+                />
+              )}
+            />
+          </Grid>
 
-        <Grid item xs={12} sm={6}>
-          <Controller
-            name="title"
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <TextField
-                value={value}
-                label="Demanda contratada"
-                fullWidth
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">kV</InputAdornment>
-                  ),
-                }}
-                onChange={onChange}
-              />
-            )}
-          />
+          <Grid item xs={12} sm={6}>
+            <Controller
+              name="title"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <TextField
+                  value={value}
+                  label="Demanda contratada"
+                  fullWidth
+                  helperText=" "
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">kV</InputAdornment>
+                    ),
+                  }}
+                  onChange={onChange}
+                />
+              )}
+            />
+          </Grid>
         </Grid>
 
         <Grid item>
