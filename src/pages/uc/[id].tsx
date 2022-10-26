@@ -20,6 +20,7 @@ import theme from "../../theme";
 import ConsumerUnitCardGrid from "../../components/ConsumerUnit/CardGrid";
 import DefaultTemplate from "../../templates/DefaultTemplate";
 import ConsumerUnitCreateForm from "../../components/ConsumerUnit/Form/Create";
+import ConsumerUnitEditForm from "../../components/ConsumerUnit/Form/Edit";
 
 const ConsumerUnitPage: NextPage = () => {
   const dispatch = useDispatch();
@@ -82,6 +83,7 @@ const ConsumerUnitPage: NextPage = () => {
       </Box>
 
       <ConsumerUnitCreateForm />
+      <ConsumerUnitEditForm />
     </DefaultTemplate>
   );
 };

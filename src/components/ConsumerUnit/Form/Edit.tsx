@@ -1,13 +1,17 @@
 import {
+  Alert,
   Box,
   Button,
   FormControl,
+  FormControlLabel,
+  FormGroup,
   FormHelperText,
   Grid,
   InputAdornment,
   InputLabel,
   MenuItem,
   Select,
+  Switch,
   TextField,
   Typography,
 } from "@mui/material";
@@ -16,27 +20,50 @@ import moment from "moment";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  selectIsConsumerUnitCreateFormOpen,
-  setIsConsumerUnitCreateFormOpen,
+  selectIsConsumerUnitEditFormOpen,
+  setIsConsumerUnitEditFormOpen,
 } from "../../../store/appSlice";
 import FormDrawer from "../../Form/Drawer";
 
-const ConsumerUnitCreateForm = () => {
+const ConsumerUnitEditForm = () => {
   const dispatch = useDispatch();
   const { control, handleSubmit } = useForm();
-  const isCreateFormOpen = useSelector(selectIsConsumerUnitCreateFormOpen);
+  const isEditFormOpen = useSelector(selectIsConsumerUnitEditFormOpen);
 
   const handleCloseDrawer = () => {
     // TODO check if data changed
 
-    dispatch(setIsConsumerUnitCreateFormOpen(false));
+    dispatch(setIsConsumerUnitEditFormOpen(false));
   };
 
   return (
-    <FormDrawer open={isCreateFormOpen} handleCloseDrawer={handleCloseDrawer}>
+    <FormDrawer open={isEditFormOpen} handleCloseDrawer={handleCloseDrawer}>
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <Typography variant="h4">Adicionar Unidade Consumidora</Typography>
+          <Typography variant="h4">Editar Unidade Consumidora</Typography>
+        </Grid>
+
+        <Grid item xs={12}>
+          <Controller
+            name="isActive"
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <Switch value={value} defaultChecked onChange={onChange} />
+                  }
+                  label="Unidade ativa"
+                />
+
+                <FormHelperText>
+                  Unidades desativadas não recebem faturas e não geram
+                  recomendações. Não é possível excluir unidades consumidoras,
+                  apenas desativá-las.
+                </FormHelperText>
+              </FormGroup>
+            )}
+          />
         </Grid>
 
         <Grid item xs={12}>
@@ -73,6 +100,14 @@ const ConsumerUnitCreateForm = () => {
 
         <Grid item xs={12}>
           <Typography variant="h5">Contrato</Typography>
+        </Grid>
+
+        <Grid item xs={12}>
+          <Alert severity="warning">
+            Modifique o contrato apenas em caso de erro de digitação. Para
+            alterações legais ou novo contrato, use a opção{" "}
+            <strong>Renovar</strong> na tela anterior.
+          </Alert>
         </Grid>
 
         <Grid item xs={12}>
@@ -124,7 +159,7 @@ const ConsumerUnitCreateForm = () => {
         <Grid item container xs={12} spacing={3}>
           <Grid item xs={12} sm={6}>
             <Controller
-              name="supplied"
+              name="contracted"
               control={control}
               render={({ field: { onChange, value } }) => (
                 <TextField
@@ -179,4 +214,4 @@ const ConsumerUnitCreateForm = () => {
   );
 };
 
-export default ConsumerUnitCreateForm;
+export default ConsumerUnitEditForm;
