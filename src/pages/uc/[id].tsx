@@ -21,6 +21,7 @@ import ConsumerUnitCardGrid from "../../components/ConsumerUnit/CardGrid";
 import DefaultTemplate from "../../templates/DefaultTemplate";
 import ConsumerUnitCreateForm from "../../components/ConsumerUnit/Form/Create";
 import ConsumerUnitEditForm from "../../components/ConsumerUnit/Form/Edit";
+import Guide from "../../components/Guides/Guide";
 
 const ConsumerUnitPage: NextPage = () => {
   const dispatch = useDispatch();
@@ -61,7 +62,7 @@ const ConsumerUnitPage: NextPage = () => {
           </Box>
         )}
 
-        <Box p={3}>
+        <Box p={3} sx={{ width: '100%' }}>
           <Box display="flex">
             <Typography variant="h3">Campus Gama</Typography>
 
@@ -78,6 +79,9 @@ const ConsumerUnitPage: NextPage = () => {
             <Typography>
               Unidade consumidora: <strong>10/979389-4</strong>
             </Typography>
+          </Box>
+          <Box>
+            <Guide />
           </Box>
         </Box>
       </Box>
