@@ -1,11 +1,10 @@
 import React, { useState } from 'react'
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Typography } from '@mui/material'
-import { setIsContractCreateFormOpen, setIsContractEditFormOpen } from '../../store/appSlice';
+import { setIsConsumerUnitEditFormOpen, setIsContractCreateFormOpen } from '../../store/appSlice';
 import { useDispatch } from "react-redux";
 import ContractCreateForm from '../Contract/Form/ContractCreateForm';
 import LaunchIcon from '@mui/icons-material/Launch';
-import { PhotoCamera } from '@mui/icons-material';
-import ContractEditForm from '../Contract/Form/ContractEditForm';
+import ConsumerUnitEditForm from '../ConsumerUnit/Form/Edit';
 
 const Contract = () => {
   const [open, setOpen] = useState(false);
@@ -25,7 +24,7 @@ const Contract = () => {
   };
 
   const handleEditContractClick = () => {
-    dispatch(setIsContractEditFormOpen(true));
+    dispatch(setIsConsumerUnitEditFormOpen(true));
   };
   return (
     <Box width="60%" margin="auto" marginTop="40px">
@@ -98,11 +97,11 @@ const Contract = () => {
         <Box margin='20px 0'>
           <Typography fontSize='20px'>Demanda Contratada</Typography>
           <Box display='flex' justifyContent='space-between' alignItems='center' width='40%'>
-            <Box margin='20px 0'>
+            <Box>
               <Typography color={'grey'} fontWeight='regular'>Ponta</Typography>
               <Typography fontSize='20px'>270kW</Typography>
             </Box>
-            <Box margin='20px 0'>
+            <Box>
               <Typography color={'grey'} fontWeight='regular'>Fora de Ponta</Typography>
               <Typography fontSize='20px'>150kW</Typography>
             </Box>
@@ -111,7 +110,7 @@ const Contract = () => {
         </Box>
       </Box>
       <ContractCreateForm />
-      <ContractEditForm />
+      <ConsumerUnitEditForm />
     </Box >
   )
 }
