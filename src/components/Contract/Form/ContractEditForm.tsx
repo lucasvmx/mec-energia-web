@@ -20,27 +20,27 @@ import moment from "moment";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  selectIsContractCreateFormOpen,
-  setIsContractCreateFormOpen,
+  selectIsContractEditFormOpen,
+  setIsContractEditFormOpen,
 } from "../../../store/appSlice";
 import FormDrawer from "../../Form/Drawer";
 
-const ContractCreateForm = () => {
+const ContractEditForm = () => {
   const dispatch = useDispatch();
   const { control, handleSubmit } = useForm();
-  const isCreateFormOpen = useSelector(selectIsContractCreateFormOpen);
+  const isCreateFormOpen = useSelector(selectIsContractEditFormOpen);
 
   const handleCloseDrawer = () => {
     // TODO check if data changed
 
-    dispatch(setIsContractCreateFormOpen(false));
+    dispatch(setIsContractEditFormOpen(false));
   };
 
   return (
     <FormDrawer open={isCreateFormOpen} handleCloseDrawer={handleCloseDrawer}>
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <Typography >Renovar Contrato</Typography>
+          <Typography >Corrigir Contrato</Typography>
           <Typography variant="h4">Campos Gama</Typography>
           <Typography>* campos obrigatórios</Typography>
         </Grid>
@@ -176,7 +176,7 @@ const ContractCreateForm = () => {
         </Grid>
 
         <Grid item>
-          <Button variant="contained">Renovar</Button>
+          <Button variant="contained">Corrigir</Button>
         </Grid>
 
         <Grid item>
@@ -189,4 +189,4 @@ const ContractCreateForm = () => {
   );
 };
 
-export default ContractCreateForm;
+export default ContractEditForm;
