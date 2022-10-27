@@ -6,6 +6,7 @@ import Box from '@mui/material/Box';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import ContentPasteIcon from '@mui/icons-material/ContentPaste';
+import Contract from './Contract'
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
@@ -62,7 +63,7 @@ export default function Guide() {
         ANALISE
       </TabPanel>
       <TabPanel value={value} index={2}>
-        CONTRATO
+        <Contract />
       </TabPanel>
     </Box>
   );

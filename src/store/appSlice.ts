@@ -6,11 +6,21 @@ export enum ConsumerUnitFormEnum {
   EDIT,
 }
 
+export enum ContractFormEnum {
+  CREATE,
+  EDIT,
+}
+
 type ConsumerUnitFormType = ConsumerUnitFormEnum | null;
+type ContractFormType = ContractFormEnum | null;
 
 export interface AppState {
   isDrawerOpen: boolean;
   consumerUnit: {
+    isCreateFormOpen: boolean;
+    isEditFormOpen: boolean;
+  };
+  contract: {
     isCreateFormOpen: boolean;
     isEditFormOpen: boolean;
   };
@@ -26,6 +36,10 @@ const initialState: AppState = {
     isCreateFormOpen: false,
     isEditFormOpen: false,
   },
+  contract: {
+    isCreateFormOpen: false,
+    isEditFormOpen: false,
+  },
 };
 
 export const appSlice = createSlice({
@@ -35,14 +49,17 @@ export const appSlice = createSlice({
     setIsDrawerOpen: (state, action: PayloadAction<boolean>) => {
       state.isDrawerOpen = action.payload;
     },
-    setIsConsumerUnitCreateFormOpen: (
-      state,
-      action: PayloadAction<boolean>
-    ) => {
+    setIsConsumerUnitCreateFormOpen: (state,action: PayloadAction<boolean>) => {
       state.consumerUnit.isCreateFormOpen = action.payload;
     },
     setIsConsumerUnitEditFormOpen: (state, action: PayloadAction<boolean>) => {
       state.consumerUnit.isEditFormOpen = action.payload;
+    },
+    setIsContractCreateFormOpen: (state,action: PayloadAction<boolean>) => {
+      state.contract.isCreateFormOpen = action.payload;
+    },
+    setIsContractEditFormOpen: (state, action: PayloadAction<boolean>) => {
+      state.contract.isEditFormOpen = action.payload;
     },
   },
 });
@@ -53,6 +70,8 @@ export const {
   setIsDrawerOpen,
   setIsConsumerUnitCreateFormOpen,
   setIsConsumerUnitEditFormOpen,
+  setIsContractCreateFormOpen,
+  setIsContractEditFormOpen
 } = appSlice.actions;
 
 export const selectIsDrawerOpen = (state: RootState) => {
@@ -65,4 +84,12 @@ export const selectIsConsumerUnitCreateFormOpen = (state: RootState) => {
 
 export const selectIsConsumerUnitEditFormOpen = (state: RootState) => {
   return state.app.consumerUnit.isEditFormOpen;
+};
+
+export const selectIsContractCreateFormOpen = (state: RootState) => {
+  return state.app.contract.isCreateFormOpen;
+};
+
+export const selectIsContractEditFormOpen = (state: RootState) => {
+  return state.app.contract.isEditFormOpen;
 };
