@@ -1,5 +1,5 @@
-import React from 'react'
-import { Box, Button, Divider, IconButton, Typography } from '@mui/material'
+import React, { useState } from 'react'
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Typography } from '@mui/material'
 import { setIsContractCreateFormOpen, setIsContractEditFormOpen } from '../../store/appSlice';
 import { useDispatch } from "react-redux";
 import ContractCreateForm from '../Contract/Form/ContractCreateForm';
@@ -8,8 +8,19 @@ import { PhotoCamera } from '@mui/icons-material';
 import ContractEditForm from '../Contract/Form/ContractEditForm';
 
 const Contract = () => {
+  const [open, setOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   const dispatch = useDispatch();
   const handleCreateContractClick = () => {
+    handleClose();
     dispatch(setIsContractCreateFormOpen(true));
   };
 
@@ -27,12 +38,37 @@ const Contract = () => {
         <Box display="flex" justifyContent='space-around' width="30%">
           <Button
             variant="outlined"
-            onClick={handleCreateContractClick}
+            onClick={handleClickOpen}
             size='small'
             sx={{ height: '30px' }}
           >
             RENOVAR
           </Button>
+          <Dialog
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+            maxWidth={'xs'}
+          >
+            <DialogTitle id="alert-dialog-title">
+              Iniciar renovação de contrato?
+            </DialogTitle>
+            <DialogContent>
+              <Typography marginBottom='20px'>
+                Renove apenas em caso de alterações legais ou de ter recebido um novo contrato.
+              </Typography>
+              <DialogContentText id="alert-dialog-description">
+                Para corrigir erros no contrato vigente, use a opção Corrigir na tela anterior.
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose}>Cancelar</Button>
+              <Button onClick={handleCreateContractClick} autoFocus>
+                Iniciar Renovação
+              </Button>
+            </DialogActions>
+          </Dialog>
           <Button
             variant="outlined"
             onClick={handleEditContractClick}
