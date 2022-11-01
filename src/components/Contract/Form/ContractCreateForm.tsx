@@ -26,165 +26,184 @@ import {
 import FormDrawer from "../../Form/Drawer";
 
 const ContractCreateForm = () => {
+  const { handleSubmit, control, formState: { errors }, register, reset } = useForm();
   const dispatch = useDispatch();
-  const { control, handleSubmit } = useForm();
   const isCreateFormOpen = useSelector(selectIsContractCreateFormOpen);
 
   const handleCloseDrawer = () => {
     // TODO check if data changed
-
+    reset()
     dispatch(setIsContractCreateFormOpen(false));
   };
 
+  const submit = (data: any) => {
+    console.log("Valor", data)
+  }
+
   return (
     <FormDrawer open={isCreateFormOpen} handleCloseDrawer={handleCloseDrawer}>
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <Typography >Renovar Contrato</Typography>
-          <Typography variant="h4">Campos Gama</Typography>
-          <Typography>* campos obrigatórios</Typography>
-        </Grid>
+      <form onSubmit={handleSubmit(submit)}>
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <Typography >Renovar Contrato</Typography>
+            <Typography variant="h4">Campos Gama</Typography>
+            <Typography>* campos obrigatórios</Typography>
+          </Grid>
 
-        <Grid item xs={12}>
-          <Controller
-            name="code"
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <TextField
-                fullWidth
-                value={value}
-                label="Código *"
-                helperText="Código ou número da Unidade Consumidora conforme a fatura"
-                onChange={onChange}
-              />
-            )}
-          />
-        </Grid>
-
-        <Grid item xs={12}>
-          <Controller
-            name="beginDate"
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <FormControl fullWidth>
-                <InputLabel>Distribuidora *</InputLabel>
-
-                <Select value={value} label="Distribuidora" onChange={onChange}>
-                  <MenuItem value="">
-                    <em>Enel</em>
-                  </MenuItem>
-                  <MenuItem value="">
-                    <em>Neoenergia</em>
-                  </MenuItem>
-                </Select>
-
-                <FormHelperText> </FormHelperText>
-              </FormControl>
-            )}
-          />
-        </Grid>
-
-        <Grid item xs={12} sm={6}>
-          {/* TODO Handle responsive datepicker */}
-          <Controller
-            name="provided"
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <DatePicker
-                value={value}
-                views={["year", "month"]}
-                label="Início da vigência"
-                minDate={moment("2010")}
-                disableFuture
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    fullWidth
-                    defaultValue={0}
-                    helperText=" "
-                  />
-                )}
-                onChange={onChange}
-              />
-            )}
-          />
-        </Grid>
-
-        <Grid item container xs={12} spacing={3}>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12}>
             <Controller
-              name="contracted"
+              name="code"
               control={control}
-              render={({ field: { onChange, value } }) => (
+              rules={{ required: true }}
+              defaultValue=""
+              render={({ field: { onChange, value, ref } }) => (
                 <TextField
-                  value={value}
-                  label="Tensão de fornecimento *"
                   fullWidth
-                  helperText=" "
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">kV</InputAdornment>
-                    ),
-                  }}
+                  variant="outlined"
+                  error={!!errors.code}
+                  inputRef={ref}
+                  value={value}
+                  label="Código"
+                  helperText="Código ou número da Unidade Consumidora conforme a fatura"
                   onChange={onChange}
                 />
               )}
             />
           </Grid>
 
-          <Grid item xs={12} sm={7}>
+          <Grid item xs={12}>
             <Controller
-              name="tariffmod"
+              name="distributor"
               control={control}
               render={({ field: { onChange, value } }) => (
-                <FormControl>
-                  <FormLabel id="modality">Modalidade Tarifária *</FormLabel>
-                  <RadioGroup
-                    row
-                    aria-labelledby="modality"
-                    defaultValue="green"
-                    name="radio-buttons-modality"
-                  >
-                    <FormControlLabel value="green" control={<Radio />} label="Verde" />
-                    <FormControlLabel value="blue" control={<Radio />} label="Azul" />
-                  </RadioGroup>
+                <FormControl fullWidth>
+                  <InputLabel>Distribuidora *</InputLabel>
+
+                  <Select value={value} label="Distribuidora" onChange={onChange}>
+                    <MenuItem value="">
+                      <em>Enel</em>
+                    </MenuItem>
+                    <MenuItem value="">
+                      <em>Neoenergia</em>
+                    </MenuItem>
+                  </Select>
+
+                  <FormHelperText> </FormHelperText>
                 </FormControl>
               )}
             />
           </Grid>
 
           <Grid item xs={12} sm={6}>
+            {/* TODO Handle responsive datepicker */}
             <Controller
-              name="title"
+              name="beginDate"
               control={control}
               render={({ field: { onChange, value } }) => (
-                <TextField
+                <DatePicker
                   value={value}
-                  label="Demanda contratada *"
-                  fullWidth
-                  helperText=" "
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">kW</InputAdornment>
-                    ),
-                  }}
+                  views={["year", "month"]}
+                  label="Início da vigência"
+                  minDate={moment("2010")}
+                  disableFuture
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      fullWidth
+                      defaultValue={0}
+                      helperText=" "
+                    />
+                  )}
                   onChange={onChange}
                 />
               )}
             />
           </Grid>
-        </Grid>
 
-        <Grid item>
-          <Button variant="contained">Renovar</Button>
-        </Grid>
+          <Grid item container xs={12} spacing={3}>
+            <Grid item xs={12} sm={6}>
+              <Controller
+                name="contracted"
+                control={control}
+                rules={{ required: true }}
+                render={({ field: { onChange, value, ref } }) => (
+                  <TextField
+                    value={value}
+                    error={!!errors.contracted}
+                    inputRef={ref}
+                    label="Tensão de fornecimento *"
+                    fullWidth
+                    helperText=" "
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">kV</InputAdornment>
+                      ),
+                    }}
+                    onChange={onChange}
+                  />
+                )}
+              />
+            </Grid>
 
-        <Grid item>
-          <Button variant="text" onClick={handleCloseDrawer}>
-            Cancelar
-          </Button>
+            <Grid item xs={12} sm={7}>
+              <Controller
+                name="tariffmod"
+                control={control}
+                render={({ field: { onChange, value, ref } }) => (
+                  <FormControl>
+                    <FormLabel id="modality">Modalidade Tarifária *</FormLabel>
+                    <RadioGroup
+                      row
+                      aria-labelledby="modality"
+                      defaultValue="green"
+                      name="radio-buttons-modality"
+                      onChange={onChange}
+                      value={value}
+                    >
+                      <FormControlLabel value="green" control={<Radio />} label="Verde" />
+                      <FormControlLabel value="blue" control={<Radio />} label="Azul" />
+                    </RadioGroup>
+                  </FormControl>
+                )}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <Controller
+                name="demand"
+                control={control}
+                rules={{ required: true }}
+                render={({ field: { onChange, value, ref } }) => (
+                  <TextField
+                    value={value}
+                    error={!!errors.demand}
+                    label="Demanda contratada *"
+                    fullWidth
+                    inputRef={ref}
+                    helperText=" "
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">kW</InputAdornment>
+                      ),
+                    }}
+                    onChange={onChange}
+                  />
+                )}
+              />
+            </Grid>
+          </Grid>
+
+          <Grid item>
+            <Button type="submit" variant="contained">Renovar</Button>
+          </Grid>
+
+          <Grid item>
+            <Button variant="text" onClick={handleCloseDrawer}>
+              Cancelar
+            </Button>
+          </Grid>
         </Grid>
-      </Grid>
+      </form>
     </FormDrawer>
   );
 };
