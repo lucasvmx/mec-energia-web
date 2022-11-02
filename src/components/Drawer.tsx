@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectIsDrawerOpen, setIsDrawerOpen } from "../store/appSlice";
+import { useRouter } from 'next/router';
 
 import {
   Box,
@@ -27,6 +28,28 @@ const Drawer = () => {
   const dispatch = useDispatch();
   const isDrawerOpen = useSelector(selectIsDrawerOpen);
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
+  const router = useRouter();
+
+  const menuItems = [
+    {
+      name: 'Painel',
+      href: '/',
+      pathname: '/',
+      icon: <ViewModuleIcon />
+    },
+    {
+      name: 'Unidades Consumidoras',
+      href: '/uc/1',
+      pathname: "/uc/[id]",
+      icon: <WbIncandescentIcon />
+    },
+    {
+      name: 'Operadoras',
+      href: '/op/1',
+      pathname: '/op/[id]',
+      icon: <BusinessIcon />
+    }
+  ]
 
   useEffect(() => {
     dispatch(setIsDrawerOpen(isDesktop));
@@ -35,6 +58,15 @@ const Drawer = () => {
   const onCloseDrawer = () => {
     dispatch(setIsDrawerOpen(!isDrawerOpen));
   };
+
+  const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, href: string) => {
+    e.preventDefault()
+    router.push(href)
+  }
+
+  const handleActiveRoute = (href: string) => {
+    return router.pathname === href;
+  }
 
   return (
     <MuiDrawer
@@ -60,35 +92,18 @@ const Drawer = () => {
         justifyContent="space-between"
       >
         <List>
-          <ListItem>
-            <ListItemButton>
-              <ListItemIcon>
-                <ViewModuleIcon />
-              </ListItemIcon>
-
-              <ListItemText>Painel</ListItemText>
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem>
-            <ListItemButton>
-              <ListItemIcon>
-                <WbIncandescentIcon />
-              </ListItemIcon>
-
-              <ListItemText>Unidades Consumidoras</ListItemText>
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem>
-            <ListItemButton>
-              <ListItemIcon>
-                <BusinessIcon />
-              </ListItemIcon>
-
-              <ListItemText>Operadoras</ListItemText>
-            </ListItemButton>
-          </ListItem>
+          {menuItems.map(item => {
+            return (
+              <ListItem key={item.name}>
+                <ListItemButton selected={handleActiveRoute(item.pathname)} onClick={event => handleClick(event, item.href)}>
+                  <ListItemIcon>
+                    {item.icon}
+                  </ListItemIcon>
+                  <ListItemText>{item.name}</ListItemText>
+                </ListItemButton>
+              </ListItem>
+            )
+          })}
         </List>
 
         <List>
