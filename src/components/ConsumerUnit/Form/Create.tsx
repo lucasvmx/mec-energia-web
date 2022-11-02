@@ -9,6 +9,11 @@ import {
 import {
   Box,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   FormControl,
   FormControlLabel,
   FormHelperText,
@@ -33,12 +38,13 @@ import FormDrawer from "../../Form/Drawer";
 import TextFieldFormController from "../../Form/TextField";
 import SelectFormController from "../../Form/Select";
 import { getDate, toDate } from "date-fns";
+import { useState } from "react";
 
 interface FormData {
   title: string;
   code: string;
   supplier: string;
-  startDate: Date | string;
+  startDate: Date | null;
   supplied: number | "";
   tariffType: string;
   contracted: number | "";
@@ -47,28 +53,52 @@ interface FormData {
 const ConsumerUnitCreateForm = () => {
   const dispatch = useDispatch();
   const isCreateFormOpen = useSelector(selectIsConsumerUnitCreateFormOpen);
-
-  const form = useForm<FormData>();
+  const form = useForm<FormData>({
+    defaultValues: {
+      title: "",
+      code: "",
+      supplier: "",
+      startDate: null,
+      supplied: "",
+      tariffType: "",
+      contracted: "",
+    },
+  });
+  const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
 
   const {
     control,
     reset,
     handleSubmit,
-    register,
-    formState: { errors },
+    formState: { errors, isDirty },
+    getValues,
   } = form;
+
+  const handleCloseDialog = () => {
+    setShouldShowCancelDialog(false);
+  };
+
+  const handleCancelEdition = () => {
+    if (isDirty) {
+      setShouldShowCancelDialog(true);
+      return;
+    }
+
+    handleConfirmCancelEdition();
+  };
+
+  const handleConfirmCancelEdition = () => {
+    handleCloseDialog();
+    reset();
+    dispatch(setIsConsumerUnitCreateFormOpen(false));
+  };
 
   const onSubmitHandler: SubmitHandler<FormData> = (data) => {
     console.log(data);
   };
 
-  const handleCloseDrawer = () => {
-    reset();
-    dispatch(setIsConsumerUnitCreateFormOpen(false));
-  };
-
   return (
-    <FormDrawer open={isCreateFormOpen} handleCloseDrawer={handleCloseDrawer}>
+    <FormDrawer open={isCreateFormOpen} handleCloseDrawer={handleCancelEdition}>
       <FormProvider {...form}>
         <Box component="form" onSubmit={handleSubmit(onSubmitHandler)}>
           <Grid container spacing={2}>
@@ -116,7 +146,6 @@ const ConsumerUnitCreateForm = () => {
               <Controller
                 control={control}
                 name="startDate"
-                defaultValue=""
                 rules={{ required: "Campo obrigatório" }}
                 render={({
                   field: { value, onChange },
@@ -160,7 +189,6 @@ const ConsumerUnitCreateForm = () => {
               <Controller
                 control={control}
                 name="tariffType"
-                defaultValue=""
                 rules={{ required: "Campo obrigatório" }}
                 render={({
                   field: { onChange, value },
@@ -207,11 +235,28 @@ const ConsumerUnitCreateForm = () => {
                 Gravar
               </Button>
 
-              <Button variant="text" onClick={handleCloseDrawer}>
+              <Button variant="text" onClick={handleCancelEdition}>
                 Cancelar
               </Button>
             </Grid>
           </Grid>
+
+          <Dialog open={shouldShowCancelDialog} onClick={handleCloseDialog}>
+            <DialogTitle>Descartar Unidade Consumidora</DialogTitle>
+
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Os dados inseridos serão perdidos.
+              </DialogContentText>
+            </DialogContent>
+
+            <DialogActions>
+              <Button autoFocus onClick={handleCloseDialog}>
+                Continuar editando
+              </Button>
+              <Button onClick={handleConfirmCancelEdition}>Descartar</Button>
+            </DialogActions>
+          </Dialog>
         </Box>
       </FormProvider>
     </FormDrawer>
