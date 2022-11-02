@@ -1,9 +1,13 @@
 import { useDispatch, useSelector } from "react-redux";
-import { Controller, useForm } from "react-hook-form";
-import moment, { Moment } from "moment";
-import { DatePicker } from "@mui/x-date-pickers";
+import {
+  Controller,
+  FormProvider,
+  SubmitHandler,
+  useForm,
+} from "react-hook-form";
 
 import {
+  Box,
   Button,
   FormControl,
   FormControlLabel,
@@ -19,18 +23,22 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { DatePicker } from "@mui/x-date-pickers";
 
 import {
   selectIsConsumerUnitCreateFormOpen,
   setIsConsumerUnitCreateFormOpen,
 } from "../../../store/appSlice";
 import FormDrawer from "../../Form/Drawer";
+import TextFieldFormController from "../../Form/TextField";
+import SelectFormController from "../../Form/Select";
+import { getDate, toDate } from "date-fns";
 
 interface FormData {
   title: string;
   code: string;
   supplier: string;
-  startDate: Moment | string;
+  startDate: Date | string;
   supplied: number | "";
   tariffType: string;
   contracted: number | "";
@@ -40,9 +48,17 @@ const ConsumerUnitCreateForm = () => {
   const dispatch = useDispatch();
   const isCreateFormOpen = useSelector(selectIsConsumerUnitCreateFormOpen);
 
-  const { control, reset, handleSubmit } = useForm<FormData>();
+  const form = useForm<FormData>();
 
-  const onSubmit = (data: FormData) => {
+  const {
+    control,
+    reset,
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = form;
+
+  const onSubmitHandler: SubmitHandler<FormData> = (data) => {
     console.log(data);
   };
 
@@ -53,230 +69,151 @@ const ConsumerUnitCreateForm = () => {
 
   return (
     <FormDrawer open={isCreateFormOpen} handleCloseDrawer={handleCloseDrawer}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Typography variant="h4">Adicionar Unidade Consumidora</Typography>
-          </Grid>
+      <FormProvider {...form}>
+        <Box component="form" onSubmit={handleSubmit(onSubmitHandler)}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Typography variant="h4">
+                Adicionar Unidade Consumidora
+              </Typography>
+            </Grid>
 
-          <Grid item xs={12}>
-            <Controller
-              control={control}
-              name="title"
-              defaultValue=""
-              rules={{ required: "Campo obrigatório" }}
-              render={({
-                field: { onChange, onBlur, value, ref },
-                fieldState: { error },
-              }) => (
-                <TextField
-                  ref={ref}
-                  fullWidth
-                  value={value}
-                  label="Nome"
-                  error={!!error}
-                  helperText={
-                    error?.message ??
-                    "Ex.: Campus Gama, Biblioteca, Faculdade de Medicina"
-                  }
-                  onChange={onChange}
-                  onBlur={onBlur}
-                />
-              )}
-            />
-          </Grid>
+            <Grid item xs={12}>
+              <TextFieldFormController
+                name="title"
+                label="Nome"
+                helperText="Ex.: Campus Gama, Biblioteca, Faculdade de Medicina"
+                rules={{ required: "Campo obrigatório" }}
+              />
+            </Grid>
 
-          <Grid item xs={12}>
-            <Controller
-              control={control}
-              name="code"
-              defaultValue=""
-              rules={{ required: "Campo obrigatório" }}
-              render={({
-                field: { onChange, value },
-                fieldState: { error },
-              }) => (
-                <TextField
-                  fullWidth
-                  value={value}
-                  label="Código"
-                  error={!!error}
-                  helperText={
-                    error?.message ??
-                    "Número da Unidade Consumidora conforme a fatura"
-                  }
-                  onChange={onChange}
-                />
-              )}
-            />
-          </Grid>
+            <Grid item xs={12}>
+              <TextFieldFormController
+                name="code"
+                label="Código"
+                helperText="Número da Unidade Consumidora conforme a fatura"
+                rules={{ required: "Campo obrigatório" }}
+              />
+            </Grid>
 
-          <Grid item xs={12}>
-            <Typography variant="h5">Contrato</Typography>
-          </Grid>
+            <Grid item xs={12}>
+              <Typography variant="h5">Contrato</Typography>
+            </Grid>
 
-          <Grid item xs={12}>
-            <Controller
-              control={control}
-              name="supplier"
-              defaultValue=""
-              rules={{ required: "Campo obrigatório" }}
-              render={({
-                field: { onChange, value },
-                fieldState: { error },
-              }) => (
-                <FormControl fullWidth error={!!error}>
-                  <InputLabel>Distribuidora</InputLabel>
+            <Grid item xs={12}>
+              <SelectFormController
+                name="supplier"
+                label="Distribuidora"
+                rules={{ required: "Campo obrigatório" }}
+                options={[
+                  { id: "a", label: "Distribuidora A" },
+                  { id: "b", label: "Distribuidora B" },
+                ]}
+              />
+            </Grid>
 
-                  <Select
+            <Grid item xs={12}>
+              <Controller
+                control={control}
+                name="startDate"
+                defaultValue=""
+                rules={{ required: "Campo obrigatório" }}
+                render={({
+                  field: { value, onChange },
+                  fieldState: { error },
+                }) => (
+                  <DatePicker
                     value={value}
-                    label="Distribuidora"
+                    views={["year", "month"]}
+                    openTo="year"
+                    label="Início da vigência"
+                    minDate={new Date("2010")}
+                    disableFuture
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        helperText={errors["startDate"]?.message ?? " "}
+                        error={!!errors["startDate"]}
+                      />
+                    )}
                     onChange={onChange}
-                  >
-                    <MenuItem value="a">Distribuidora A</MenuItem>
+                  />
+                )}
+              />
+            </Grid>
 
-                    <MenuItem value="b">Distribuidora B</MenuItem>
-                  </Select>
+            <Grid item xs={8} md={6}>
+              <TextFieldFormController
+                name="supplied"
+                label="Tensão de fornecimento"
+                rules={{ required: "Campo obrigatório" }}
+                type="number"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">kV</InputAdornment>
+                  ),
+                }}
+              />
+            </Grid>
 
-                  <FormHelperText>
-                    {error?.message ??
-                      "Número da Unidade Consumidora conforme a fatura"}
-                  </FormHelperText>
-                </FormControl>
-              )}
-            />
+            <Grid item xs={12}>
+              <Controller
+                control={control}
+                name="tariffType"
+                defaultValue=""
+                rules={{ required: "Campo obrigatório" }}
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <FormControl error={!!error}>
+                    <FormLabel>Modalidade tarifária</FormLabel>
+
+                    <RadioGroup value={value} row onChange={onChange}>
+                      <FormControlLabel
+                        value="green"
+                        control={<Radio />}
+                        label="Verde"
+                      />
+                      <FormControlLabel
+                        value="blue"
+                        control={<Radio />}
+                        label="Azul"
+                      />
+                    </RadioGroup>
+
+                    <FormHelperText>{error?.message ?? " "}</FormHelperText>
+                  </FormControl>
+                )}
+              />
+            </Grid>
+
+            <Grid item xs={8} md={6}>
+              <TextFieldFormController
+                name="contracted"
+                label="Demanda contratada"
+                rules={{ required: "Campo obrigatório" }}
+                type="number"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">kV</InputAdornment>
+                  ),
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <Button type="submit" variant="contained">
+                Gravar
+              </Button>
+
+              <Button variant="text" onClick={handleCloseDrawer}>
+                Cancelar
+              </Button>
+            </Grid>
           </Grid>
-
-          <Grid item xs={12}>
-            <Controller
-              control={control}
-              name="startDate"
-              defaultValue=""
-              rules={{ required: "Campo obrigatório" }}
-              render={({
-                field: { value, onChange },
-                fieldState: { error },
-              }) => (
-                <DatePicker
-                  value={value}
-                  views={["year", "month"]}
-                  openTo="year"
-                  label="Início da vigência"
-                  minDate={moment("2010")}
-                  disableFuture
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      error={!!error}
-                      helperText={error?.message ?? " "}
-                    />
-                  )}
-                  onChange={onChange}
-                />
-              )}
-            />
-          </Grid>
-
-          <Grid item xs={8} md={6}>
-            <Controller
-              control={control}
-              name="supplied"
-              defaultValue=""
-              rules={{ required: "Campo obrigatório" }}
-              render={({
-                field: { onChange, value },
-                fieldState: { error },
-              }) => (
-                <TextField
-                  value={value}
-                  type="number"
-                  label="Tensão de fornecimento"
-                  fullWidth
-                  error={!!error}
-                  helperText={error?.message ?? " "}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">kV</InputAdornment>
-                    ),
-                  }}
-                  onChange={onChange}
-                />
-              )}
-            />
-          </Grid>
-
-          <Grid item xs={12}>
-            <Controller
-              control={control}
-              name="tariffType"
-              defaultValue=""
-              rules={{ required: "Campo obrigatório" }}
-              render={({
-                field: { onChange, value },
-                fieldState: { error },
-              }) => (
-                <FormControl error={!!error}>
-                  <FormLabel>Modalidade tarifária</FormLabel>
-
-                  <RadioGroup value={value} row onChange={onChange}>
-                    <FormControlLabel
-                      value="green"
-                      control={<Radio />}
-                      label="Verde"
-                    />
-                    <FormControlLabel
-                      value="blue"
-                      control={<Radio />}
-                      label="Azul"
-                    />
-                  </RadioGroup>
-
-                  <FormHelperText>{error?.message ?? " "}</FormHelperText>
-                </FormControl>
-              )}
-            />
-          </Grid>
-
-          <Grid item xs={8} md={6}>
-            <Controller
-              control={control}
-              name="contracted"
-              defaultValue=""
-              rules={{ required: "Campo obrigatório" }}
-              render={({
-                field: { onChange, value },
-                fieldState: { error },
-              }) => (
-                <TextField
-                  value={value}
-                  type="number"
-                  inputProps={{ type: "number" }}
-                  label="Demanda contratada"
-                  fullWidth
-                  error={!!error}
-                  helperText={error?.message ?? " "}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">kV</InputAdornment>
-                    ),
-                  }}
-                  onChange={onChange}
-                />
-              )}
-            />
-          </Grid>
-
-          <Grid item xs={12}>
-            <Button type="submit" variant="contained">
-              Gravar
-            </Button>
-
-            <Button variant="text" onClick={handleCloseDrawer}>
-              Cancelar
-            </Button>
-          </Grid>
-        </Grid>
-      </form>
+        </Box>
+      </FormProvider>
     </FormDrawer>
   );
 };
