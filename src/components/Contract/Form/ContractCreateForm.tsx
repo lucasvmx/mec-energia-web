@@ -40,6 +40,8 @@ const ContractCreateForm = () => {
     console.log("Valor", data)
   }
 
+  const msgError: string = "Campo obrigatório"
+
   return (
     <FormDrawer open={isCreateFormOpen} handleCloseDrawer={handleCloseDrawer}>
       <form onSubmit={handleSubmit(submit)}>
@@ -54,9 +56,9 @@ const ContractCreateForm = () => {
             <Controller
               name="code"
               control={control}
-              rules={{ required: true }}
+              rules={{ required: "Campo obrigatório" }}
               defaultValue=""
-              render={({ field: { onChange, value, ref } }) => (
+              render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
                 <TextField
                   fullWidth
                   variant="outlined"
@@ -64,7 +66,7 @@ const ContractCreateForm = () => {
                   inputRef={ref}
                   value={value}
                   label="Código *"
-                  helperText="Código ou número da Unidade Consumidora conforme a fatura"
+                  helperText={error?.message ?? "Código ou número da Unidade Consumidora conforme a faturasa"}
                   onChange={onChange}
                 />
               )}
@@ -75,8 +77,8 @@ const ContractCreateForm = () => {
             <Controller
               name="distributor"
               control={control}
-              rules={{ required: true }}
-              render={({ field: { onChange, value } }) => (
+              rules={{ required: msgError }}
+              render={({ field: { onChange, value }, fieldState: { error } }) => (
                 <FormControl fullWidth>
                   <InputLabel>Distribuidora *</InputLabel>
 
@@ -89,7 +91,7 @@ const ContractCreateForm = () => {
                     </MenuItem>
                   </Select>
 
-                  <FormHelperText> </FormHelperText>
+                  <FormHelperText error>{error?.message ?? " "} </FormHelperText>
                 </FormControl>
               )}
             />
@@ -126,8 +128,8 @@ const ContractCreateForm = () => {
               <Controller
                 name="contracted"
                 control={control}
-                rules={{ required: true }}
-                render={({ field: { onChange, value, ref } }) => (
+                rules={{ required: msgError }}
+                render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
                   <TextField
                     value={value}
                     type="number"
@@ -135,7 +137,7 @@ const ContractCreateForm = () => {
                     inputRef={ref}
                     label="Tensão de fornecimento *"
                     fullWidth
-                    helperText=""
+                    helperText={error?.message ?? " "}
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">kV</InputAdornment>
@@ -174,8 +176,8 @@ const ContractCreateForm = () => {
               <Controller
                 name="demand"
                 control={control}
-                rules={{ required: true }}
-                render={({ field: { onChange, value, ref } }) => (
+                rules={{ required: msgError }}
+                render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
                   <TextField
                     value={value}
                     type="number"
@@ -183,7 +185,7 @@ const ContractCreateForm = () => {
                     label="Demanda contratada *"
                     fullWidth
                     inputRef={ref}
-                    helperText=" "
+                    helperText={error?.message ?? " "}
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">kW</InputAdornment>
