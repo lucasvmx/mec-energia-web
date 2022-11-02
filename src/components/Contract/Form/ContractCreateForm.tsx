@@ -63,7 +63,7 @@ const ContractCreateForm = () => {
                   error={!!errors.code}
                   inputRef={ref}
                   value={value}
-                  label="Código"
+                  label="Código *"
                   helperText="Código ou número da Unidade Consumidora conforme a fatura"
                   onChange={onChange}
                 />
@@ -75,15 +75,16 @@ const ContractCreateForm = () => {
             <Controller
               name="distributor"
               control={control}
+              rules={{ required: true }}
               render={({ field: { onChange, value } }) => (
                 <FormControl fullWidth>
                   <InputLabel>Distribuidora *</InputLabel>
 
-                  <Select value={value} label="Distribuidora" onChange={onChange}>
-                    <MenuItem value="">
+                  <Select value={value} label="Distribuidora" onChange={onChange} error={!!errors.distributor}>
+                    <MenuItem value="enel">
                       <em>Enel</em>
                     </MenuItem>
-                    <MenuItem value="">
+                    <MenuItem value="neoenergia">
                       <em>Neoenergia</em>
                     </MenuItem>
                   </Select>
@@ -99,6 +100,7 @@ const ContractCreateForm = () => {
             <Controller
               name="beginDate"
               control={control}
+              defaultValue={null}
               render={({ field: { onChange, value } }) => (
                 <DatePicker
                   value={value}
@@ -110,7 +112,6 @@ const ContractCreateForm = () => {
                     <TextField
                       {...params}
                       fullWidth
-                      defaultValue={0}
                       helperText=" "
                     />
                   )}
@@ -129,11 +130,12 @@ const ContractCreateForm = () => {
                 render={({ field: { onChange, value, ref } }) => (
                   <TextField
                     value={value}
+                    type="number"
                     error={!!errors.contracted}
                     inputRef={ref}
                     label="Tensão de fornecimento *"
                     fullWidth
-                    helperText=" "
+                    helperText=""
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">kV</InputAdornment>
@@ -176,6 +178,7 @@ const ContractCreateForm = () => {
                 render={({ field: { onChange, value, ref } }) => (
                   <TextField
                     value={value}
+                    type="number"
                     error={!!errors.demand}
                     label="Demanda contratada *"
                     fullWidth
