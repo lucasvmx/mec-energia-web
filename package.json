@@ -17,6 +17,7 @@
     "@mui/material": "^5.10.6",
     "@mui/x-date-pickers": "^5.0.5",
     "@reduxjs/toolkit": "^1.8.5",
+    "date-fns": "^2.29.3",
     "moment": "^2.29.4",
     "next": "12.3.0",
     "next-redux-wrapper": "^8.0.0",

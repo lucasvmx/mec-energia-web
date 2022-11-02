@@ -1,19 +1,3 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  FormHelperText,
-  Grid,
-  InputAdornment,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { DatePicker } from "@mui/x-date-pickers";
-import moment from "moment";
-import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Controller,
@@ -51,6 +35,20 @@ import {
   setIsConsumerUnitCreateFormOpen,
 } from "../../../store/appSlice";
 import FormDrawer from "../../Form/Drawer";
+import TextFieldFormController from "../../Form/TextField";
+import SelectFormController from "../../Form/Select";
+import { getDate, toDate } from "date-fns";
+import { useState } from "react";
+
+interface FormData {
+  title: string;
+  code: string;
+  supplier: string;
+  startDate: Date | null;
+  supplied: number | "";
+  tariffType: string;
+  contracted: number | "";
+}
 
 const ConsumerUnitCreateForm = () => {
   const dispatch = useDispatch();
@@ -68,143 +66,199 @@ const ConsumerUnitCreateForm = () => {
   });
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
 
-  const handleCloseDrawer = () => {
-    // TODO check if data changed
+  const {
+    control,
+    reset,
+    handleSubmit,
+    formState: { errors, isDirty },
+    getValues,
+  } = form;
 
+  const handleCloseDialog = () => {
+    setShouldShowCancelDialog(false);
+  };
+
+  const handleCancelEdition = () => {
+    if (isDirty) {
+      setShouldShowCancelDialog(true);
+      return;
+    }
+
+    handleConfirmCancelEdition();
+  };
+
+  const handleConfirmCancelEdition = () => {
+    handleCloseDialog();
+    reset();
     dispatch(setIsConsumerUnitCreateFormOpen(false));
   };
 
-  return (
-    <FormDrawer
-      open={isCreateFormOpen}
-      handleCloseDrawer={handleCloseDrawer}
-    >
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <Typography variant="h4">Adicionar Unidade Consumidora</Typography>
-        </Grid>
+  const onSubmitHandler: SubmitHandler<FormData> = (data) => {
+    console.log(data);
+  };
 
-        <Grid item xs={12}>
-          <Controller
-            name="title"
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <TextField
-                fullWidth
-                value={value}
+  return (
+    <FormDrawer open={isCreateFormOpen} handleCloseDrawer={handleCancelEdition}>
+      <FormProvider {...form}>
+        <Box component="form" onSubmit={handleSubmit(onSubmitHandler)}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Typography variant="h4">
+                Adicionar Unidade Consumidora
+              </Typography>
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextFieldFormController
+                name="title"
                 label="Nome"
                 helperText="Ex.: Campus Gama, Biblioteca, Faculdade de Medicina"
-                onChange={onChange}
+                rules={{ required: "Campo obrigatório" }}
               />
-            )}
-          />
-        </Grid>
+            </Grid>
 
-        <Grid item xs={12}>
-          <Controller
-            name="code"
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <TextField
-                fullWidth
-                value={value}
+            <Grid item xs={12}>
+              <TextFieldFormController
+                name="code"
                 label="Código"
                 helperText="Número da Unidade Consumidora conforme a fatura"
-                onChange={onChange}
+                rules={{ required: "Campo obrigatório" }}
               />
-            )}
-          />
-        </Grid>
+            </Grid>
 
-        <Grid item xs={12}>
-          <Controller
-            name="beginDate"
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <FormControl fullWidth>
-                <InputLabel>Distribuidora</InputLabel>
+            <Grid item xs={12}>
+              <Typography variant="h5">Contrato</Typography>
+            </Grid>
 
-                <Select value={value} label="Distribuidora" onChange={onChange}>
-                  <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem>
-                </Select>
-              </FormControl>
-            )}
-          />
-        </Grid>
+            <Grid item xs={12}>
+              <SelectFormController
+                name="supplier"
+                label="Distribuidora"
+                rules={{ required: "Campo obrigatório" }}
+                options={[
+                  { id: "a", label: "Distribuidora A" },
+                  { id: "b", label: "Distribuidora B" },
+                ]}
+              />
+            </Grid>
 
-        <Grid item xs={8}>
-          {/* TODO Handle responsive datepicker */}
-          <Controller
-            name="provided"
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <DatePicker
-                value={value}
-                views={["year", "month"]}
-                label="Início da vigência"
-                minDate={moment("2010")}
-                disableFuture
-                renderInput={(params) => (
-                  <TextField {...params} fullWidth defaultValue={0} />
+            <Grid item xs={12}>
+              <Controller
+                control={control}
+                name="startDate"
+                rules={{ required: "Campo obrigatório" }}
+                render={({
+                  field: { value, onChange },
+                  fieldState: { error },
+                }) => (
+                  <DatePicker
+                    value={value}
+                    views={["year", "month"]}
+                    openTo="year"
+                    label="Início da vigência"
+                    minDate={new Date("2010")}
+                    disableFuture
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        helperText={errors["startDate"]?.message ?? " "}
+                        error={!!errors["startDate"]}
+                      />
+                    )}
+                    onChange={onChange}
+                  />
                 )}
-                onChange={onChange}
               />
-            )}
-          />
-        </Grid>
+            </Grid>
 
-        <Grid item xs={12} sm={6}>
-          <Controller
-            name="contracted"
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <TextField
-                value={value}
+            <Grid item xs={8} md={6}>
+              <TextFieldFormController
+                name="supplied"
                 label="Tensão de fornecimento"
-                fullWidth
+                rules={{ required: "Campo obrigatório" }}
+                type="number"
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">kV</InputAdornment>
                   ),
                 }}
-                onChange={onChange}
               />
-            )}
-          />
-        </Grid>
+            </Grid>
 
-        <Grid item xs={12} sm={6}>
-          <Controller
-            name="title"
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <TextField
-                value={value}
+            <Grid item xs={12}>
+              <Controller
+                control={control}
+                name="tariffType"
+                rules={{ required: "Campo obrigatório" }}
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <FormControl error={!!error}>
+                    <FormLabel>Modalidade tarifária</FormLabel>
+
+                    <RadioGroup value={value} row onChange={onChange}>
+                      <FormControlLabel
+                        value="green"
+                        control={<Radio />}
+                        label="Verde"
+                      />
+                      <FormControlLabel
+                        value="blue"
+                        control={<Radio />}
+                        label="Azul"
+                      />
+                    </RadioGroup>
+
+                    <FormHelperText>{error?.message ?? " "}</FormHelperText>
+                  </FormControl>
+                )}
+              />
+            </Grid>
+
+            <Grid item xs={8} md={6}>
+              <TextFieldFormController
+                name="contracted"
                 label="Demanda contratada"
-                fullWidth
+                rules={{ required: "Campo obrigatório" }}
+                type="number"
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">kV</InputAdornment>
                   ),
                 }}
-                onChange={onChange}
               />
-            )}
-          />
-        </Grid>
+            </Grid>
 
-        <Grid item>
-          <Button variant="contained">Gravar</Button>
-        </Grid>
+            <Grid item xs={12}>
+              <Button type="submit" variant="contained">
+                Gravar
+              </Button>
 
-        <Grid item>
-          <Button variant="text" onClick={handleCloseDrawer}>
-            Cancelar
-          </Button>
-        </Grid>
-      </Grid>
+              <Button variant="text" onClick={handleCancelEdition}>
+                Cancelar
+              </Button>
+            </Grid>
+          </Grid>
+
+          <Dialog open={shouldShowCancelDialog} onClick={handleCloseDialog}>
+            <DialogTitle>Descartar Unidade Consumidora</DialogTitle>
+
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Os dados inseridos serão perdidos.
+              </DialogContentText>
+            </DialogContent>
+
+            <DialogActions>
+              <Button autoFocus onClick={handleCloseDialog}>
+                Continuar editando
+              </Button>
+              <Button onClick={handleConfirmCancelEdition}>Descartar</Button>
+            </DialogActions>
+          </Dialog>
+        </Box>
+      </FormProvider>
     </FormDrawer>
   );
 };
