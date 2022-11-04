@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NumericFormat } from "react-number-format";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -37,40 +37,45 @@ import {
   setIsConsumerUnitCreateFormOpen,
 } from "../../../store/appSlice";
 import FormDrawer from "../../Form/Drawer";
+import { CreateConsumerUnitForm } from "../../../types/consumerUnit";
 
-interface FormData {
-  title: string;
-  code: string;
-  supplier: string;
-  startDate: Date | null;
-  supplied: number | "";
-  tariffType: string;
-  contracted: number | "";
-}
+const defaultValues: CreateConsumerUnitForm = {
+  title: "",
+  code: "",
+  supplier: "",
+  startDate: null,
+  supplied: "",
+  tariffType: "green",
+  contracted: "",
+  peakContracted: "",
+  outOfPeakContracted: "",
+};
 
 const ConsumerUnitCreateForm = () => {
   const dispatch = useDispatch();
   const isCreateFormOpen = useSelector(selectIsConsumerUnitCreateFormOpen);
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
 
-  const form = useForm<FormData>({
-    defaultValues: {
-      title: "",
-      code: "",
-      supplier: "",
-      startDate: null,
-      supplied: "",
-      tariffType: "",
-      contracted: "",
-    },
-  });
+  const form = useForm({ defaultValues });
 
   const {
     control,
     reset,
     handleSubmit,
-    formState: { errors, isDirty },
+    watch,
+    setValue,
+    formState: { isDirty },
   } = form;
+
+  const tariffType = watch("tariffType");
+
+  useEffect(() => {
+    const { contracted, peakContracted, outOfPeakContracted } = defaultValues;
+
+    setValue("contracted", contracted);
+    setValue("peakContracted", peakContracted);
+    setValue("outOfPeakContracted", outOfPeakContracted);
+  }, [tariffType]);
 
   const handleCloseDialog = () => {
     setShouldShowCancelDialog(false);
@@ -91,7 +96,7 @@ const ConsumerUnitCreateForm = () => {
     dispatch(setIsConsumerUnitCreateFormOpen(false));
   };
 
-  const onSubmitHandler: SubmitHandler<FormData> = (data) => {
+  const onSubmitHandler: SubmitHandler<CreateConsumerUnitForm> = (data) => {
     console.log(data);
   };
 
@@ -280,38 +285,108 @@ const ConsumerUnitCreateForm = () => {
               />
             </Grid>
 
-            <Grid item xs={8} md={6}>
-              <Controller
-                control={control}
-                name="contracted"
-                rules={{ required: "Campo obrigatório" }}
-                render={({
-                  field: { onChange, onBlur, value, ref },
-                  fieldState: { error },
-                }) => (
-                  <NumericFormat
-                    value={value}
-                    customInput={TextField}
-                    label="Demanda contratada"
-                    fullWidth
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">kW</InputAdornment>
-                      ),
-                    }}
-                    type="text"
-                    allowNegative={false}
-                    decimalScale={2}
-                    decimalSeparator=","
-                    thousandSeparator={" "}
-                    error={Boolean(error)}
-                    helperText={error?.message ?? " "}
-                    onValueChange={(values) => onChange(values.floatValue)}
-                    onBlur={onBlur}
+            {tariffType === "green" ? (
+              <Grid item xs={7}>
+                <Controller
+                  control={control}
+                  name="contracted"
+                  rules={{ required: "Campo obrigatório" }}
+                  render={({
+                    field: { onChange, onBlur, value, ref },
+                    fieldState: { error },
+                  }) => (
+                    <NumericFormat
+                      value={value}
+                      customInput={TextField}
+                      label="Demanda contratada"
+                      fullWidth
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">kW</InputAdornment>
+                        ),
+                      }}
+                      type="text"
+                      allowNegative={false}
+                      decimalScale={2}
+                      decimalSeparator=","
+                      thousandSeparator={" "}
+                      error={Boolean(error)}
+                      helperText={error?.message ?? " "}
+                      onValueChange={(values) => onChange(values.floatValue)}
+                      onBlur={onBlur}
+                    />
+                  )}
+                />
+              </Grid>
+            ) : (
+              <>
+                <Grid item xs={7}>
+                  <Controller
+                    control={control}
+                    name="peakContracted"
+                    rules={{ required: "Campo obrigatório" }}
+                    render={({
+                      field: { onChange, onBlur, value, ref },
+                      fieldState: { error },
+                    }) => (
+                      <NumericFormat
+                        value={value}
+                        customInput={TextField}
+                        label="Demanda contratada — Ponta"
+                        fullWidth
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">kW</InputAdornment>
+                          ),
+                        }}
+                        type="text"
+                        allowNegative={false}
+                        decimalScale={2}
+                        decimalSeparator=","
+                        thousandSeparator={" "}
+                        error={Boolean(error)}
+                        helperText={error?.message ?? " "}
+                        onValueChange={(values) => onChange(values.floatValue)}
+                        onBlur={onBlur}
+                      />
+                    )}
                   />
-                )}
-              />
-            </Grid>
+                </Grid>
+
+                <Grid item xs={7}>
+                  <Controller
+                    control={control}
+                    name="outOfPeakContracted"
+                    rules={{ required: "Campo obrigatório" }}
+                    render={({
+                      field: { onChange, onBlur, value, ref },
+                      fieldState: { error },
+                    }) => (
+                      <NumericFormat
+                        value={value}
+                        customInput={TextField}
+                        label="Demanda contratada — Fora Ponta"
+                        fullWidth
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">kW</InputAdornment>
+                          ),
+                        }}
+                        type="text"
+                        allowNegative={false}
+                        decimalScale={2}
+                        decimalSeparator=","
+                        thousandSeparator={" "}
+                        error={Boolean(error)}
+                        helperText={error?.message ?? " "}
+                        onValueChange={(values) => onChange(values.floatValue)}
+                        onBlur={onBlur}
+                      />
+                    )}
+                  />
+                </Grid>
+              </>
+            )}
 
             <Grid item xs={12}>
               <Button type="submit" variant="contained">
