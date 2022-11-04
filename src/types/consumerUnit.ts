@@ -11,3 +11,16 @@ export interface CreateConsumerUnitForm {
   peakContracted: number | "";
   outOfPeakContracted: number | "";
 }
+
+export interface EditConsumerUnitForm {
+  isActive: boolean;
+  title: string;
+  code: string;
+  supplier: string;
+  startDate: Date | null;
+  supplied: number | "";
+  tariffType: TariffType;
+  contracted: number | "";
+  peakContracted: number | "";
+  outOfPeakContracted: number | "";
+}
