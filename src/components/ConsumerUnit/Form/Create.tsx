@@ -22,8 +22,11 @@ import {
   FormLabel,
   Grid,
   InputAdornment,
+  InputLabel,
+  MenuItem,
   Radio,
   RadioGroup,
+  Select,
   TextField,
   Typography,
 } from "@mui/material";
@@ -34,8 +37,6 @@ import {
   setIsConsumerUnitCreateFormOpen,
 } from "../../../store/appSlice";
 import FormDrawer from "../../Form/Drawer";
-import TextFieldFormController from "../../Form/TextField";
-import SelectFormController from "../../Form/Select";
 
 interface FormData {
   title: string;
@@ -50,6 +51,8 @@ interface FormData {
 const ConsumerUnitCreateForm = () => {
   const dispatch = useDispatch();
   const isCreateFormOpen = useSelector(selectIsConsumerUnitCreateFormOpen);
+  const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
+
   const form = useForm<FormData>({
     defaultValues: {
       title: "",
@@ -61,14 +64,12 @@ const ConsumerUnitCreateForm = () => {
       contracted: "",
     },
   });
-  const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
 
   const {
     control,
     reset,
     handleSubmit,
-    getValues,
-    formState: { errors, isDirty, isValid },
+    formState: { errors, isDirty },
   } = form;
 
   const handleCloseDialog = () => {
@@ -106,22 +107,50 @@ const ConsumerUnitCreateForm = () => {
             </Grid>
 
             <Grid item xs={12}>
-              <TextFieldFormController
+              <Controller
+                control={control}
                 name="title"
-                label="Nome"
-                placeholder="Ex.: Campus Gama, Biblioteca, Faculdade de Medicina"
-                required
                 rules={{ required: "Campo obrigatório" }}
+                render={({
+                  field: { onChange, onBlur, value, ref },
+                  fieldState: { error },
+                }) => (
+                  <TextField
+                    ref={ref}
+                    value={value}
+                    label="Nome"
+                    placeholder="Ex.: Campus Gama, Biblioteca, Faculdade de Medicina"
+                    error={Boolean(error)}
+                    helperText={error?.message ?? " "}
+                    fullWidth
+                    onChange={onChange}
+                    onBlur={onBlur}
+                  />
+                )}
               />
             </Grid>
 
             <Grid item xs={12}>
-              <TextFieldFormController
+              <Controller
+                control={control}
                 name="code"
-                label="Código"
-                placeholder="Número da Unidade Consumidora conforme a fatura"
-                required
                 rules={{ required: "Campo obrigatório" }}
+                render={({
+                  field: { onChange, onBlur, value, ref },
+                  fieldState: { error },
+                }) => (
+                  <TextField
+                    ref={ref}
+                    value={value}
+                    label="Código *"
+                    placeholder="Número da Unidade Consumidora conforme a fatura"
+                    error={Boolean(error)}
+                    helperText={error?.message ?? " "}
+                    fullWidth
+                    onChange={onChange}
+                    onBlur={onBlur}
+                  />
+                )}
               />
             </Grid>
 
@@ -130,15 +159,31 @@ const ConsumerUnitCreateForm = () => {
             </Grid>
 
             <Grid item xs={12}>
-              <SelectFormController
+              <Controller
+                control={control}
                 name="supplier"
-                label="Distribuidora"
-                required
                 rules={{ required: "Campo obrigatório" }}
-                options={[
-                  { id: "a", label: "Distribuidora A" },
-                  { id: "b", label: "Distribuidora B" },
-                ]}
+                render={({
+                  field: { onChange, onBlur, value, ref },
+                  fieldState: { error },
+                }) => (
+                  <FormControl fullWidth error={!!error}>
+                    <InputLabel>Distribuidora *</InputLabel>
+
+                    <Select
+                      ref={ref}
+                      value={value}
+                      label="Distribuidora *"
+                      onChange={onChange}
+                      onBlur={onBlur}
+                    >
+                      <MenuItem value="a">Distribuidora A</MenuItem>
+                      <MenuItem value="b">Distribuidora B</MenuItem>
+                    </Select>
+
+                    <FormHelperText>{error?.message ?? " "}</FormHelperText>
+                  </FormControl>
+                )}
               />
             </Grid>
 
@@ -155,15 +200,14 @@ const ConsumerUnitCreateForm = () => {
                     value={value}
                     views={["year", "month"]}
                     openTo="year"
-                    label="Início da vigência"
+                    label="Início da vigência *"
                     minDate={new Date("2010")}
                     disableFuture
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        required
-                        helperText={errors["startDate"]?.message ?? " "}
-                        error={!!errors["startDate"]}
+                        helperText={error?.message ?? " "}
+                        error={!!error}
                       />
                     )}
                     onChange={onChange}
@@ -185,14 +229,14 @@ const ConsumerUnitCreateForm = () => {
                     value={value}
                     customInput={TextField}
                     label="Tensão de fornecimento"
-                    helperText=" "
+                    helperText={error?.message ?? " "}
+                    error={!!error}
                     fullWidth
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">kV</InputAdornment>
                       ),
                     }}
-                    required
                     type="text"
                     allowNegative={false}
                     decimalScale={2}
@@ -214,7 +258,7 @@ const ConsumerUnitCreateForm = () => {
                   field: { onChange, value },
                   fieldState: { error },
                 }) => (
-                  <FormControl required error={!!error}>
+                  <FormControl error={!!error}>
                     <FormLabel>Modalidade tarifária</FormLabel>
 
                     <RadioGroup value={value} row onChange={onChange}>
@@ -255,7 +299,6 @@ const ConsumerUnitCreateForm = () => {
                         <InputAdornment position="end">kW</InputAdornment>
                       ),
                     }}
-                    required
                     type="text"
                     allowNegative={false}
                     decimalScale={2}
@@ -271,7 +314,7 @@ const ConsumerUnitCreateForm = () => {
             </Grid>
 
             <Grid item xs={12}>
-              <Button type="submit" variant="contained" disabled={!isValid}>
+              <Button type="submit" variant="contained">
                 Gravar
               </Button>
 
