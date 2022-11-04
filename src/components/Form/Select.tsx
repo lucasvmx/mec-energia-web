@@ -45,7 +45,7 @@ const SelectFormController = ({
         fieldState: { error },
       }) => (
         <FormControl fullWidth error={!!error}>
-          <InputLabel>{rest.label}</InputLabel>
+          <InputLabel required={rest.required}>{rest.label}</InputLabel>
 
           <Select
             ref={ref}

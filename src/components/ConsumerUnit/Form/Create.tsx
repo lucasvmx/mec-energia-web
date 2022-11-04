@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { NumericFormat } from "react-number-format";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Controller,
@@ -20,11 +22,8 @@ import {
   FormLabel,
   Grid,
   InputAdornment,
-  InputLabel,
-  MenuItem,
   Radio,
   RadioGroup,
-  Select,
   TextField,
   Typography,
 } from "@mui/material";
@@ -37,8 +36,6 @@ import {
 import FormDrawer from "../../Form/Drawer";
 import TextFieldFormController from "../../Form/TextField";
 import SelectFormController from "../../Form/Select";
-import { getDate, toDate } from "date-fns";
-import { useState } from "react";
 
 interface FormData {
   title: string;
@@ -70,8 +67,8 @@ const ConsumerUnitCreateForm = () => {
     control,
     reset,
     handleSubmit,
-    formState: { errors, isDirty },
     getValues,
+    formState: { errors, isDirty, isValid },
   } = form;
 
   const handleCloseDialog = () => {
@@ -112,7 +109,8 @@ const ConsumerUnitCreateForm = () => {
               <TextFieldFormController
                 name="title"
                 label="Nome"
-                helperText="Ex.: Campus Gama, Biblioteca, Faculdade de Medicina"
+                placeholder="Ex.: Campus Gama, Biblioteca, Faculdade de Medicina"
+                required
                 rules={{ required: "Campo obrigatório" }}
               />
             </Grid>
@@ -121,7 +119,8 @@ const ConsumerUnitCreateForm = () => {
               <TextFieldFormController
                 name="code"
                 label="Código"
-                helperText="Número da Unidade Consumidora conforme a fatura"
+                placeholder="Número da Unidade Consumidora conforme a fatura"
+                required
                 rules={{ required: "Campo obrigatório" }}
               />
             </Grid>
@@ -134,6 +133,7 @@ const ConsumerUnitCreateForm = () => {
               <SelectFormController
                 name="supplier"
                 label="Distribuidora"
+                required
                 rules={{ required: "Campo obrigatório" }}
                 options={[
                   { id: "a", label: "Distribuidora A" },
@@ -161,6 +161,7 @@ const ConsumerUnitCreateForm = () => {
                     renderInput={(params) => (
                       <TextField
                         {...params}
+                        required
                         helperText={errors["startDate"]?.message ?? " "}
                         error={!!errors["startDate"]}
                       />
@@ -171,17 +172,36 @@ const ConsumerUnitCreateForm = () => {
               />
             </Grid>
 
-            <Grid item xs={8} md={6}>
-              <TextFieldFormController
-                name="supplied"
-                label="Tensão de fornecimento"
+            <Grid item xs={8} sm={6}>
+              <Controller
+                control={control}
+                name={"supplied"}
                 rules={{ required: "Campo obrigatório" }}
-                type="number"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">kV</InputAdornment>
-                  ),
-                }}
+                render={({
+                  field: { onChange, onBlur, value, ref },
+                  fieldState: { error },
+                }) => (
+                  <NumericFormat
+                    value={value}
+                    customInput={TextField}
+                    label="Tensão de fornecimento"
+                    helperText=" "
+                    fullWidth
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">kV</InputAdornment>
+                      ),
+                    }}
+                    required
+                    type="text"
+                    allowNegative={false}
+                    decimalScale={2}
+                    decimalSeparator=","
+                    thousandSeparator={" "}
+                    onValueChange={(values) => onChange(values.floatValue)}
+                    onBlur={onBlur}
+                  />
+                )}
               />
             </Grid>
 
@@ -194,7 +214,7 @@ const ConsumerUnitCreateForm = () => {
                   field: { onChange, value },
                   fieldState: { error },
                 }) => (
-                  <FormControl error={!!error}>
+                  <FormControl required error={!!error}>
                     <FormLabel>Modalidade tarifária</FormLabel>
 
                     <RadioGroup value={value} row onChange={onChange}>
@@ -217,21 +237,41 @@ const ConsumerUnitCreateForm = () => {
             </Grid>
 
             <Grid item xs={8} md={6}>
-              <TextFieldFormController
+              <Controller
+                control={control}
                 name="contracted"
-                label="Demanda contratada"
                 rules={{ required: "Campo obrigatório" }}
-                type="number"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">kV</InputAdornment>
-                  ),
-                }}
+                render={({
+                  field: { onChange, onBlur, value, ref },
+                  fieldState: { error },
+                }) => (
+                  <NumericFormat
+                    value={value}
+                    customInput={TextField}
+                    label="Demanda contratada"
+                    fullWidth
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">kW</InputAdornment>
+                      ),
+                    }}
+                    required
+                    type="text"
+                    allowNegative={false}
+                    decimalScale={2}
+                    decimalSeparator=","
+                    thousandSeparator={" "}
+                    error={Boolean(error)}
+                    helperText={error?.message ?? " "}
+                    onValueChange={(values) => onChange(values.floatValue)}
+                    onBlur={onBlur}
+                  />
+                )}
               />
             </Grid>
 
             <Grid item xs={12}>
-              <Button type="submit" variant="contained">
+              <Button type="submit" variant="contained" disabled={!isValid}>
                 Gravar
               </Button>
 

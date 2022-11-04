@@ -16,7 +16,6 @@ import {
   Typography,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
-import moment from "moment";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -43,7 +42,7 @@ const ConsumerUnitEditForm = () => {
           <Typography variant="h4">Editar Unidade Consumidora</Typography>
         </Grid>
 
-        <Grid item xs={12}>
+        {/* <Grid item xs={12}>
           <Controller
             name="isActive"
             control={control}
@@ -131,7 +130,6 @@ const ConsumerUnitEditForm = () => {
         </Grid>
 
         <Grid item xs={12} sm={6}>
-          {/* TODO Handle responsive datepicker */}
           <Controller
             name="provided"
             control={control}
@@ -140,7 +138,7 @@ const ConsumerUnitEditForm = () => {
                 value={value}
                 views={["year", "month"]}
                 label="Início da vigência"
-                minDate={moment("2010")}
+                minDate={new Date("2010")}
                 disableFuture
                 renderInput={(params) => (
                   <TextField
@@ -208,7 +206,7 @@ const ConsumerUnitEditForm = () => {
           <Button variant="text" onClick={handleCloseDrawer}>
             Cancelar
           </Button>
-        </Grid>
+        </Grid> */}
       </Grid>
     </FormDrawer>
   );
