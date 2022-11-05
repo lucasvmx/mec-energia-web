@@ -112,8 +112,10 @@ const ConsumerUnitCard = ({
       <Divider />
 
       {router.pathname === "/uc/[id]" ? (
-        <Box ml={1} p={1}>
-          <Typography>{handleTextBottomCard()}</Typography>
+        <Box ml={1} padding='10px'>
+          {pendencies.length == 0 && <Typography>Em dia</Typography>}
+          {pendencies.length == 1 && <Typography>1 lançamento pendente</Typography>}
+          {pendencies.length > 1 && <Typography>{`${pendencies.length} lançamentos pendentes`}</Typography>}
         </Box>
       ) :
         (
