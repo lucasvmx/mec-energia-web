@@ -44,9 +44,9 @@ const Drawer = () => {
       icon: <WbIncandescentIcon />
     },
     {
-      name: 'Operadoras',
-      href: '/op/1',
-      pathname: '/op/[id]',
+      name: 'Distribuidoras',
+      href: '/dt/1',
+      pathname: '/dt/[id]',
       icon: <BusinessIcon />
     }
   ]
