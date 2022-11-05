@@ -48,7 +48,7 @@ const ConsumerUnitCard = ({
     }
 
     const { year, month } = pendencies[pendencies.length - 1];
-    const date = new Date(year, month);
+    const date = new Date(year, month - 1);
     const longMonth = date.toLocaleString("pt-br", { month: "long" });
 
     setLongMonth(longMonth);
@@ -64,6 +64,19 @@ const ConsumerUnitCard = ({
   const handleCardClick = () => {
     router.push(consumerUnitUrl);
   };
+
+  const handleTextBottomCard = () => {
+    if (disabled) return 'Desativado'
+    if (pendencies.length === 0) return 'Em dia';
+    if (pendencies.length === 1) {
+      const today = new Date();
+      if (pendencies[0].year === today.getFullYear() && pendencies[0].month === today.getMonth() + 1) {
+        return `${longMonth.charAt(0).toUpperCase() + longMonth.slice(1)} disponível`
+      }
+      else return "1 lançamento pendente"
+    }
+    if (pendencies.length > 1) return `${pendencies.length} lançamentos pendentes`
+  }
 
   return (
     <Card
@@ -99,10 +112,8 @@ const ConsumerUnitCard = ({
       <Divider />
 
       {router.pathname === "/uc/[id]" ? (
-        <Box ml={1} padding='10px'>
-          {pendencies.length == 0 && <Typography>Em dia</Typography>}
-          {pendencies.length == 1 && <Typography>1 lançamento pendente</Typography>}
-          {pendencies.length > 1 && <Typography>{`${pendencies.length} lançamentos pendentes`}</Typography>}
+        <Box ml={1} p={1}>
+          <Typography>{handleTextBottomCard()}</Typography>
         </Box>
       ) :
         (
