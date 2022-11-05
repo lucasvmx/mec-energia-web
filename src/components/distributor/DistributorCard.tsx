@@ -61,7 +61,7 @@ const DistributorCard = ({
       </CardContent>
 
       <Divider />
-      <Box ml={1} padding='10px'>
+      <Box ml={1} p={1}>
         <Typography>{handleTextBottomCard()}</Typography>
       </Box>
     </Card>

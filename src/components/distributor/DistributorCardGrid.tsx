@@ -1,5 +1,5 @@
 import { Box, Container, Grid } from "@mui/material";
-import ConsumerUnitCard from "../ConsumerUnitCard";
+import ConsumerUnitCard from "../ConsumerUnit/Card";
 import { useRouter } from "next/router";
 import DistributorCard from "./DistributorCard";
 import DistributorProps from "../../interfaces/IDistributor";
