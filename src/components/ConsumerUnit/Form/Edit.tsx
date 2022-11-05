@@ -41,6 +41,7 @@ import {
 } from "../../../store/appSlice";
 import FormDrawer from "../../Form/Drawer";
 import { EditConsumerUnitForm } from "../../../types/consumerUnit";
+import FormWarningDialog from "./WarningDialog";
 
 const defaultValues: EditConsumerUnitForm = {
   isActive: true,
@@ -58,7 +59,7 @@ const defaultValues: EditConsumerUnitForm = {
 const ConsumerUnitEditForm = () => {
   const dispatch = useDispatch();
   const isEditFormOpen = useSelector(selectIsConsumerUnitEditFormOpen);
-  const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
+  const [shouldOpenDiscardDialog, setShouldOpenDiscardDialog] = useState(false);
 
   const form = useForm({ defaultValues });
 
@@ -82,19 +83,19 @@ const ConsumerUnitEditForm = () => {
   }, [tariffType]);
 
   const handleCloseDialog = () => {
-    setShouldShowCancelDialog(false);
+    setShouldOpenDiscardDialog(false);
   };
 
   const handleCancelEdition = () => {
     if (isDirty) {
-      setShouldShowCancelDialog(true);
+      setShouldOpenDiscardDialog(true);
       return;
     }
 
-    handleConfirmCancelEdition();
+    handleDiscardForm();
   };
 
-  const handleConfirmCancelEdition = () => {
+  const handleDiscardForm = () => {
     handleCloseDialog();
     reset();
     dispatch(setIsConsumerUnitEditFormOpen(false));
@@ -429,22 +430,11 @@ const ConsumerUnitEditForm = () => {
             </Grid>
           </Grid>
 
-          <Dialog open={shouldShowCancelDialog} onClick={handleCloseDialog}>
-            <DialogTitle>Descartar Unidade Consumidora</DialogTitle>
-
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                Os dados inseridos serão perdidos.
-              </DialogContentText>
-            </DialogContent>
-
-            <DialogActions>
-              <Button autoFocus onClick={handleCloseDialog}>
-                Continuar editando
-              </Button>
-              <Button onClick={handleConfirmCancelEdition}>Descartar</Button>
-            </DialogActions>
-          </Dialog>
+          <FormWarningDialog
+            open={shouldOpenDiscardDialog}
+            onClose={handleCloseDialog}
+            onDiscard={handleDiscardForm}
+          />
         </Box>
       </FormProvider>
     </FormDrawer>

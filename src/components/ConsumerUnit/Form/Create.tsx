@@ -11,11 +11,6 @@ import {
 import {
   Box,
   Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   FormControl,
   FormControlLabel,
   FormHelperText,
@@ -38,6 +33,7 @@ import {
 } from "../../../store/appSlice";
 import FormDrawer from "../../Form/Drawer";
 import { CreateConsumerUnitForm } from "../../../types/consumerUnit";
+import FormWarningDialog from "./WarningDialog";
 
 const defaultValues: CreateConsumerUnitForm = {
   title: "",
@@ -87,10 +83,10 @@ const ConsumerUnitCreateForm = () => {
       return;
     }
 
-    handleConfirmCancelEdition();
+    handleDiscardForm();
   };
 
-  const handleConfirmCancelEdition = () => {
+  const handleDiscardForm = () => {
     handleCloseDialog();
     reset();
     dispatch(setIsConsumerUnitCreateFormOpen(false));
@@ -399,22 +395,11 @@ const ConsumerUnitCreateForm = () => {
             </Grid>
           </Grid>
 
-          <Dialog open={shouldShowCancelDialog} onClick={handleCloseDialog}>
-            <DialogTitle>Descartar Unidade Consumidora</DialogTitle>
-
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                Os dados inseridos serão perdidos.
-              </DialogContentText>
-            </DialogContent>
-
-            <DialogActions>
-              <Button autoFocus onClick={handleCloseDialog}>
-                Continuar editando
-              </Button>
-              <Button onClick={handleConfirmCancelEdition}>Descartar</Button>
-            </DialogActions>
-          </Dialog>
+          <FormWarningDialog
+            open={shouldShowCancelDialog}
+            onClose={handleCloseDialog}
+            onDiscard={handleDiscardForm}
+          />
         </Box>
       </FormProvider>
     </FormDrawer>
