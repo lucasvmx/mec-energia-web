@@ -25,11 +25,7 @@ COPY --from=builder /app/package.json ./package.json
 
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nextjs -u 1001
-
-RUN if [ "$APP_ENV" = "development" ]; \
-    then chown -R nextjs:nodejs /app/; \
-    else chown -R nextjs:nodejs /app/.next; \
-    fi
+RUN chown -R nextjs:nodejs /app/
 
 USER nextjs
 
