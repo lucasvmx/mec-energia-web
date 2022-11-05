@@ -13,21 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Receipt, Star, StarOutline, TrendingUp } from "@mui/icons-material";
-
-interface Tariff {
-  subgroup: number;
-  start: Date;
-  end: Date;
-}
-
-export interface DistributorProps {
-  id: number;
-  title: string;
-  disabled?: boolean;
-  linkedUC?: Array<string>;
-  tariffs?: Array<Tariff>;
-  currentRoute?: string;
-}
+import DistributorProps from "../../interfaces/IDistributor";
 
 const DistributorCard = ({
   id,

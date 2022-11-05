@@ -8,12 +8,13 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import StarBorderIcon from "@mui/icons-material/StarBorder";
+import DeleteIcon from '@mui/icons-material/Delete';
 import theme from "../../theme";
-import ConsumerUnitCardGrid from "../../components/ConsumerUnitCardGrid";
 import DefaultTemplate from "../../templates/DefaultTemplate";
+import DistributorCardGrid from "../../components/distributor/DistributorCardGrid";
+import DistributorProps from "../../interfaces/IDistributor";
 
-const mockedDistributor = [
+const mockedDistributor: Array<DistributorProps> = [
   {
     id: 1,
     title: "CEMIG",
@@ -81,7 +82,7 @@ const DistributorPage: NextPage = () => {
 
             <Box position="relative" width="350px" height="calc(100% - 64px)">
               <Box sx={{ inset: 0 }} position="absolute" overflow="auto" p={3}>
-                <ConsumerUnitCardGrid />
+                <DistributorCardGrid />
               </Box>
             </Box>
           </Box>
@@ -89,20 +90,19 @@ const DistributorPage: NextPage = () => {
 
         <Box p={3}>
           <Box display="flex">
-            <Typography variant="h3">Dist</Typography>
+            <Typography variant="h3">CEB</Typography>
 
             <IconButton color="inherit">
               <EditIcon fontSize="large" />
             </IconButton>
-
             <IconButton color="inherit">
-              <StarBorderIcon fontSize="large" />
+              <DeleteIcon fontSize="large" />
             </IconButton>
           </Box>
 
           <Box mt={1}>
             <Typography>
-              Unidade consumidora: <strong>10/979389-4</strong>
+              CNPJ: <strong>07.523.555/0001-63</strong>
             </Typography>
           </Box>
         </Box>
