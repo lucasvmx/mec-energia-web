@@ -42,6 +42,7 @@ import {
 import FormDrawer from "../../Form/Drawer";
 import { EditConsumerUnitForm } from "../../../types/consumerUnit";
 import FormWarningDialog from "./WarningDialog";
+import { isAfter, isFuture, isValid } from "date-fns";
 
 const defaultValues: EditConsumerUnitForm = {
   isActive: true,
@@ -81,6 +82,22 @@ const ConsumerUnitEditForm = () => {
     setValue("peakContracted", peakContracted);
     setValue("outOfPeakContracted", outOfPeakContracted);
   }, [tariffType]);
+
+  const isValidDate = (date: EditConsumerUnitForm["startDate"]) => {
+    if (!date || !isValid(date)) {
+      return "Data inválida";
+    }
+
+    if (isFuture(date)) {
+      return "Datas futuras não são permitidas";
+    }
+
+    if (!isAfter(date, new Date("2010"))) {
+      return "Datas antes de 2010 não são permitidas";
+    }
+
+    return true;
+  };
 
   const handleCloseDialog = () => {
     setShouldOpenDiscardDialog(false);
@@ -231,15 +248,13 @@ const ConsumerUnitEditForm = () => {
               <Controller
                 control={control}
                 name="startDate"
-                rules={{ required: "Campo obrigatório" }}
+                rules={{ required: "Campo obrigatório", validate: isValidDate }}
                 render={({
                   field: { value, onChange },
                   fieldState: { error },
                 }) => (
                   <DatePicker
                     value={value}
-                    views={["year", "month"]}
-                    openTo="year"
                     label="Início da vigência *"
                     minDate={new Date("2010")}
                     disableFuture
