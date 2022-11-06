@@ -13,6 +13,7 @@ import theme from "../../theme";
 import DefaultTemplate from "../../templates/DefaultTemplate";
 import DistributorCardGrid from "../../components/distributor/DistributorCardGrid";
 import DistributorProps from "../../interfaces/IDistributor";
+import DistributorContainer from "../../components/distributor/DistributorContainer";
 
 const mockedDistributor: Array<DistributorProps> = [
   {
@@ -104,6 +105,9 @@ const DistributorPage: NextPage = () => {
             <Typography>
               CNPJ: <strong>07.523.555/0001-63</strong>
             </Typography>
+          </Box>
+          <Box>
+            <DistributorContainer />
           </Box>
         </Box>
       </Box>
