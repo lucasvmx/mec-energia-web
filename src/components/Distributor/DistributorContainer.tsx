@@ -3,20 +3,16 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import ReceiptIcon from '@mui/icons-material/Receipt';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import ContentPasteIcon from '@mui/icons-material/ContentPaste';
-import DistributorProps from '../../interfaces/IDistributor';
+import DistributorProps from '../../types/distributor';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import { DistributorInfo } from './DistributorInfo';
+import { SubGroup } from '../../types/tariffs';
+import { Badge } from '@mui/material';
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
   value: number;
-}
-interface SubGroup {
-  subgroup: number;
-  pending: boolean;
 }
 
 const mockedDistributor: Array<DistributorProps> = [
@@ -100,7 +96,7 @@ function a11yProps(index: number) {
   };
 }
 
-export default function Guide() {
+export default function DistributorContainer() {
   const [value, setValue] = useState(0);
   const [subgroups, setSubgroups] = useState(Array<SubGroup>)
   const [loading, setLoading] = useState(false);
@@ -153,30 +149,48 @@ export default function Guide() {
   };
 
   return (
-    <Box sx={{ width: '100%' }}>
-      {!loading && (
-        <>
-          {subgroups.length === 0 && (
-            <Typography>NENHUMA UNIDADE CONSUMIDORA</Typography>
-          )}
-          <Box sx={{ width: '190%', borderBottom: 1, borderColor: 'divider' }} margin='auto'>
+    <Box sx={{ width: '100%' }} mt={8}>
+      {subgroups.length > 1 && (
+        <Box>
+          <Box sx={{ width: '100%', borderBottom: 1, borderColor: 'divider' }}>
             <Tabs value={value} onChange={handleChange} aria-label="subgroups" sx={{ width: '100%', display: 'flex' }} centered>
               {subgroups.map(sub => {
-                return <Tab key={sub.subgroup} sx={{ flex: '1' }} label={`Subgrupo ${sub.subgroup}`} {...a11yProps(0)} />
+                return (
+                  <Tab
+                    icon={
+                      <Box pr={1}>
+                        <Badge badgeContent={'!'} color="primary" invisible={!sub.pending} />
+                      </Box>
+                    }
+                    iconPosition="start"
+                    key={sub.subgroup}
+                    sx={{ flex: '1' }}
+                    label={`Subgrupo A${sub.subgroup}`}
+                    {...a11yProps(sub.subgroup)} />
+                )
+
               })}
             </Tabs>
           </Box>
-          <TabPanel value={value} index={0}>
-            Faturas
-          </TabPanel>
-          <TabPanel value={value} index={1}>
-            ANALISE
-          </TabPanel>
-          <TabPanel value={value} index={2}>
-          </TabPanel>
-        </>
-      )
-      }
+          {subgroups.map((sub, index) => {
+            return (
+              <TabPanel value={value} index={index}>
+                <DistributorInfo />
+              </TabPanel>
+            )
+          })}
+        </Box>
+      )}
+      {subgroups.length === 1 && (
+        <Box>
+          <DistributorInfo />
+        </Box>
+      )}
+      {subgroups.length === 0 && (
+        <Box>
+          <DistributorInfo />
+        </Box>
+      )}
     </Box >
   );
 }

@@ -1,8 +1,4 @@
-export interface Tariff {
-  subgroup: number;
-  start: Date;
-  end: Date;
-}
+import { Tariff } from "./tariffs";
 
 export default interface DistributorProps {
   id: number;

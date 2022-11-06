@@ -13,7 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Receipt, Star, StarOutline, TrendingUp } from "@mui/icons-material";
-import DistributorProps from "../../interfaces/IDistributor";
+import DistributorProps from "../../types/distributor";
 
 const DistributorCard = ({
   id,

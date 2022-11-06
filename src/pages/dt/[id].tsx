@@ -11,9 +11,9 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from '@mui/icons-material/Delete';
 import theme from "../../theme";
 import DefaultTemplate from "../../templates/DefaultTemplate";
-import DistributorCardGrid from "../../components/distributor/DistributorCardGrid";
-import DistributorProps from "../../interfaces/IDistributor";
-import DistributorContainer from "../../components/distributor/DistributorContainer";
+import DistributorCardGrid from "../../components/Distributor/DistributorCardGrid";
+import DistributorProps from "../../types/distributor";
+import DistributorContainer from "../../components/Distributor/DistributorContainer";
 
 const mockedDistributor: Array<DistributorProps> = [
   {
@@ -89,7 +89,7 @@ const DistributorPage: NextPage = () => {
           </Box>
         )}
 
-        <Box p={3}>
+        <Box p={3} width='90%'>
           <Box display="flex">
             <Typography variant="h3">CEB</Typography>
 
@@ -106,12 +106,12 @@ const DistributorPage: NextPage = () => {
               CNPJ: <strong>07.523.555/0001-63</strong>
             </Typography>
           </Box>
-          <Box>
+          <Box mt={5} width="90%" m="auto">
             <DistributorContainer />
           </Box>
         </Box>
       </Box>
-    </DefaultTemplate>
+    </DefaultTemplate >
   );
 };
 
