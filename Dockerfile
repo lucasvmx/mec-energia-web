@@ -16,7 +16,6 @@ RUN yarn build
 FROM node:alpine AS runner
 WORKDIR /app
 
-ENV NODE_ENV production
 
 COPY --from=builder /app/next.config.js ./
 COPY --from=builder /app/public ./public
@@ -26,9 +25,13 @@ COPY --from=builder /app/package.json ./package.json
 
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nextjs -u 1001
-RUN chown -R nextjs:nodejs /app/.next
+RUN chown -R nextjs:nodejs /app/
+
 USER nextjs
 
 EXPOSE 3000
 
-CMD yarn start
+CMD if [ "$APP_ENV" = "development" ]; \
+    then yarn dev; \
+    else yarn start;\
+    fi
