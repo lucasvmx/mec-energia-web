@@ -46,5 +46,6 @@ export const mockedDistributor: Array<DistributorProps> = [
     title: "CEB",
     cnpj: "07.523.555/0001-63",
     disabled: true,
+    linkedUC: []
   },
 ];
