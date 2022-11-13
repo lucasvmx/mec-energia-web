@@ -12,6 +12,7 @@ export const mockedDistributor: Array<DistributorProps> = [
         subgroup: 4,
         start: new Date("2021-10-21"),
         end: new Date("2023-10-21"),
+        overdue: false,
       }
     ]
   },
@@ -33,11 +34,13 @@ export const mockedDistributor: Array<DistributorProps> = [
         subgroup: 4,
         start: new Date("2021-10-21"),
         end: new Date("2023-10-21"),
+        overdue: false,
       },
       {
         subgroup: 3,
         start: new Date("2021-05-20"),
         end: new Date("2022-10-21"),
+        overdue: true,
       }
     ],
   },
@@ -46,6 +49,6 @@ export const mockedDistributor: Array<DistributorProps> = [
     title: "CEB",
     cnpj: "07.523.555/0001-63",
     disabled: true,
-    linkedUC: []
+    linkedUC: ['Estação meteorológica']
   },
 ];

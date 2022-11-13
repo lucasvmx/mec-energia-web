@@ -105,7 +105,7 @@ const DistributorPage: NextPage = () => {
               }
               {
                 currentDistributor?.disabled &&
-                <Box sx={{ color: 'text.disabled' }} display="flex" justifyContent="center" alignItems="center">
+                <Box mt={2} sx={{ color: 'text.disabled' }} display="flex" justifyContent="center" alignItems="center">
                   <FlashOffIcon />
                   <Typography variant="h5" fontWeight={'medium'}>
                     DESATIVADA

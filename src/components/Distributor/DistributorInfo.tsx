@@ -37,7 +37,6 @@ export const DistributorInfo = () => {
     setSubgroups(sub)
 
   }
-
   useEffect(() => {
     setLoading(true)
     const { id } = router.query
@@ -59,9 +58,10 @@ export const DistributorInfo = () => {
     setLoading(false)
   }, [currentDist])
 
+
   return (
     <Box display={'flex'} justifyContent="space-between" width={'100%'} mt={3}>
-      <Box flex={7} mr={5} display={currentDist?.linkedUC?.length === 0 ? 'none' : ''}>
+      <Box flex={7} mr={5} display={currentDist?.linkedUC?.length === 0 || currentDist?.disabled ? 'none' : ''}>
         <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
           <Typography variant='h5'> Tarifas</Typography>
           <EditIcon></EditIcon>
@@ -86,6 +86,13 @@ export const DistributorInfo = () => {
               <li><Typography><Link href="/uc/1"><MUILink sx={{ cursor: 'pointer' }} color="inherit">{uc}</MUILink></Link></Typography></li>
             </ul>
           })}
+          {currentDist?.disabled &&
+            <Box sx={{ color: 'text.secondary' }} >
+              <Typography>
+                Apenas distribuidoras ativas exibem informações de tarifa.
+              </Typography>
+            </Box>
+          }
         </Typography>
       </Box>
     </Box>

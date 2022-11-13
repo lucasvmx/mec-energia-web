@@ -7,4 +7,5 @@ export interface Tariff {
   subgroup: number;
   start: Date;
   end: Date;
+  overdue?: boolean;
 }

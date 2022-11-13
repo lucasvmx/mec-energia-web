@@ -6,10 +6,8 @@ import {
   Box,
   Button,
   Card,
-  CardActions,
   CardContent,
   Divider,
-  IconButton,
   Typography,
 } from "@mui/material";
 import { Receipt, Star, StarOutline, TrendingUp } from "@mui/icons-material";
@@ -25,6 +23,13 @@ const DistributorCard = ({
 }: DistributorProps) => {
   const router = useRouter();
   const DistributorUrl = `/dt/${id}`;
+  const [overdue, setOverdue] = useState(false);
+
+  useEffect(() => {
+    const isOverdue = tariffs?.find(tariff => tariff.overdue === true)
+    if (isOverdue !== undefined) setOverdue(true)
+    else setOverdue(false);
+  }, [])
 
   const handleCardClick = () => {
     router.push(DistributorUrl);
@@ -44,6 +49,8 @@ const DistributorCard = ({
         display: "flex",
         flexDirection: "column",
         cursor: "pointer",
+        background: overdue ? 'grey' : '',
+        color: overdue ? 'white' : ''
       }}
       variant={disabled ? "outlined" : "elevation"}
       onClick={handleCardClick}
@@ -60,11 +67,11 @@ const DistributorCard = ({
         <Typography variant="h5">{title}</Typography>
       </CardContent>
 
-      <Divider />
+      <Divider sx={{ background: overdue ? 'white' : '' }} />
       <Box ml={1} p={1}>
         <Typography>{handleTextBottomCard()}</Typography>
       </Box>
-    </Card>
+    </Card >
   );
 };
 
