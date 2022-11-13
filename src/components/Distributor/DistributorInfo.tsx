@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { Box, Divider, Typography } from '@mui/material'
 import DistributorProps from '../../types/distributor'
-import { SubGroup } from '../../types/tariffs';
 import { useRouter } from 'next/router';
 import EditIcon from '@mui/icons-material/Edit';
 import Link from 'next/link'
@@ -12,52 +11,19 @@ import { mockedDistributor } from '../../mocks/mockedDistributor';
 
 
 export const DistributorInfo = () => {
-  const [value, setValue] = useState(0);
-  const [subgroups, setSubgroups] = useState(Array<SubGroup>)
-  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const [currentDist, setCurrentDist] = useState<DistributorProps | undefined>()
 
-  const getAllSubgroups = () => {
-    const sub: Array<SubGroup> = [];
-    currentDist?.tariffs?.forEach(tariff => {
-      if (sub.findIndex(sub => sub.subgroup === tariff.subgroup) === -1) {
-        sub.push({
-          subgroup: tariff.subgroup,
-          pending: tariff.end < new Date()
-        });
-      }
-      else {
-        const index = sub.findIndex(sub => sub.subgroup === tariff.subgroup);
-        const pending = tariff.end < new Date()
-        if (pending && !sub[index].pending) sub[index].pending = pending;
-      }
-    })
-    setSubgroups(sub)
-
-  }
   useEffect(() => {
-    setLoading(true)
     const { id } = router.query
     setCurrentDist(mockedDistributor[Number(id) - 1])
-    getAllSubgroups()
-    setLoading(false)
   }, [])
 
   useEffect(() => {
-    setLoading(true);
     const { id } = router.query
     setCurrentDist(mockedDistributor[Number(id) - 1])
-    setLoading(false)
   }, [router.asPath])
-
-  useEffect(() => {
-    setLoading(true)
-    getAllSubgroups()
-    setLoading(false)
-  }, [currentDist])
-
 
   return (
     <Box display={'flex'} justifyContent="space-between" width={'100%'} mt={3}>
