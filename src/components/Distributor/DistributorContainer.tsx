@@ -58,12 +58,12 @@ export default function DistributorContainer() {
       if (sub.findIndex(sub => sub.subgroup === tariff.subgroup) === -1) {
         sub.push({
           subgroup: tariff.subgroup,
-          pending: tariff.end < new Date()
+          pending: tariff.overdue
         });
       }
       else {
         const index = sub.findIndex(sub => sub.subgroup === tariff.subgroup);
-        const pending = tariff.end < new Date()
+        const pending = tariff.overdue
         if (pending && !sub[index].pending) sub[index].pending = pending;
       }
     })

@@ -36,7 +36,7 @@ const DistributorCard = ({
   };
   const handleTextBottomCard = () => {
     if (disabled) return "Desativada"
-    else if (tariffs?.find(tariff => tariff.end < new Date())) return "Tarifas pendentes"
+    else if (tariffs?.find(tariff => tariff.overdue === true)) return "Tarifas pendentes"
     else if (linkedUC?.length === 0) return "Nenhuma unidade consumidora"
     else if (linkedUC?.length === 1) return "1 unidade consumidora"
     else if (linkedUC?.length) return `${linkedUC.length} unidades consumidoras`

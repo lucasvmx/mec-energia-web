@@ -1,11 +1,11 @@
 export interface SubGroup {
   subgroup: number;
-  pending: boolean;
+  pending?: boolean;
 }
 
 export interface Tariff {
   subgroup: number;
-  start: Date;
-  end: Date;
+  start: string;
+  end: string;
   overdue?: boolean;
 }

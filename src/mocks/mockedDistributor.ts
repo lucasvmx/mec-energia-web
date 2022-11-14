@@ -10,8 +10,8 @@ export const mockedDistributor: Array<DistributorProps> = [
     tariffs: [
       {
         subgroup: 4,
-        start: new Date("2021-10-21"),
-        end: new Date("2023-10-21"),
+        start: "21/10/2022",
+        end: "21/11/2025",
         overdue: false,
       }
     ]
@@ -32,14 +32,14 @@ export const mockedDistributor: Array<DistributorProps> = [
     tariffs: [
       {
         subgroup: 4,
-        start: new Date("2021-10-21"),
-        end: new Date("2023-10-21"),
+        start: "22/09/2021",
+        end: "22/10/2022",
         overdue: false,
       },
       {
         subgroup: 3,
-        start: new Date("2021-05-20"),
-        end: new Date("2022-10-21"),
+        start: "16/03/2021",
+        end: "16/03/2022",
         overdue: true,
       }
     ],

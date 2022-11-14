@@ -1,8 +1,36 @@
 import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
 import InfoIcon from '@mui/icons-material/Info';
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
+import { mockedDistributor } from '../../mocks/mockedDistributor';
+import DistributorProps from '../../types/distributor';
+import { useRouter } from 'next/router';
 
 export const TariffTable = () => {
+
+  const router = useRouter();
+
+  const [currentDist, setCurrentDist] = useState<DistributorProps | undefined>()
+  const [startDate, setStartDate] = useState('')
+  const [endDate, setEndDate] = useState('')
+
+  useEffect(() => {
+    const { id } = router.query
+    setCurrentDist(mockedDistributor[Number(id) - 1])
+  }, [])
+
+  useEffect(() => {
+    const { id } = router.query
+    setCurrentDist(mockedDistributor[Number(id) - 1])
+  }, [router.asPath])
+
+  const formatDate = () => {
+    setStartDate(currentDist?.tariffs[0].start)
+    setEndDate(currentDist?.tariffs[0].end)
+  }
+
+  useEffect(() => {
+    formatDate()
+  }, [currentDist])
   return (
     <Box width={'100%'}>
       <Box display='flex' mt={2} width='30%' justifyContent={'space-between'}>
@@ -11,7 +39,7 @@ export const TariffTable = () => {
             Inicio
           </Typography>
           <Typography>
-            27/03/2020
+            {startDate}
           </Typography>
         </Box>
         <Box display='flex' flexDirection='column'>
@@ -19,7 +47,7 @@ export const TariffTable = () => {
             Fim
           </Typography>
           <Typography>
-            27/03/2022
+            {endDate}
           </Typography>
         </Box>
       </Box>
