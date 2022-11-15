@@ -1,4 +1,4 @@
-import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
+import { Badge, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
 import InfoIcon from '@mui/icons-material/Info';
 import React, { Fragment, useEffect, useState } from 'react'
 import { mockedDistributor } from '../../mocks/mockedDistributor';
@@ -13,6 +13,7 @@ export const TariffTable = () => {
   const [currentDist, setCurrentDist] = useState<DistributorProps>(mockedDistributor[0])
   const [startDate, setStartDate] = useState('')
   const [endDate, setEndDate] = useState('')
+  const [overdue, setOverdue] = useState(false)
 
   useEffect(() => {
     const { id } = router.query
@@ -27,10 +28,15 @@ export const TariffTable = () => {
   const formatDate = () => {
     if (currentDist.tariffs.length > 0) {
       setStartDate(currentDist?.tariffs[0].start)
+      setOverdue(currentDist?.tariffs[0].overdue!)
     } else setStartDate('')
     if (currentDist.tariffs.length > 0) {
       setEndDate(currentDist.tariffs[0].end)
-    } else setStartDate('')
+      setOverdue(currentDist?.tariffs[0].overdue!)
+    } else {
+      setStartDate('')
+      setOverdue(false)
+    }
   }
 
   useEffect(() => {
@@ -39,7 +45,7 @@ export const TariffTable = () => {
 
   return (
     <Box width={'100%'}>
-      <Box display='flex' mt={2} width='30%' justifyContent={'space-between'}>
+      <Box display='flex' mt={2} width='35%' justifyContent={'space-between'}>
         <Box display='flex' flexDirection='column' >
           <Typography sx={{ color: 'text.secondary' }}>
             Inicio
@@ -48,13 +54,16 @@ export const TariffTable = () => {
             {startDate}
           </Typography>
         </Box>
-        <Box display='flex' flexDirection='column'>
-          <Typography sx={{ color: 'text.secondary' }}>
-            Fim
-          </Typography>
-          <Typography>
-            {endDate}
-          </Typography>
+        <Box display='flex' justifyContent='center' alignItems='center'>
+          {overdue === true && <Badge color="secondary" badgeContent={'!'}></Badge>}
+          <Box ml={4} display='flex' flexDirection='column'>
+            <Typography sx={{ color: 'text.secondary' }}>
+              Fim
+            </Typography>
+            <Typography>
+              {endDate}
+            </Typography>
+          </Box>
         </Box>
       </Box>
 

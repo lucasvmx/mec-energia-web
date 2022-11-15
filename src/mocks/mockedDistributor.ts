@@ -10,9 +10,9 @@ export const mockedDistributor: Array<DistributorProps> = [
     tariffs: [
       {
         subgroup: 4,
-        start: "21/10/2022",
-        end: "21/11/2025",
-        overdue: false,
+        start: "21/10/2020",
+        end: "21/11/2021",
+        overdue: true,
       }
     ]
   },

@@ -13,12 +13,29 @@ import { mockedDistributor } from '../../mocks/mockedDistributor';
 export const DistributorInfo = () => {
   const router = useRouter();
 
-  const [currentDist, setCurrentDist] = useState<DistributorProps | undefined>()
+  const [currentDist, setCurrentDist] = useState<DistributorProps>()
+  const [titleTariffs, setTitleTariffs] = useState('Tarifas')
+
+  const createTitleTariffs = () => {
+    console.log("Dist", currentDist)
+    if (currentDist?.tariffs.length === 0) setTitleTariffs('');
+    else if (currentDist?.tariffs.length === 1) {
+      const tarrif = currentDist.tariffs[0]
+      console.log("TARIFA 0", tarrif);
+      if (tarrif.overdue) setTitleTariffs(`Tarifas do subgrupo A${tarrif.subgroup} pendentes`)
+      else setTitleTariffs(`Tarifas do subgrupo A${tarrif.subgroup}`)
+    }
+  }
 
   useEffect(() => {
     const { id } = router.query
     setCurrentDist(mockedDistributor[Number(id) - 1])
+    createTitleTariffs()
   }, [])
+
+  useEffect(() => {
+    createTitleTariffs()
+  }, [currentDist])
 
   useEffect(() => {
     const { id } = router.query
@@ -29,7 +46,7 @@ export const DistributorInfo = () => {
     <Box display={'flex'} justifyContent="space-between" width={'100%'} mt={3}>
       <Box flex={7} mr={5} display={currentDist?.linkedUC?.length === 0 || currentDist?.disabled ? 'none' : ''}>
         <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
-          <Typography variant='h5'> Tarifas</Typography>
+          <Typography variant='h5'>{titleTariffs}</Typography>
           <EditIcon></EditIcon>
         </Box>
         <Divider />
