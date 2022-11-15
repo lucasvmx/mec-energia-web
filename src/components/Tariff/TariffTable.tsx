@@ -4,12 +4,13 @@ import React, { Fragment, useEffect, useState } from 'react'
 import { mockedDistributor } from '../../mocks/mockedDistributor';
 import DistributorProps from '../../types/distributor';
 import { useRouter } from 'next/router';
+import { format } from 'path';
 
 export const TariffTable = () => {
 
   const router = useRouter();
 
-  const [currentDist, setCurrentDist] = useState<DistributorProps | undefined>()
+  const [currentDist, setCurrentDist] = useState<DistributorProps>(mockedDistributor[0])
   const [startDate, setStartDate] = useState('')
   const [endDate, setEndDate] = useState('')
 
@@ -24,13 +25,18 @@ export const TariffTable = () => {
   }, [router.asPath])
 
   const formatDate = () => {
-    setStartDate(currentDist?.tariffs[0].start)
-    setEndDate(currentDist?.tariffs[0].end)
+    if (currentDist.tariffs.length > 0) {
+      setStartDate(currentDist?.tariffs[0].start)
+    } else setStartDate('')
+    if (currentDist.tariffs.length > 0) {
+      setEndDate(currentDist.tariffs[0].end)
+    } else setStartDate('')
   }
 
   useEffect(() => {
     formatDate()
   }, [currentDist])
+
   return (
     <Box width={'100%'}>
       <Box display='flex' mt={2} width='30%' justifyContent={'space-between'}>

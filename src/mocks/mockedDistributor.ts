@@ -21,7 +21,8 @@ export const mockedDistributor: Array<DistributorProps> = [
     title: "Enel",
     cnpj: "07.523.555/0001-61",
     disabled: false,
-    linkedUC: []
+    linkedUC: [],
+    tariffs:[]
   },
   {
     id: 3,
@@ -49,6 +50,7 @@ export const mockedDistributor: Array<DistributorProps> = [
     title: "CEB",
     cnpj: "07.523.555/0001-63",
     disabled: true,
-    linkedUC: ['Estação meteorológica']
+    linkedUC: ['Estação meteorológica'],
+    tariffs:[]
   },
 ];

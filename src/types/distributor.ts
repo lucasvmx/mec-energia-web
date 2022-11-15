@@ -6,6 +6,6 @@ export default interface DistributorProps {
   cnpj?:string;
   disabled?: boolean;
   linkedUC?: Array<string>;
-  tariffs?: Array<Tariff>;
+  tariffs: Array<Tariff>;
   currentRoute?: string;
 }
