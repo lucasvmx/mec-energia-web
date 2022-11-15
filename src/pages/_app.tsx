@@ -8,13 +8,16 @@ import theme from "../theme";
 import createEmotionCache from "../createEmotionCache";
 import { wrapper } from "../store";
 import { Provider } from "react-redux";
-
-// Client-side cache, shared for the whole session of the user in the browser.
-const clientSideEmotionCache = createEmotionCache();
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import ptBRLocale from "date-fns/locale/pt-BR";
 
 interface MyAppProps extends AppProps {
   emotionCache?: EmotionCache;
 }
+
+// Client-side cache, shared for the whole session of the user in the browser.
+const clientSideEmotionCache = createEmotionCache();
 
 const MyApp = ({ Component, ...rest }: MyAppProps) => {
   const { store, props } = wrapper.useWrappedStore(rest);
@@ -28,9 +31,14 @@ const MyApp = ({ Component, ...rest }: MyAppProps) => {
         </Head>
 
         <ThemeProvider theme={theme}>
-          <CssBaseline />
+          <LocalizationProvider
+            dateAdapter={AdapterDateFns}
+            adapterLocale={ptBRLocale}
+          >
+            <CssBaseline />
 
-          <Component {...pageProps} />
+            <Component {...pageProps} />
+          </LocalizationProvider>
         </ThemeProvider>
       </CacheProvider>
     </Provider>

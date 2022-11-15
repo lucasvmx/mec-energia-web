@@ -3,7 +3,7 @@ import Head from "next/head";
 
 import { Container } from "@mui/material";
 
-import ConsumerUnitCardGrid from "../components/ConsumerUnitCardGrid";
+import ConsumerUnitCardGrid from "../components/ConsumerUnit/CardGrid";
 import DefaultTemplate from "../templates/DefaultTemplate";
 import Header from "../components/Header";
 
