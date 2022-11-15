@@ -9,3 +9,8 @@ export default interface DistributorProps {
   tariffs: Array<Tariff>;
   currentRoute?: string;
 }
+
+export interface CreateDistributorForm {
+  name: string;
+  cnpj: string;
+}

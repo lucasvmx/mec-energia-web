@@ -24,16 +24,17 @@ import { mockedDistributor } from "../../mocks/mockedDistributor";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import DistributorProps from "../../types/distributor";
+import { setIsDistributorCreateFormOpen } from "../../store/appSlice";
+import { useDispatch } from "react-redux";
+import DistributorCreateForm from "../../components/Distributor/DistributorCreateForm";
 
-interface CurrentDist {
-  name: string;
-  cnpj: string;
-}
+
 const DistributorPage: NextPage = () => {
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
   const [currentDistributor, setCurrentDistributor] = useState<DistributorProps | undefined>()
   const [open, setOpen] = useState(false);
   const router = useRouter();
+  const dispatch = useDispatch()
 
   useEffect(() => {
     const { id } = router.query
@@ -53,7 +54,9 @@ const DistributorPage: NextPage = () => {
     setOpen(false);
   };
 
-
+  const handleCreateDistributorClick = () => {
+    dispatch(setIsDistributorCreateFormOpen(true));
+  };
 
 
   return (
@@ -67,7 +70,9 @@ const DistributorPage: NextPage = () => {
                 justifyContent: "end",
               }}
             >
-              <Button variant="outlined">Adicionar</Button>
+              <Button
+                variant="outlined"
+                onClick={handleCreateDistributorClick}>Adicionar</Button>
             </Toolbar>
 
             <Box position="relative" width="350px" height="calc(100% - 64px)">
@@ -159,6 +164,7 @@ const DistributorPage: NextPage = () => {
           </DialogActions>
         </Dialog>
 
+        <DistributorCreateForm />
       </Box>
     </DefaultTemplate >
   );
