@@ -17,13 +17,16 @@ export const DistributorInfo = () => {
   const [titleTariffs, setTitleTariffs] = useState('Tarifas')
 
   const createTitleTariffs = () => {
-    console.log("Dist", currentDist)
     if (currentDist?.tariffs.length === 0) setTitleTariffs('');
     else if (currentDist?.tariffs.length === 1) {
-      const tarrif = currentDist.tariffs[0]
-      console.log("TARIFA 0", tarrif);
+      const tarrif = currentDist.tariffs[0];
       if (tarrif.overdue) setTitleTariffs(`Tarifas do subgrupo A${tarrif.subgroup} pendentes`)
       else setTitleTariffs(`Tarifas do subgrupo A${tarrif.subgroup}`)
+    }
+    else if (currentDist?.tariffs.length !== 1) {
+      const overdue = currentDist?.tariffs.find(tariff => tariff.overdue === true);
+      if (overdue === undefined) setTitleTariffs('Tarifas')
+      else setTitleTariffs('Tarifas com atualizações pendentes')
     }
   }
 
