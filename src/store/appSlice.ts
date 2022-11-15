@@ -1,8 +1,19 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { makeStore } from ".";
 
+export enum ConsumerUnitFormEnum {
+  CREATE,
+  EDIT,
+}
+
+type ConsumerUnitFormType = ConsumerUnitFormEnum | null;
+
 export interface AppState {
   isDrawerOpen: boolean;
+  consumerUnit: {
+    isCreateFormOpen: boolean;
+    isEditFormOpen: boolean;
+  };
 }
 
 export type AppDispatch = Store["dispatch"];
@@ -11,6 +22,10 @@ type Store = ReturnType<typeof makeStore>;
 
 const initialState: AppState = {
   isDrawerOpen: false,
+  consumerUnit: {
+    isCreateFormOpen: false,
+    isEditFormOpen: false,
+  },
 };
 
 export const appSlice = createSlice({
@@ -20,11 +35,34 @@ export const appSlice = createSlice({
     setIsDrawerOpen: (state, action: PayloadAction<boolean>) => {
       state.isDrawerOpen = action.payload;
     },
+    setIsConsumerUnitCreateFormOpen: (
+      state,
+      action: PayloadAction<boolean>
+    ) => {
+      state.consumerUnit.isCreateFormOpen = action.payload;
+    },
+    setIsConsumerUnitEditFormOpen: (state, action: PayloadAction<boolean>) => {
+      state.consumerUnit.isEditFormOpen = action.payload;
+    },
   },
 });
 
 export default appSlice.reducer;
 
-export const { setIsDrawerOpen } = appSlice.actions;
+export const {
+  setIsDrawerOpen,
+  setIsConsumerUnitCreateFormOpen,
+  setIsConsumerUnitEditFormOpen,
+} = appSlice.actions;
 
-export const selectIsDrawerOpen = (state: RootState) => state.app.isDrawerOpen;
+export const selectIsDrawerOpen = (state: RootState) => {
+  return state.app.isDrawerOpen;
+};
+
+export const selectIsConsumerUnitCreateFormOpen = (state: RootState) => {
+  return state.app.consumerUnit.isCreateFormOpen;
+};
+
+export const selectIsConsumerUnitEditFormOpen = (state: RootState) => {
+  return state.app.consumerUnit.isEditFormOpen;
+};
