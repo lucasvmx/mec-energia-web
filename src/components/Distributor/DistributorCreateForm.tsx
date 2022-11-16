@@ -3,13 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectIsDistributorCreateFormOpen, setIsDistributorCreateFormOpen } from '../../store/appSlice';
 import { CreateDistributorForm } from '../../types/distributor';
 import FormDrawer from '../Form/Drawer';
+import { PatternFormat } from 'react-number-format';
 
 import {
   Controller, FormProvider, SubmitHandler, useForm,
 } from "react-hook-form";
-import { Box, Grid, TextField, Typography } from '@mui/material';
+import { Box, Button, Grid, TextField, Typography } from '@mui/material';
+import FormWarningDialog from '../ConsumerUnit/Form/WarningDialog';
 
-import MaskedInput from "react-text-mask";
 
 const defaultValues: CreateDistributorForm = {
   name: "",
@@ -55,6 +56,7 @@ const DistributorCreateForm = () => {
       <FormProvider {...form}>
         <Box component="form" onSubmit={handleSubmit(onSubmitHandler)}>
           <Grid container spacing={2}>
+
             <Grid item xs={12}>
               <Typography variant="h4">
                 Adicionar Distribuidora
@@ -97,10 +99,11 @@ const DistributorCreateForm = () => {
                   field: { onChange, onBlur, value, ref },
                   fieldState: { error },
                 }) => (
-                  <TextField
-                    ref={ref}
+                  <PatternFormat
                     value={value}
+                    customInput={TextField}
                     label="CNPJ"
+                    format='##.###.###/####-##'
                     required
                     error={Boolean(error)}
                     helperText={error?.message ?? " "}
@@ -111,7 +114,25 @@ const DistributorCreateForm = () => {
                 )}
               />
             </Grid>
+
+            <Grid item xs={12}>
+              <Button type="submit" variant="contained">
+                Gravar
+              </Button>
+
+              <Button variant="text" onClick={handleCancelEdition}>
+                Cancelar
+              </Button>
+            </Grid>
+
           </Grid>
+
+          <FormWarningDialog
+            open={shouldShowCancelDialog}
+            onClose={handleCloseDialog}
+            onDiscard={handleDiscardForm}
+          />
+
         </Box>
       </FormProvider>
     </FormDrawer>
