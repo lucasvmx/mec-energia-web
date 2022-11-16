@@ -24,6 +24,7 @@ const DistributorCard = ({
   const router = useRouter();
   const DistributorUrl = `/dt/${id}`;
   const [overdue, setOverdue] = useState(false);
+  const [textBottomCard, setTextBottomCard] = useState('');
 
   useEffect(() => {
     const isOverdue = tariffs?.find(tariff => tariff.overdue === true)
@@ -34,12 +35,16 @@ const DistributorCard = ({
   const handleCardClick = () => {
     router.push(DistributorUrl);
   };
+
+  useEffect(() => {
+    handleTextBottomCard();
+  }, [])
   const handleTextBottomCard = () => {
-    if (disabled) return "Desativada"
-    else if (tariffs?.find(tariff => tariff.overdue === true)) return "Tarifas pendentes"
-    else if (linkedUC?.length === 0) return "Nenhuma unidade consumidora"
-    else if (linkedUC?.length === 1) return "1 unidade consumidora"
-    else if (linkedUC?.length) return `${linkedUC.length} unidades consumidoras`
+    if (disabled) setTextBottomCard("Desativada")
+    else if (tariffs?.find(tariff => tariff.overdue === true)) setTextBottomCard("Tarifas pendentes")
+    else if (linkedUC?.length === 0) setTextBottomCard("Nenhuma unidade consumidora")
+    else if (linkedUC?.length === 1) setTextBottomCard("1 unidade consumidora")
+    else if (linkedUC?.length) setTextBottomCard(`${linkedUC.length} unidades consumidoras`)
   }
 
   return (
@@ -69,7 +74,7 @@ const DistributorCard = ({
 
       <Divider sx={{ background: overdue ? 'white' : '' }} />
       <Box ml={1} p={1}>
-        <Typography>{handleTextBottomCard()}</Typography>
+        <Typography>{textBottomCard}</Typography>
       </Box>
     </Card >
   );
