@@ -53,7 +53,7 @@ const ConsumerUnitCreateForm = () => {
   const isCreateFormOpen = useSelector(selectIsConsumerUnitCreateFormOpen);
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
 
-  const form = useForm({ defaultValues });
+  const form = useForm({ mode: "all", defaultValues });
 
   const {
     control,
@@ -125,6 +125,10 @@ const ConsumerUnitCreateForm = () => {
             </Grid>
 
             <Grid item xs={12}>
+              <Typography>* campos obrigatórios</Typography>
+            </Grid>
+
+            <Grid item xs={12}>
               <Controller
                 control={control}
                 name="title"
@@ -136,7 +140,7 @@ const ConsumerUnitCreateForm = () => {
                   <TextField
                     ref={ref}
                     value={value}
-                    label="Nome"
+                    label="Nome *"
                     placeholder="Ex.: Campus Gama, Biblioteca, Faculdade de Medicina"
                     error={Boolean(error)}
                     helperText={error?.message ?? " "}
@@ -247,7 +251,7 @@ const ConsumerUnitCreateForm = () => {
                   <NumericFormat
                     value={value}
                     customInput={TextField}
-                    label="Tensão de fornecimento"
+                    label="Tensão de fornecimento *"
                     helperText={error?.message ?? " "}
                     error={!!error}
                     fullWidth
@@ -278,7 +282,7 @@ const ConsumerUnitCreateForm = () => {
                   fieldState: { error },
                 }) => (
                   <FormControl error={!!error}>
-                    <FormLabel>Modalidade tarifária</FormLabel>
+                    <FormLabel>Modalidade tarifária *</FormLabel>
 
                     <RadioGroup value={value} row onChange={onChange}>
                       <FormControlLabel
@@ -312,7 +316,7 @@ const ConsumerUnitCreateForm = () => {
                     <NumericFormat
                       value={value}
                       customInput={TextField}
-                      label="Demanda contratada"
+                      label="Demanda contratada *"
                       fullWidth
                       InputProps={{
                         endAdornment: (
@@ -346,7 +350,7 @@ const ConsumerUnitCreateForm = () => {
                       <NumericFormat
                         value={value}
                         customInput={TextField}
-                        label="Demanda contratada — Ponta"
+                        label="Demanda contratada — Ponta *"
                         fullWidth
                         InputProps={{
                           endAdornment: (
@@ -379,7 +383,7 @@ const ConsumerUnitCreateForm = () => {
                       <NumericFormat
                         value={value}
                         customInput={TextField}
-                        label="Demanda contratada — Fora Ponta"
+                        label="Demanda contratada — Fora Ponta *"
                         fullWidth
                         InputProps={{
                           endAdornment: (

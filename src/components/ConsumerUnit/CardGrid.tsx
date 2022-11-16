@@ -1,6 +1,5 @@
 import { Box, Container, Grid } from "@mui/material";
 import ConsumerUnitCard from "./Card";
-import { useRouter } from "next/router";
 
 const mockedConsumerUnits = [
   {
@@ -64,7 +63,6 @@ const mockedConsumerUnits = [
 ];
 
 const ConsumerUnitCardGrid = () => {
-  const router = useRouter();
   return (
     // Can't use Grid componente https://github.com/mui/material-ui/issues/34605
     <Box

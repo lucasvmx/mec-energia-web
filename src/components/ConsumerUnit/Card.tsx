@@ -12,7 +12,12 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
-import { Receipt, Star, StarOutline, TrendingUp } from "@mui/icons-material";
+import {
+  Receipt as ReceiptIcon,
+  Star as StarIcon,
+  StarOutline as StarOutlineIcon,
+  TrendingUp as TrendingUpIcon
+} from "@mui/icons-material";
 
 interface Pendency {
   month: number;
@@ -39,6 +44,7 @@ const ConsumerUnitCard = ({
   const router = useRouter();
   const [longMonth, setLongMonth] = useState("");
   const [badgeCount, setBadgeCount] = useState(0);
+  const [bottomCardText, setBottomCardText] = useState('')
   const consumerUnitUrl = `/uc/${id}`;
 
   useEffect(() => {
@@ -61,21 +67,27 @@ const ConsumerUnitCard = ({
     }
   }, [favorite]);
 
+  useEffect(() => {
+    handleTextBottomCard()
+  }, [])
+
   const handleCardClick = () => {
     router.push(consumerUnitUrl);
   };
 
   const handleTextBottomCard = () => {
-    if (disabled) return 'Desativado'
-    if (pendencies.length === 0) return 'Em dia';
-    if (pendencies.length === 1) {
+    let text = '';
+    if (disabled) text = 'Desativado'
+    else if (pendencies.length === 0) text = 'Em dia';
+    else if (pendencies.length === 1) {
       const today = new Date();
       if (pendencies[0].year === today.getFullYear() && pendencies[0].month === today.getMonth() + 1) {
-        return `${longMonth.charAt(0).toUpperCase() + longMonth.slice(1)} disponível`
+        text = `${longMonth.charAt(0).toUpperCase() + longMonth.slice(1)} disponível`
       }
-      else return "1 lançamento pendente"
+      else text = "1 lançamento pendente"
     }
-    if (pendencies.length > 1) return `${pendencies.length} lançamentos pendentes`
+    else if (pendencies.length > 1) text = `${pendencies.length} lançamentos pendentes`;
+    setBottomCardText(text);
   }
 
   return (
@@ -92,7 +104,7 @@ const ConsumerUnitCard = ({
       {!disabled && (
         <CardActions>
           <IconButton color="inherit">
-            {favorite ? <Star /> : <StarOutline />}
+            {favorite ? <StarIcon /> : <StarOutlineIcon />}
           </IconButton>
         </CardActions>
       )}
@@ -112,10 +124,8 @@ const ConsumerUnitCard = ({
       <Divider />
 
       {router.pathname === "/uc/[id]" ? (
-        <Box ml={1} padding='10px'>
-          {pendencies.length == 0 && <Typography>Em dia</Typography>}
-          {pendencies.length == 1 && <Typography>1 lançamento pendente</Typography>}
-          {pendencies.length > 1 && <Typography>{`${pendencies.length} lançamentos pendentes`}</Typography>}
+        <Box ml={1} p={1}>
+          <Typography>{bottomCardText}</Typography>
         </Box>
       ) :
         (
@@ -139,12 +149,12 @@ const ConsumerUnitCard = ({
                 <Box>
                   <IconButton color="inherit">
                     <Badge badgeContent={badgeCount} color="warning">
-                      <Receipt />
+                      <ReceiptIcon />
                     </Badge>
                   </IconButton>
 
                   <IconButton color="inherit">
-                    <TrendingUp />
+                    <TrendingUpIcon />
                   </IconButton>
                 </Box>
               </>
