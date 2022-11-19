@@ -2,15 +2,15 @@ import { Badge, Box, Table, TableBody, TableCell, TableContainer, TableHead, Tab
 import InfoIcon from '@mui/icons-material/Info';
 import React, { Fragment, useEffect, useState } from 'react'
 import { mockedDistributor } from '../../mocks/mockedDistributor';
-import DistributorProps from '../../types/distributor';
+import { DistributorPropsTariffs } from '../../types/distributor';
 import { useRouter } from 'next/router';
-import { format } from 'path';
+import { format } from 'date-fns';
 
 export const TariffTable = () => {
 
   const router = useRouter();
 
-  const [currentDist, setCurrentDist] = useState<DistributorProps>(mockedDistributor[0])
+  const [currentDist, setCurrentDist] = useState<DistributorPropsTariffs>(mockedDistributor[0])
   const [startDate, setStartDate] = useState('')
   const [endDate, setEndDate] = useState('')
   const [overdue, setOverdue] = useState(false)
@@ -27,11 +27,11 @@ export const TariffTable = () => {
 
   const formatDate = () => {
     if (currentDist.tariffs.length > 0) {
-      setStartDate(currentDist?.tariffs[0].start)
+      setStartDate(format(new Date(currentDist?.tariffs[0].start_date), "dd'/'MM'/'yyyy"))
       setOverdue(currentDist?.tariffs[0].overdue!)
     } else setStartDate('')
     if (currentDist.tariffs.length > 0) {
-      setEndDate(currentDist.tariffs[0].end)
+      setEndDate(format(new Date(currentDist?.tariffs[0].start_date), "dd'/'MM'/'yyyy"))
       setOverdue(currentDist?.tariffs[0].overdue!)
     } else {
       setStartDate('')

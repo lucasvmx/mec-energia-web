@@ -3,7 +3,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import DistributorProps from '../../types/distributor';
+import { DistributorPropsTariffs } from '../../types/distributor';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { DistributorInfo } from './DistributorInfo';
@@ -19,7 +19,7 @@ interface TabPanelProps {
 
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
-
+  console.log("INDEX", index);
   return (
     <div
       role="tabpanel"
@@ -37,7 +37,7 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-function a11yProps(index: number) {
+function a11yProps(index: string) {
   return {
     id: `tab-${index}`,
     'aria-controls': `tabpanel-${index}`,
@@ -50,7 +50,7 @@ export default function DistributorContainer() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const [currentDist, setCurrentDist] = useState<DistributorProps | undefined>()
+  const [currentDist, setCurrentDist] = useState<DistributorPropsTariffs | undefined>()
 
   const getAllSubgroups = () => {
     const sub: Array<SubGroup> = [];
@@ -96,6 +96,8 @@ export default function DistributorContainer() {
     setValue(newValue);
   };
 
+  console.log(subgroups);
+
   return (
     <Box sx={{ width: '100%' }} mt={8}>
       {subgroups.length > 1 && (
@@ -113,7 +115,7 @@ export default function DistributorContainer() {
                     iconPosition="start"
                     key={sub.subgroup}
                     sx={{ flex: '1' }}
-                    label={`Subgrupo A${sub.subgroup}`}
+                    label={`Subgrupo ${sub.subgroup}`}
                     {...a11yProps(sub.subgroup)} />
                 )
 

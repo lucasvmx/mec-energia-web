@@ -86,7 +86,7 @@ const DistributorPage: NextPage = () => {
         <Box p={3} width='90%'>
           <Box display="flex" justifyContent={"space-between"}>
             <Box display="flex" justifyContent={"space-between"}>
-              <Typography variant="h3">{currentDistributor?.title}</Typography>
+              <Typography variant="h3">{currentDistributor?.name}</Typography>
               <Box pl={5}>
                 <IconButton color="inherit">
                   <EditIcon fontSize="large" />

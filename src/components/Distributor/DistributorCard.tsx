@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import Link from "next/link";
 import {
   Badge,
   Box,
@@ -11,16 +10,15 @@ import {
   Typography,
 } from "@mui/material";
 import { Receipt, Star, StarOutline, TrendingUp } from "@mui/icons-material";
-import DistributorProps from "../../types/distributor";
+import { DistributorProps, DistributorPropsTariffs } from "../../types/distributor";
 
 const DistributorCard = ({
   id,
-  title,
+  name: title,
   disabled = false,
-  linkedUC,
   tariffs,
-  currentRoute
-}: DistributorProps) => {
+  consumer_units
+}: DistributorPropsTariffs) => {
   const router = useRouter();
   const DistributorUrl = `/dt/${id}`;
   const [overdue, setOverdue] = useState(false);
@@ -42,9 +40,9 @@ const DistributorCard = ({
   const handleTextBottomCard = () => {
     if (disabled) setTextBottomCard("Desativada")
     else if (tariffs?.find(tariff => tariff.overdue === true)) setTextBottomCard("Tarifas pendentes")
-    else if (linkedUC?.length === 0) setTextBottomCard("Nenhuma unidade consumidora")
-    else if (linkedUC?.length === 1) setTextBottomCard("1 unidade consumidora")
-    else if (linkedUC?.length) setTextBottomCard(`${linkedUC.length} unidades consumidoras`)
+    else if (consumer_units === 0) setTextBottomCard("Nenhuma unidade consumidora")
+    else if (consumer_units === 1) setTextBottomCard("1 unidade consumidora")
+    else if (consumer_units) setTextBottomCard(`${consumer_units} unidades consumidoras`)
   }
 
   return (

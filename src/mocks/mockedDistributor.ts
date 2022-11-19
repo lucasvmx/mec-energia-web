@@ -1,56 +1,179 @@
-import DistributorProps from "../types/distributor";
+import { PersonAddAlt1 } from "@mui/icons-material";
+import { DistributorConsumerUnits, DistributorPropsTariffs } from "../types/distributor";
 
-export const mockedDistributor: Array<DistributorProps> = [
+export const mockedDistributor: Array<DistributorPropsTariffs> = [
   {
     id: 1,
-    title: "CEMIG",
+    name: "CEMIG",
     cnpj: "07.523.555/0001-67",
     disabled: false,
-    linkedUC: ['Campos Planaltina'],
+    consumer_units: 10,
     tariffs: [
       {
-        subgroup: 4,
-        start: "21/10/2020",
-        end: "21/11/2021",
+        start_date: "2022-11-18",
+        end_date: "2022-11-18",
+        subgroup: "A4",
         overdue: true,
+        blue: {
+          peak_tusd_in_reais_per_kw: 0,
+          peak_tusd_in_reais_per_mwh: 0,
+          peak_te_in_reais_per_mwh: 0,
+          off_peak_tusd_in_reais_per_kw: 0,
+          off_peak_tusd_in_reais_per_mwh: 0,
+          off_peak_te_in_reais_per_mwh: 0
+        },
+        green: {
+          peak_tusd_in_reais_per_mwh: 0,
+          peak_te_in_reais_per_mwh: 0,
+          off_peak_tusd_in_reais_per_mwh: 0,
+          off_peak_te_in_reais_per_mwh: 0,
+          na_tusd_in_reais_per_kw: 0
+        }
       }
     ]
   },
   {
     id: 2,
-    title: "Enel",
+    name: "Enel",
     cnpj: "07.523.555/0001-61",
     disabled: false,
-    linkedUC: [],
+    consumer_units:0,
     tariffs:[]
   },
   {
     id: 3,
-    title: "Neoenergia",
+    name: "Neoenergia",
     cnpj: "07.523.555/0001-62",
     disabled: false,
-    linkedUC: ['Fazenda Agua Limpa'],
+    consumer_units:4,
     tariffs: [
       {
-        subgroup: 4,
-        start: "22/09/2021",
-        end: "22/10/2022",
+        start_date: "2022-11-18",
+        end_date: "2022-11-18",
+        subgroup: "A4",
         overdue: false,
+        blue: {
+          peak_tusd_in_reais_per_kw: 0,
+          peak_tusd_in_reais_per_mwh: 0,
+          peak_te_in_reais_per_mwh: 0,
+          off_peak_tusd_in_reais_per_kw: 0,
+          off_peak_tusd_in_reais_per_mwh: 0,
+          off_peak_te_in_reais_per_mwh: 0
+        },
+        green: {
+          peak_tusd_in_reais_per_mwh: 0,
+          peak_te_in_reais_per_mwh: 0,
+          off_peak_tusd_in_reais_per_mwh: 0,
+          off_peak_te_in_reais_per_mwh: 0,
+          na_tusd_in_reais_per_kw: 0
+        }
       },
       {
-        subgroup: 3,
-        start: "16/03/2021",
-        end: "16/03/2022",
+        start_date: "2022-11-18",
+        end_date: "2022-11-18",
+        subgroup: "A3",
         overdue: true,
+        blue: {
+          peak_tusd_in_reais_per_kw: 0,
+          peak_tusd_in_reais_per_mwh: 0,
+          peak_te_in_reais_per_mwh: 0,
+          off_peak_tusd_in_reais_per_kw: 0,
+          off_peak_tusd_in_reais_per_mwh: 0,
+          off_peak_te_in_reais_per_mwh: 0
+        },
+        green: {
+          peak_tusd_in_reais_per_mwh: 0,
+          peak_te_in_reais_per_mwh: 0,
+          off_peak_tusd_in_reais_per_mwh: 0,
+          off_peak_te_in_reais_per_mwh: 0,
+          na_tusd_in_reais_per_kw: 0
+        }
       }
     ],
   },
   {
     id: 4,
-    title: "CEB",
+    name: "CEB",
     cnpj: "07.523.555/0001-63",
     disabled: true,
-    linkedUC: ['Estação meteorológica'],
+    consumer_units:2,
     tariffs:[]
   },
 ];
+
+
+export const mockedDistributorComsumerUnit: Array<DistributorConsumerUnits> = [
+  {
+    "id": 1,
+    "subgroups": [
+       {
+        "subgroup": "A3",
+        "consumer_units":[
+          {
+           "name": "Unid Con 1",
+            "id": 1,
+           },
+           {
+            "name": "Unid Con 2",
+            "id": 2,
+            }, 
+          ]
+        },
+     ],
+  },
+
+  {
+    "id": 2,
+    "subgroups": [
+       {
+        "subgroup": "A3",
+        "consumer_units":[
+          {
+           "name": "Unid Con 1",
+            "id": 1,
+           },
+           {
+            "name": "Unid Con 2",
+            "id": 2,
+            }, 
+          ]
+        },
+     ],
+  },
+  {
+    "id": 3,
+    "subgroups": [
+       {
+        "subgroup": "A4",
+        "consumer_units":[
+          {
+           "name": "Unid Con 1",
+            "id": 1,
+           },
+           {
+            "name": "Unid Con 2",
+            "id": 2,
+            }, 
+          ]
+        },
+     ],
+  },
+  {
+    "id": 4,
+    "subgroups": [
+       {
+        "subgroup": "A3",
+        "consumer_units":[
+          {
+           "name": "Unid Con 1",
+            "id": 1,
+           },
+           {
+            "name": "Unid Con 2",
+            "id": 2,
+            }, 
+          ]
+        },
+     ],
+  },
+]
