@@ -5,10 +5,12 @@ import { DistributorConsumerUnits, DistributorPropsTariffs } from '../../types/d
 import { useRouter } from 'next/router';
 import EditIcon from '@mui/icons-material/Edit';
 import Link from 'next/link'
-import { Link as MUILink } from '@mui/material';
+import { Link as MUILink, IconButton } from '@mui/material';
 import { TariffTable } from '../Tariff/TariffTable';
 import { mockedDistributor } from '../../mocks/mockedDistributor';
 import { mockedDistributorComsumerUnit } from '../../mocks/mockedDistributor';
+import { setIsTariffEdiFormOpen } from '../../store/appSlice';
+import { useDispatch } from 'react-redux';
 
 
 export const DistributorInfo = () => {
@@ -17,6 +19,7 @@ export const DistributorInfo = () => {
   const [currentDist, setCurrentDist] = useState<DistributorPropsTariffs>()
   const [currentConsumerUnitList, setCurrentConsumerUnitList] = useState<DistributorConsumerUnits>()
   const [titleTariffs, setTitleTariffs] = useState('Tarifas')
+  const dispatch = useDispatch()
 
   const createTitleTariffs = () => {
     if (currentDist?.tariffs.length === 0) setTitleTariffs('');
@@ -49,12 +52,18 @@ export const DistributorInfo = () => {
     setCurrentConsumerUnitList(mockedDistributorComsumerUnit[Number(id) - 1])
   }, [router.asPath])
 
+  const handleEditTariffClick = () => {
+    dispatch(setIsTariffEdiFormOpen(true));
+  };
+
   return (
     <Box display={'flex'} justifyContent="space-between" width={'100%'} mt={3}>
       <Box flex={7} mr={5} display={currentDist?.consumer_units === 0 || currentDist?.disabled ? 'none' : ''}>
         <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
           <Typography variant='h5'>{titleTariffs}</Typography>
-          <EditIcon></EditIcon>
+          <IconButton onClick={handleEditTariffClick} color="inherit">
+            <EditIcon />
+          </IconButton>
         </Box>
         <Divider />
         <TariffTable />

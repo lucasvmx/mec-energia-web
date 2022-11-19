@@ -28,6 +28,7 @@ import { setIsDistributorCreateFormOpen, setIsDistributorEditFormOpen } from "..
 import { useDispatch, useSelector } from "react-redux";
 import DistributorCreateForm from "../../components/Distributor/Form/DistributorCreateForm";
 import DistributorEditForm from "../../components/Distributor/Form/DistributorEditForm";
+import TariffCreateForm from "../../components/Tariff/Form/TariffCreateForm";
 
 
 const DistributorPage: NextPage = () => {
@@ -170,6 +171,7 @@ const DistributorPage: NextPage = () => {
 
         <DistributorCreateForm />
         <DistributorEditForm />
+        <TariffCreateForm />
       </Box>
     </DefaultTemplate >
   );
