@@ -6,6 +6,7 @@ import { Container } from "@mui/material";
 import ConsumerUnitCardGrid from "../components/ConsumerUnit/CardGrid";
 import DefaultTemplate from "../templates/DefaultTemplate";
 import Header from "../components/Header";
+import DashboardCardGrid from "../components/DashboardCasdGrid";
 
 const Home: NextPage = () => {
   return (
@@ -16,7 +17,7 @@ const Home: NextPage = () => {
 
       <DefaultTemplate>
         <Container disableGutters>
-          <ConsumerUnitCardGrid />
+          <DashboardCardGrid />
         </Container>
       </DefaultTemplate>
     </>

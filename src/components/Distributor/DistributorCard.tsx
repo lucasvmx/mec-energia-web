@@ -7,10 +7,12 @@ import {
   Card,
   CardContent,
   Divider,
+  IconButton,
   Typography,
 } from "@mui/material";
-import { Receipt, Star, StarOutline, TrendingUp } from "@mui/icons-material";
-import { DistributorProps, DistributorPropsTariffs } from "../../types/distributor";
+import { DistributorPropsTariffs } from "../../types/distributor";
+import BusinessIcon from "@mui/icons-material/Business";
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 
 const DistributorCard = ({
   id,
@@ -46,35 +48,79 @@ const DistributorCard = ({
   }
 
   return (
-    <Card
-      sx={{
-        height: 120,
-        display: "flex",
-        flexDirection: "column",
-        cursor: "pointer",
-        background: overdue ? 'grey' : '',
-        color: overdue ? 'white' : ''
-      }}
-      variant={disabled ? "outlined" : "elevation"}
-      onClick={handleCardClick}
-    >
-      <CardContent
-        sx={{
-          flexGrow: 1,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "end",
-          pt: 0,
-        }}
-      >
-        <Typography variant="h5">{title}</Typography>
-      </CardContent>
+    <>
+      {
+        router.pathname === "/dt/[id]" ?
+          <Card
+            sx={{
+              height: 120,
+              display: "flex",
+              flexDirection: "column",
+              cursor: "pointer",
+              background: overdue ? 'grey' : '',
+              color: overdue ? 'white' : ''
+            }}
+            variant={disabled ? "outlined" : "elevation"}
+            onClick={handleCardClick}
+          >
+            <CardContent
+              sx={{
+                flexGrow: 1,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "end",
+                pt: 0,
+              }}
+            >
+              <Typography variant="h5">{title}</Typography>
+            </CardContent>
 
-      <Divider sx={{ background: overdue ? 'white' : '' }} />
-      <Box ml={1} p={1}>
-        <Typography>{textBottomCard}</Typography>
-      </Box>
-    </Card >
+            <Divider sx={{ background: overdue ? 'white' : '' }} />
+            <Box ml={1} p={1}>
+              <Typography>{textBottomCard}</Typography>
+            </Box>
+          </Card >
+
+          :
+
+          <Card
+            sx={{
+              height: 196,
+              display: "flex",
+              flexDirection: "column",
+              cursor: "pointer",
+              background: overdue ? 'grey' : '',
+              color: overdue ? 'white' : ''
+            }}
+            variant={disabled ? "outlined" : "elevation"}
+            onClick={handleCardClick}
+          >
+            <BusinessIcon sx={{ margin: 2 }} />
+            <CardContent
+              sx={{
+                flexGrow: 1,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "end",
+                pt: 0,
+              }}
+            >
+              <Typography variant="h5">{title}</Typography>
+            </CardContent>
+
+            <Divider sx={{ background: overdue ? 'white' : '' }} />
+            <Box ml={1} p={1} display='flex' justifyContent='space-between'>
+              <Typography>{textBottomCard}</Typography>
+              <IconButton color="inherit">
+                <Badge badgeContent={'!'} color="warning">
+                  <AttachMoneyIcon />
+                </Badge>
+              </IconButton>
+            </Box>
+          </Card >
+
+      }
+    </>
   );
 };
 
