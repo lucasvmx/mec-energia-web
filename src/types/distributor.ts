@@ -19,6 +19,12 @@ export interface CreateDistributorForm {
   cnpj: string;
 }
 
+export interface EditDistributorForm {
+  isActive:boolean;
+  name: string;
+  cnpj: string;
+}
+
 export interface ConsumerUnitSubgroup{
   subgroup: string;
   consumer_units: Array<ConsumerUnit>

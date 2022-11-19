@@ -8,10 +8,12 @@ export enum ConsumerUnitFormEnum {
 
 export enum DistributorFormEnum {
   CREATE,
+  EDIT,
 }
 
 export enum TariffFormEnum {
   CREATE,
+  EDIT,
 }
 
 type ConsumerUnitFormType = ConsumerUnitFormEnum | null;
@@ -26,9 +28,11 @@ export interface AppState {
   };
   distributor: {
     isCreateFormOpen: boolean;
+    isEditFormOpen: boolean;
   };
   tariff: {
     isCreateFormOpen: boolean;
+    isEditFormOpen: boolean;
   };
 }
 
@@ -44,9 +48,11 @@ const initialState: AppState = {
   },
   distributor: {
     isCreateFormOpen: false,
+    isEditFormOpen: false,
   },
   tariff: {
     isCreateFormOpen: false,
+    isEditFormOpen: false,
   },
 };
 
@@ -72,11 +78,23 @@ export const appSlice = createSlice({
     ) => {
       state.distributor.isCreateFormOpen = action.payload;
     },
+    setIsDistributorEditFormOpen: (
+      state,
+      action: PayloadAction<boolean>
+    ) => {
+      state.distributor.isEditFormOpen = action.payload;
+    },
     setIsTariffCreateFormOpen: (
       state,
       action: PayloadAction<boolean>
     ) => {
       state.tariff.isCreateFormOpen = action.payload;
+    },
+    setIsTariffEdiFormOpen: (
+      state,
+      action: PayloadAction<boolean>
+    ) => {
+      state.tariff.isEditFormOpen = action.payload;
     },
   },
 });
@@ -88,7 +106,9 @@ export const {
   setIsConsumerUnitCreateFormOpen,
   setIsConsumerUnitEditFormOpen,
   setIsDistributorCreateFormOpen,
+  setIsDistributorEditFormOpen,
   setIsTariffCreateFormOpen,
+  setIsTariffEdiFormOpen,
 } = appSlice.actions;
 
 export const selectIsDrawerOpen = (state: RootState) => {
@@ -106,6 +126,15 @@ export const selectIsConsumerUnitEditFormOpen = (state: RootState) => {
 export const selectIsDistributorCreateFormOpen = (state: RootState) => {
   return state.app.distributor.isCreateFormOpen;
 };
+
+export const selectIsDistributorEditFormOpen = (state: RootState) => {
+  return state.app.distributor.isEditFormOpen;
+};
+
 export const selectIsTariffCreateFormOpen = (state: RootState) => {
-  return state.app.distributor.isCreateFormOpen;
+  return state.app.tariff.isCreateFormOpen;
+};
+
+export const selectIsTariffEditFormOpen = (state: RootState) => {
+  return state.app.tariff.isEditFormOpen;
 };

@@ -1,4 +1,3 @@
-import { PersonAddAlt1 } from "@mui/icons-material";
 import { DistributorConsumerUnits, DistributorPropsTariffs } from "../types/distributor";
 
 export const mockedDistributor: Array<DistributorPropsTariffs> = [

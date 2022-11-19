@@ -23,15 +23,16 @@ import DistributorContainer from "../../components/Distributor/DistributorContai
 import { mockedDistributor } from "../../mocks/mockedDistributor";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import DistributorProps from "../../types/distributor";
-import { setIsDistributorCreateFormOpen } from "../../store/appSlice";
-import { useDispatch } from "react-redux";
-import DistributorCreateForm from "../../components/Distributor/DistributorCreateForm";
+import { DistributorPropsTariffs } from "../../types/distributor";
+import { setIsDistributorCreateFormOpen, setIsDistributorEditFormOpen } from "../../store/appSlice";
+import { useDispatch, useSelector } from "react-redux";
+import DistributorCreateForm from "../../components/Distributor/Form/DistributorCreateForm";
+import DistributorEditForm from "../../components/Distributor/Form/DistributorEditForm";
 
 
 const DistributorPage: NextPage = () => {
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
-  const [currentDistributor, setCurrentDistributor] = useState<DistributorProps | undefined>()
+  const [currentDistributor, setCurrentDistributor] = useState<DistributorPropsTariffs | undefined>()
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch()
@@ -58,6 +59,9 @@ const DistributorPage: NextPage = () => {
     dispatch(setIsDistributorCreateFormOpen(true));
   };
 
+  const handleEditDistributorClick = () => {
+    dispatch(setIsDistributorEditFormOpen(true));
+  };
 
   return (
     <DefaultTemplate disableGutters>
@@ -88,10 +92,10 @@ const DistributorPage: NextPage = () => {
             <Box display="flex" justifyContent={"space-between"}>
               <Typography variant="h3">{currentDistributor?.name}</Typography>
               <Box pl={5}>
-                <IconButton color="inherit">
+                <IconButton onClick={handleEditDistributorClick} color="inherit">
                   <EditIcon fontSize="large" />
                 </IconButton>
-                {currentDistributor?.linkedUC?.length === 0 &&
+                {currentDistributor?.consumer_units === 0 &&
                   <IconButton color="inherit">
                     <DeleteIcon fontSize="large" />
                   </IconButton>
@@ -165,6 +169,7 @@ const DistributorPage: NextPage = () => {
         </Dialog>
 
         <DistributorCreateForm />
+        <DistributorEditForm />
       </Box>
     </DefaultTemplate >
   );
