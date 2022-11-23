@@ -9,6 +9,7 @@ import {
 import {
   Box,
   Button,
+  Container,
   IconButton,
   Toolbar,
   Typography,
@@ -21,6 +22,9 @@ import ConsumerUnitCardGrid from "../../components/ConsumerUnit/CardGrid";
 import DefaultTemplate from "../../templates/DefaultTemplate";
 import ConsumerUnitCreateForm from "../../components/ConsumerUnit/Form/Create";
 import ConsumerUnitEditForm from "../../components/ConsumerUnit/Form/Edit";
+import ConsumerUnitHeader from "../../components/ConsumerUnit/Header";
+import ConsumerUnitContent from "../../components/ConsumerUnit/Content";
+import ConsumerUnitRenewContractForm from "../../components/ConsumerUnit/Form/RenewContract";
 
 const ConsumerUnitPage: NextPage = () => {
   const dispatch = useDispatch();
@@ -28,10 +32,6 @@ const ConsumerUnitPage: NextPage = () => {
 
   const handleCreateConsumerUnitClick = () => {
     dispatch(setIsConsumerUnitCreateFormOpen(true));
-  };
-
-  const handleEditConsumerUnitClick = () => {
-    dispatch(setIsConsumerUnitEditFormOpen(true));
   };
 
   return (
@@ -61,29 +61,15 @@ const ConsumerUnitPage: NextPage = () => {
           </Box>
         )}
 
-        <Box p={3}>
-          <Box display="flex">
-            <Typography variant="h3">Campus Gama</Typography>
-
-            <IconButton color="inherit" onClick={handleEditConsumerUnitClick}>
-              <EditIcon fontSize="large" />
-            </IconButton>
-
-            <IconButton color="inherit">
-              <StarBorderIcon fontSize="large" />
-            </IconButton>
-          </Box>
-
-          <Box mt={1}>
-            <Typography>
-              Unidade consumidora: <strong>10/979389-4</strong>
-            </Typography>
-          </Box>
+        <Box p={3} width="100%">
+          <ConsumerUnitHeader />
+          <ConsumerUnitContent />
         </Box>
       </Box>
 
       <ConsumerUnitCreateForm />
       <ConsumerUnitEditForm />
+      <ConsumerUnitRenewContractForm />
     </DefaultTemplate>
   );
 };
