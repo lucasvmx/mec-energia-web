@@ -24,3 +24,13 @@ export interface EditConsumerUnitForm {
   peakContracted: number | "";
   outOfPeakContracted: number | "";
 }
+
+export interface RenewConsumerUnitContractForm {
+  supplier: string;
+  startDate: Date | null;
+  supplied: number | "";
+  tariffType: TariffType;
+  contracted: number | "";
+  peakContracted: number | "";
+  outOfPeakContracted: number | "";
+}

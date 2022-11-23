@@ -62,7 +62,7 @@ const ConsumerUnitEditForm = () => {
   const isEditFormOpen = useSelector(selectIsConsumerUnitEditFormOpen);
   const [shouldOpenDiscardDialog, setShouldOpenDiscardDialog] = useState(false);
 
-  const form = useForm({ defaultValues });
+  const form = useForm({ mode: "all", defaultValues });
 
   const {
     control,
@@ -132,37 +132,45 @@ const ConsumerUnitEditForm = () => {
             </Grid>
 
             <Grid item xs={12}>
-              <Controller
-                name="isActive"
-                control={control}
-                render={({ field: { onChange, value } }) => (
-                  <FormGroup>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          value={value}
-                          defaultChecked
-                          onChange={onChange}
-                        />
-                      }
-                      label="Unidade ativa"
-                    />
+              <Typography>* campos obrigatórios</Typography>
+            </Grid>
 
-                    <FormHelperText>
-                      Unidades desativadas não recebem faturas e não geram
-                      recomendações. Não é possível excluir unidades
-                      consumidoras, apenas desativá-las.
-                    </FormHelperText>
-                  </FormGroup>
-                )}
-              />
+            <Grid item xs={12}>
+              <Box>
+                <Controller
+                  name="isActive"
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <FormControl>
+                      <FormControlLabel
+                        sx={{ marginLeft: 0 }}
+                        control={
+                          <Switch
+                            value={value}
+                            defaultChecked
+                            onChange={onChange}
+                          />
+                        }
+                        label="Unidade ativa"
+                        labelPlacement="start"
+                      />
+                    </FormControl>
+                  )}
+                />
+              </Box>
+
+              <Typography variant="caption">
+                Unidades desativadas não recebem faturas e não geram
+                recomendações. Não é possível excluir unidades consumidoras,
+                apenas desativá-las.
+              </Typography>
             </Grid>
 
             <Grid item xs={12}>
               <Controller
                 control={control}
                 name="title"
-                rules={{ required: "Campo obrigatório" }}
+                rules={{ required: "Preencha este campo" }}
                 render={({
                   field: { onChange, onBlur, value, ref },
                   fieldState: { error },
@@ -170,7 +178,7 @@ const ConsumerUnitEditForm = () => {
                   <TextField
                     ref={ref}
                     value={value}
-                    label="Nome"
+                    label="Nome *"
                     placeholder="Ex.: Campus Gama, Biblioteca, Faculdade de Medicina"
                     error={Boolean(error)}
                     helperText={error?.message ?? " "}
@@ -185,7 +193,7 @@ const ConsumerUnitEditForm = () => {
               <Controller
                 control={control}
                 name="code"
-                rules={{ required: "Campo obrigatório" }}
+                rules={{ required: "Preencha este campo" }}
                 render={({
                   field: { onChange, onBlur, value, ref },
                   fieldState: { error },
@@ -220,22 +228,38 @@ const ConsumerUnitEditForm = () => {
               <Controller
                 control={control}
                 name="supplier"
-                rules={{ required: "Campo obrigatório" }}
+                rules={{ required: "Preencha este campo" }}
                 render={({
                   field: { onChange, onBlur, value, ref },
                   fieldState: { error },
                 }) => (
-                  <FormControl fullWidth error={!!error}>
+                  <FormControl
+                    sx={{ minWidth: "200px", maxWidth: "100%" }}
+                    error={!!error}
+                  >
                     <InputLabel>Distribuidora *</InputLabel>
 
                     <Select
                       ref={ref}
                       value={value}
                       label="Distribuidora *"
+                      MenuProps={{
+                        anchorOrigin: {
+                          vertical: "bottom",
+                          horizontal: "left",
+                        },
+                        transformOrigin: {
+                          vertical: "top",
+                          horizontal: "left",
+                        },
+                      }}
                       onChange={onChange}
                       onBlur={onBlur}
                     >
-                      <MenuItem value="a">Distribuidora A</MenuItem>
+                      <MenuItem value="a">
+                        Distribuidora com um nome longo pra chegar ultrapassar o
+                        limite do container
+                      </MenuItem>
                       <MenuItem value="b">Distribuidora B</MenuItem>
                     </Select>
 
@@ -248,7 +272,10 @@ const ConsumerUnitEditForm = () => {
               <Controller
                 control={control}
                 name="startDate"
-                rules={{ required: "Campo obrigatório", validate: isValidDate }}
+                rules={{
+                  required: "Preencha este campo",
+                  validate: isValidDate,
+                }}
                 render={({
                   field: { value, onChange },
                   fieldState: { error },
@@ -274,7 +301,7 @@ const ConsumerUnitEditForm = () => {
               <Controller
                 control={control}
                 name={"supplied"}
-                rules={{ required: "Campo obrigatório" }}
+                rules={{ required: "Preencha este campo" }}
                 render={({
                   field: { onChange, onBlur, value, ref },
                   fieldState: { error },
@@ -282,7 +309,7 @@ const ConsumerUnitEditForm = () => {
                   <NumericFormat
                     value={value}
                     customInput={TextField}
-                    label="Tensão de fornecimento"
+                    label="Tensão de fornecimento *"
                     helperText={error?.message ?? " "}
                     error={!!error}
                     fullWidth
@@ -293,6 +320,9 @@ const ConsumerUnitEditForm = () => {
                     }}
                     type="text"
                     allowNegative={false}
+                    isAllowed={({ floatValue }) =>
+                      !floatValue || floatValue <= 9999.99
+                    }
                     decimalScale={2}
                     decimalSeparator=","
                     thousandSeparator={" "}
@@ -306,13 +336,13 @@ const ConsumerUnitEditForm = () => {
               <Controller
                 control={control}
                 name="tariffType"
-                rules={{ required: "Campo obrigatório" }}
+                rules={{ required: "Preencha este campo" }}
                 render={({
                   field: { onChange, value },
                   fieldState: { error },
                 }) => (
                   <FormControl error={!!error}>
-                    <FormLabel>Modalidade tarifária</FormLabel>
+                    <FormLabel>Modalidade tarifária *</FormLabel>
 
                     <RadioGroup value={value} row onChange={onChange}>
                       <FormControlLabel
@@ -337,7 +367,7 @@ const ConsumerUnitEditForm = () => {
                 <Controller
                   control={control}
                   name="contracted"
-                  rules={{ required: "Campo obrigatório" }}
+                  rules={{ required: "Preencha este campo" }}
                   render={({
                     field: { onChange, onBlur, value, ref },
                     fieldState: { error },
@@ -345,7 +375,7 @@ const ConsumerUnitEditForm = () => {
                     <NumericFormat
                       value={value}
                       customInput={TextField}
-                      label="Demanda contratada"
+                      label="Demanda contratada *"
                       fullWidth
                       InputProps={{
                         endAdornment: (
@@ -354,6 +384,9 @@ const ConsumerUnitEditForm = () => {
                       }}
                       type="text"
                       allowNegative={false}
+                      isAllowed={({ floatValue }) =>
+                        !floatValue || floatValue <= 99999.99
+                      }
                       decimalScale={2}
                       decimalSeparator=","
                       thousandSeparator={" "}
@@ -371,7 +404,7 @@ const ConsumerUnitEditForm = () => {
                   <Controller
                     control={control}
                     name="peakContracted"
-                    rules={{ required: "Campo obrigatório" }}
+                    rules={{ required: "Preencha este campo" }}
                     render={({
                       field: { onChange, onBlur, value, ref },
                       fieldState: { error },
@@ -379,7 +412,7 @@ const ConsumerUnitEditForm = () => {
                       <NumericFormat
                         value={value}
                         customInput={TextField}
-                        label="Demanda contratada — Ponta"
+                        label="Demanda contratada — Ponta *"
                         fullWidth
                         InputProps={{
                           endAdornment: (
@@ -388,6 +421,9 @@ const ConsumerUnitEditForm = () => {
                         }}
                         type="text"
                         allowNegative={false}
+                        isAllowed={({ floatValue }) =>
+                          !floatValue || floatValue <= 99999.99
+                        }
                         decimalScale={2}
                         decimalSeparator=","
                         thousandSeparator={" "}
@@ -404,7 +440,7 @@ const ConsumerUnitEditForm = () => {
                   <Controller
                     control={control}
                     name="outOfPeakContracted"
-                    rules={{ required: "Campo obrigatório" }}
+                    rules={{ required: "Preencha este campo" }}
                     render={({
                       field: { onChange, onBlur, value, ref },
                       fieldState: { error },
@@ -412,7 +448,7 @@ const ConsumerUnitEditForm = () => {
                       <NumericFormat
                         value={value}
                         customInput={TextField}
-                        label="Demanda contratada — Fora Ponta"
+                        label="Demanda contratada — Fora Ponta *"
                         fullWidth
                         InputProps={{
                           endAdornment: (
@@ -421,6 +457,9 @@ const ConsumerUnitEditForm = () => {
                         }}
                         type="text"
                         allowNegative={false}
+                        isAllowed={({ floatValue }) =>
+                          !floatValue || floatValue <= 99999.99
+                        }
                         decimalScale={2}
                         decimalSeparator=","
                         thousandSeparator={" "}

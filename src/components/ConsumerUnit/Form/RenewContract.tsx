@@ -1,13 +1,3 @@
-import { useEffect, useState } from "react";
-import { NumericFormat, NumericFormatProps } from "react-number-format";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  Controller,
-  FormProvider,
-  SubmitHandler,
-  useForm,
-} from "react-hook-form";
-
 import {
   Box,
   Button,
@@ -26,19 +16,25 @@ import {
   Typography,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
-
-import {
-  selectIsConsumerUnitCreateFormOpen,
-  setIsConsumerUnitCreateFormOpen,
-} from "../../../store/appSlice";
-import FormDrawer from "../../Form/Drawer";
-import { CreateConsumerUnitForm } from "../../../types/consumerUnit";
-import FormWarningDialog from "./WarningDialog";
 import { isAfter, isFuture, isValid } from "date-fns";
+import { useEffect, useState } from "react";
+import {
+  Controller,
+  FormProvider,
+  SubmitHandler,
+  useForm,
+} from "react-hook-form";
+import { NumericFormat } from "react-number-format";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectIsConsumerUnitRenewContractFormOpen,
+  setIsConsumerUnitRenewContractFormOpen,
+} from "../../../store/appSlice";
+import { RenewConsumerUnitContractForm } from "../../../types/consumerUnit";
+import FormDrawer from "../../Form/Drawer";
+import FormWarningDialog from "./WarningDialog";
 
-const defaultValues: CreateConsumerUnitForm = {
-  title: "",
-  code: "",
+const defaultValues: RenewConsumerUnitContractForm = {
   supplier: "",
   startDate: null,
   supplied: "",
@@ -48,9 +44,11 @@ const defaultValues: CreateConsumerUnitForm = {
   outOfPeakContracted: "",
 };
 
-const ConsumerUnitCreateForm = () => {
+const ConsumerUnitRenewContractForm = () => {
   const dispatch = useDispatch();
-  const isCreateFormOpen = useSelector(selectIsConsumerUnitCreateFormOpen);
+  const isRenewContractFormOpen = useSelector(
+    selectIsConsumerUnitRenewContractFormOpen
+  );
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
 
   const form = useForm({ mode: "all", defaultValues });
@@ -74,7 +72,7 @@ const ConsumerUnitCreateForm = () => {
     setValue("outOfPeakContracted", outOfPeakContracted);
   }, [tariffType]);
 
-  const isValidDate = (date: CreateConsumerUnitForm["startDate"]) => {
+  const isValidDate = (date: RenewConsumerUnitContractForm["startDate"]) => {
     if (!date || !isValid(date)) {
       return "Data inválida";
     }
@@ -106,74 +104,31 @@ const ConsumerUnitCreateForm = () => {
   const handleDiscardForm = () => {
     handleCloseDialog();
     reset();
-    dispatch(setIsConsumerUnitCreateFormOpen(false));
+    dispatch(setIsConsumerUnitRenewContractFormOpen(false));
   };
 
-  const onSubmitHandler: SubmitHandler<CreateConsumerUnitForm> = (data) => {
+  const onSubmitHandler: SubmitHandler<RenewConsumerUnitContractForm> = (
+    data
+  ) => {
     console.log(data);
   };
 
   return (
-    <FormDrawer open={isCreateFormOpen} handleCloseDrawer={handleCancelEdition}>
+    <FormDrawer
+      open={isRenewContractFormOpen}
+      handleCloseDrawer={handleCancelEdition}
+    >
       <FormProvider {...form}>
         <Box component="form" onSubmit={handleSubmit(onSubmitHandler)}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <Typography variant="h4">
-                Adicionar Unidade Consumidora
-              </Typography>
+              <Typography>Renovar contrato</Typography>
+
+              <Typography variant="h4">Campus Gama</Typography>
             </Grid>
 
             <Grid item xs={12}>
               <Typography>* campos obrigatórios</Typography>
-            </Grid>
-
-            <Grid item xs={12}>
-              <Controller
-                control={control}
-                name="title"
-                rules={{ required: "Preencha este campo" }}
-                render={({
-                  field: { onChange, onBlur, value, ref },
-                  fieldState: { error },
-                }) => (
-                  <TextField
-                    ref={ref}
-                    value={value}
-                    label="Nome *"
-                    placeholder="Ex.: Campus Gama, Biblioteca, Faculdade de Medicina"
-                    error={Boolean(error)}
-                    helperText={error?.message ?? " "}
-                    fullWidth
-                    onChange={onChange}
-                    onBlur={onBlur}
-                  />
-                )}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <Controller
-                control={control}
-                name="code"
-                rules={{ required: "Preencha este campo" }}
-                render={({
-                  field: { onChange, onBlur, value, ref },
-                  fieldState: { error },
-                }) => (
-                  <TextField
-                    ref={ref}
-                    value={value}
-                    label="Código *"
-                    placeholder="Número da Unidade Consumidora conforme a fatura"
-                    error={Boolean(error)}
-                    helperText={error?.message ?? " "}
-                    fullWidth
-                    onChange={onChange}
-                    onBlur={onBlur}
-                  />
-                )}
-              />
             </Grid>
 
             <Grid item xs={12}>
@@ -199,7 +154,6 @@ const ConsumerUnitCreateForm = () => {
                       ref={ref}
                       value={value}
                       label="Distribuidora *"
-                      autoWidth
                       MenuProps={{
                         anchorOrigin: {
                           vertical: "bottom",
@@ -457,4 +411,4 @@ const ConsumerUnitCreateForm = () => {
   );
 };
 
-export default ConsumerUnitCreateForm;
+export default ConsumerUnitRenewContractForm;
