@@ -8,6 +8,8 @@ import {
   DialogContentText,
   DialogTitle,
   IconButton,
+  Slider,
+  Stack,
   Toolbar,
   Typography,
   useMediaQuery,
@@ -16,6 +18,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from '@mui/icons-material/Delete';
 import HelpIcon from '@mui/icons-material/Help';
 import FlashOffIcon from '@mui/icons-material/FlashOff';
+import BusinessIcon from "@mui/icons-material/Business";
 import theme from "../../theme";
 import DefaultTemplate from "../../templates/DefaultTemplate";
 import DistributorCardGrid from "../../components/Distributor/DistributorCardGrid";
@@ -35,12 +38,16 @@ const DistributorPage: NextPage = () => {
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
   const [currentDistributor, setCurrentDistributor] = useState<DistributorPropsTariffs | undefined>()
   const [open, setOpen] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
   const router = useRouter();
+  const [slidevalue, setSlideValue] = useState<number>(0);
+  const [slideColor, setSlideColor] = useState('primary');
   const dispatch = useDispatch()
 
   useEffect(() => {
     const { id } = router.query
     setCurrentDistributor(mockedDistributor[Number(id) - 1])
+    setSlideColor('primary')
   }, [])
 
   useEffect(() => {
@@ -48,12 +55,29 @@ const DistributorPage: NextPage = () => {
     setCurrentDistributor(mockedDistributor[Number(id) - 1])
   }, [router.asPath])
 
+  useEffect(() => {
+    if (slidevalue === 100) setSlideColor('error')
+    else setSlideColor('primary')
+  }, [slidevalue])
+
+  useEffect(() => {
+    if (openDelete === false) setSlideValue(0)
+  }, [openDelete])
+
   const handleClickOpen = () => {
     setOpen(true);
   };
 
+  const handleClickDeleteOpen = () => {
+    setOpenDelete(true);
+  };
+
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleDeleteClose = () => {
+    setOpenDelete(false);
   };
 
   const handleCreateDistributorClick = () => {
@@ -62,6 +86,11 @@ const DistributorPage: NextPage = () => {
 
   const handleEditDistributorClick = () => {
     dispatch(setIsDistributorEditFormOpen(true));
+  };
+
+  const handleSlideChange = (event: Event, newValue: number | number[]) => {
+    setSlideValue(newValue as number);
+    console.log("slide", newValue)
   };
 
   return (
@@ -97,7 +126,7 @@ const DistributorPage: NextPage = () => {
                   <EditIcon fontSize="large" />
                 </IconButton>
                 {currentDistributor?.consumer_units === 0 &&
-                  <IconButton color="inherit">
+                  <IconButton color="inherit" onClick={handleClickDeleteOpen}>
                     <DeleteIcon fontSize="large" />
                   </IconButton>
                 }
@@ -169,6 +198,42 @@ const DistributorPage: NextPage = () => {
           </DialogActions>
         </Dialog>
 
+        <Dialog
+          open={openDelete}
+          onClose={handleDeleteClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+          maxWidth={'xs'}>
+          <DialogTitle id="alert-dialog-title">
+            Apagar {currentDistributor?.name}?
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              <Typography pb={1}>
+                Os dados não poderão ser recuperados.
+              </Typography>
+              <Typography>
+                Para apagar, arraste para a direita.
+              </Typography>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Box display={'flex'} flexDirection='column'>
+              <Box sx={{ width: 300 }}>
+                <Stack spacing={2} direction="row" sx={{ mb: 1 }} alignItems="center">
+                  <BusinessIcon color={slideColor} />
+                  <Slider color={slideColor} aria-label="Volume"
+                    value={slidevalue}
+                    onChange={handleSlideChange} />
+                  <DeleteIcon color="error" />
+                </Stack>
+              </Box>
+              <Box display={'flex'} justifyContent='flex-end'>
+                <Button onClick={handleDeleteClose}>FECHAR</Button>
+              </Box>
+            </Box>
+          </DialogActions>
+        </Dialog>
         <DistributorCreateForm />
         <DistributorEditForm />
         <TariffCreateForm />
