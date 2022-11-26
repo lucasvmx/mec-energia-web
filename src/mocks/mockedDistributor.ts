@@ -6,11 +6,11 @@ export const mockedDistributor: Array<DistributorPropsTariffs> = [
     name: "CEMIG",
     cnpj: "07.523.555/0001-67",
     disabled: false,
-    consumer_units: 10,
+    consumer_units: 1,
     tariffs: [
       {
-        start_date: "2022-11-18",
-        end_date: "2022-11-18",
+        start_date: "",
+        end_date: "",
         subgroup: "A4",
         overdue: true,
         blue: {

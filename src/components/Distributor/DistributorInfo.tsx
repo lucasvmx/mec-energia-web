@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { Box, Divider, Typography } from '@mui/material'
+import { Badge, Box, Button, Divider, Typography } from '@mui/material'
 import { DistributorConsumerUnits, DistributorPropsTariffs } from '../../types/distributor'
 import { useRouter } from 'next/router';
 import EditIcon from '@mui/icons-material/Edit';
@@ -19,18 +19,19 @@ export const DistributorInfo = () => {
   const [currentDist, setCurrentDist] = useState<DistributorPropsTariffs>()
   const [currentConsumerUnitList, setCurrentConsumerUnitList] = useState<DistributorConsumerUnits>()
   const [titleTariffs, setTitleTariffs] = useState('Tarifas')
+  const [isOverdue, setisOverdue] = useState(false);
+  const [isPendingTariffAddition, setIsPendingTariffAddition] = useState(false);
   const dispatch = useDispatch()
 
   const createTitleTariffs = () => {
     if (currentDist?.tariffs.length === 0) setTitleTariffs('');
     else if (currentDist?.tariffs.length === 1) {
       const tarrif = currentDist.tariffs[0];
-      if (tarrif.overdue) setTitleTariffs(`Tarifas do subgrupo ${tarrif.subgroup} pendentes`)
+      if (isOverdue) setTitleTariffs(`Tarifas do subgrupo ${tarrif.subgroup} pendentes`)
       else setTitleTariffs(`Tarifas do subgrupo ${tarrif.subgroup}`)
     }
     else if (currentDist?.tariffs.length !== 1) {
-      const overdue = currentDist?.tariffs.find(tariff => tariff.overdue === true);
-      if (overdue === undefined) setTitleTariffs('Tarifas')
+      if (!isOverdue) setTitleTariffs('Tarifas')
       else setTitleTariffs('Tarifas com atualizações pendentes')
     }
   }
@@ -39,7 +40,17 @@ export const DistributorInfo = () => {
     const { id } = router.query
     setCurrentDist(mockedDistributor[Number(id) - 1])
     setCurrentConsumerUnitList(mockedDistributorComsumerUnit[Number(id) - 1])
+
+    const overdue = mockedDistributor[Number(id) - 1].tariffs.find(tariff => tariff.overdue === true);
+    if (overdue === undefined) setisOverdue(false)
+    else setisOverdue(true)
+    const hasConsumerUnit = mockedDistributor[Number(id) - 1].consumer_units > 0 ? true : false;
+    const needAddTariff = mockedDistributor[Number(id) - 1].tariffs.find(tariff => tariff.start_date === '' && tariff.end_date === '' && hasConsumerUnit);
+    if (needAddTariff === undefined) setIsPendingTariffAddition(false)
+    else setIsPendingTariffAddition(true)
+
     createTitleTariffs()
+
   }, [])
 
   useEffect(() => {
@@ -61,12 +72,26 @@ export const DistributorInfo = () => {
       <Box flex={7} mr={5} display={currentDist?.consumer_units === 0 || currentDist?.disabled ? 'none' : ''}>
         <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
           <Typography variant='h5'>{titleTariffs}</Typography>
-          <IconButton onClick={handleEditTariffClick} color="inherit">
-            <EditIcon />
-          </IconButton>
+          {!isPendingTariffAddition &&
+            <IconButton onClick={handleEditTariffClick} color="inherit">
+              <EditIcon />
+            </IconButton>
+          }
         </Box>
         <Divider />
-        <TariffTable />
+        {!isPendingTariffAddition &&
+          <TariffTable />
+        }
+        {isPendingTariffAddition &&
+          <Box width={'25%'} display="flex" justifyContent={'space-between'} alignItems={'center'} mt={2}>
+            <Badge badgeContent={'!'} color="secondary"></Badge >
+            <Button variant="outlined" size="small">
+              Adicionar Tarifas
+            </Button>
+
+          </Box>
+        }
+
       </Box>
       <Box flex={4}>
         <Typography variant='h5'>
