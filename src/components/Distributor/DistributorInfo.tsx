@@ -9,7 +9,7 @@ import { Link as MUILink, IconButton } from '@mui/material';
 import { TariffTable } from '../Tariff/TariffTable';
 import { mockedDistributor } from '../../mocks/mockedDistributor';
 import { mockedDistributorComsumerUnit } from '../../mocks/mockedDistributor';
-import { setIsTariffEdiFormOpen } from '../../store/appSlice';
+import { setIsTariffCreateFormOpen, setIsTariffEdiFormOpen } from '../../store/appSlice';
 import { useDispatch } from 'react-redux';
 
 
@@ -67,6 +67,10 @@ export const DistributorInfo = () => {
     dispatch(setIsTariffEdiFormOpen(true));
   };
 
+  const handleCreateTariffClick = () => {
+    dispatch(setIsTariffCreateFormOpen(true));
+  };
+
   return (
     <Box display={'flex'} justifyContent="space-between" width={'100%'} mt={3}>
       <Box flex={7} mr={5} display={currentDist?.consumer_units === 0 || currentDist?.disabled ? 'none' : ''}>
@@ -83,9 +87,9 @@ export const DistributorInfo = () => {
           <TariffTable />
         }
         {isPendingTariffAddition &&
-          <Box width={'25%'} display="flex" justifyContent={'space-between'} alignItems={'center'} mt={2}>
+          <Box width={'30%'} display="flex" justifyContent={'space-between'} alignItems={'center'} mt={2}>
             <Badge badgeContent={'!'} color="secondary"></Badge >
-            <Button variant="outlined" size="small">
+            <Button variant="outlined" size="small" onClick={handleCreateTariffClick}>
               Adicionar Tarifas
             </Button>
 

@@ -2,7 +2,7 @@ import { Alert, Box, Button, Divider, Grid, InputAdornment, TextField, Typograph
 import React, { useState } from 'react'
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
-import { selectIsTariffCreateFormOpen, selectIsTariffEditFormOpen, setIsTariffEdiFormOpen } from '../../../store/appSlice'
+import { selectIsTariffCreateFormOpen, selectIsTariffEditFormOpen, setIsTariffCreateFormOpen, setIsTariffEdiFormOpen } from '../../../store/appSlice'
 import { CreateAndEditTariffForm } from '../../../types/tariffs'
 import FormDrawer from '../../Form/Drawer'
 import LiveHelpIcon from '@mui/icons-material/LiveHelp';
@@ -57,7 +57,8 @@ const TariffCreateForm = () => {
   const handleDiscardForm = () => {
     handleCloseDialog();
     reset();
-    dispatch(setIsTariffEdiFormOpen(false));
+    if (isCreateTariffFormOpen) dispatch(setIsTariffCreateFormOpen(false));
+    else dispatch(setIsTariffEdiFormOpen(false));
   }
 
   const handleCloseDialog = () => {
@@ -85,7 +86,7 @@ const TariffCreateForm = () => {
   };
 
   return (
-    <FormDrawer open={isEditTariffFormOpen} handleCloseDrawer={
+    <FormDrawer open={isEditTariffFormOpen || isCreateTariffFormOpen} handleCloseDrawer={
       handleCancelEdition
     }>
       <FormProvider {...form}>
@@ -93,7 +94,7 @@ const TariffCreateForm = () => {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <Typography>
-                Editar tarifas
+                {isCreateTariffFormOpen ? 'Adicionar' : 'Editar'} tarifa
               </Typography>
               <Typography variant="h4">
                 Subgrupo A4
