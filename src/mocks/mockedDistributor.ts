@@ -52,19 +52,19 @@ export const mockedDistributor: Array<DistributorPropsTariffs> = [
         subgroup: "A4",
         overdue: false,
         blue: {
-          peak_tusd_in_reais_per_kw: 0,
-          peak_tusd_in_reais_per_mwh: 0,
-          peak_te_in_reais_per_mwh: 0,
-          off_peak_tusd_in_reais_per_kw: 0,
-          off_peak_tusd_in_reais_per_mwh: 0,
-          off_peak_te_in_reais_per_mwh: 0
+          peak_tusd_in_reais_per_kw: 90.45,
+          peak_tusd_in_reais_per_mwh: 100.67,
+          peak_te_in_reais_per_mwh: 22.90,
+          off_peak_tusd_in_reais_per_kw: 1.20,
+          off_peak_tusd_in_reais_per_mwh: 99.55,
+          off_peak_te_in_reais_per_mwh: 34.97
         },
         green: {
-          peak_tusd_in_reais_per_mwh: 0,
-          peak_te_in_reais_per_mwh: 0,
-          off_peak_tusd_in_reais_per_mwh: 0,
-          off_peak_te_in_reais_per_mwh: 0,
-          na_tusd_in_reais_per_kw: 0
+          peak_tusd_in_reais_per_mwh: 76.65,
+          peak_te_in_reais_per_mwh: 22.88,
+          off_peak_tusd_in_reais_per_mwh: 66.22,
+          off_peak_te_in_reais_per_mwh: 44.77,
+          na_tusd_in_reais_per_kw: 33.44
         }
       },
       {

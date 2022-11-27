@@ -178,7 +178,7 @@ const DistributorPage: NextPage = () => {
           maxWidth={'xs'}
         >
           <DialogTitle id="alert-dialog-title">
-            Iniciar renovação de contrato?
+            Subgrupos e Tarifas
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">

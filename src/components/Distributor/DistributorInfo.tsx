@@ -16,7 +16,7 @@ import { useDispatch } from 'react-redux';
 export const DistributorInfo = () => {
   const router = useRouter();
 
-  const [currentDist, setCurrentDist] = useState<DistributorPropsTariffs>()
+  const [currentDist, setCurrentDist] = useState<DistributorPropsTariffs>(mockedDistributor[0])
   const [currentConsumerUnitList, setCurrentConsumerUnitList] = useState<DistributorConsumerUnits>()
   const [titleTariffs, setTitleTariffs] = useState('Tarifas')
   const [isOverdue, setisOverdue] = useState(false);
@@ -83,7 +83,7 @@ export const DistributorInfo = () => {
           }
         </Box>
         <Divider />
-        {!isPendingTariffAddition &&
+        {!isPendingTariffAddition && currentDist.tariffs.length > 0 &&
           <TariffTable />
         }
         {isPendingTariffAddition &&

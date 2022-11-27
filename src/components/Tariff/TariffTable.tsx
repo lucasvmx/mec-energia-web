@@ -122,21 +122,21 @@ export const TariffTable = () => {
                 <TableCell align='center'> Ponta</TableCell>
                 <TableCell>
                   <Box display='flex' justifyContent='space-between' width='80%' m='0 auto'>
-                    <Box>90,43</Box>
-                    <Box>118,90 </Box>
+                    <Box>{currentDist.tariffs[0].blue.peak_tusd_in_reais_per_kw}</Box>
+                    <Box>{currentDist.tariffs[0].blue.peak_tusd_in_reais_per_mwh}</Box>
                   </Box>
                 </TableCell>
-                <TableCell align='center'>418,67</TableCell>
+                <TableCell align='center'>{currentDist.tariffs[0].blue.peak_te_in_reais_per_mwh}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell align='center'> Fora Ponta</TableCell>
                 <TableCell>
                   <Box display='flex' justifyContent='space-between' width='80%' m='0 auto'>
-                    <Box>90,43</Box>
-                    <Box>118,90 </Box>
+                    <Box>{currentDist.tariffs[0].blue.off_peak_tusd_in_reais_per_kw}</Box>
+                    <Box>{currentDist.tariffs[0].blue.off_peak_tusd_in_reais_per_mwh}</Box>
                   </Box>
                 </TableCell>
-                <TableCell align='center'>418,67</TableCell>
+                <TableCell align='center'>{currentDist.tariffs[0].blue.off_peak_te_in_reais_per_mwh}</TableCell>
               </TableRow>
             </Fragment>
             <Fragment>
@@ -144,34 +144,34 @@ export const TariffTable = () => {
                 <TableCell rowSpan={4} align='center' sx={{ color: '#fff' }}>Verde</TableCell>
               </TableRow>
               <TableRow sx={{ background: '#EEEEEE' }}>
-                <TableCell align='center'> Ponta</TableCell>
+                <TableCell align='center'> NA</TableCell>
                 <TableCell>
                   <Box display='flex' justifyContent='space-between' width='80%' m='0 auto'>
-                    <Box>90,43</Box>
-                    <Box>118,90 </Box>
+                    <Box>{currentDist.tariffs[0].green.na_tusd_in_reais_per_kw}</Box>
+                    <Box> - </Box>
                   </Box>
                 </TableCell>
-                <TableCell align='center'>418,67</TableCell>
+                <TableCell align='center'> - </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell align='center'>Ponta</TableCell>
+                <TableCell>
+                  <Box display='flex' justifyContent='space-between' width='80%' m='0 auto'>
+                    <Box> - </Box>
+                    <Box>{currentDist.tariffs[0].green.peak_tusd_in_reais_per_mwh}</Box>
+                  </Box>
+                </TableCell>
+                <TableCell align='center'>{currentDist.tariffs[0].green.peak_te_in_reais_per_mwh}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell align='center'> Fora Ponta</TableCell>
                 <TableCell>
                   <Box display='flex' justifyContent='space-between' width='80%' m='0 auto'>
-                    <Box>90,43</Box>
-                    <Box>118,90 </Box>
+                    <Box> - </Box>
+                    <Box> {currentDist.tariffs[0].green.off_peak_tusd_in_reais_per_mwh} </Box>
                   </Box>
                 </TableCell>
-                <TableCell align='center'>418,67</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell align='center'> NA</TableCell>
-                <TableCell>
-                  <Box display='flex' justifyContent='space-between' width='80%' m='0 auto'>
-                    <Box>90,43</Box>
-                    <Box>118,90 </Box>
-                  </Box>
-                </TableCell>
-                <TableCell align='center'>418,67</TableCell>
+                <TableCell align='center'>{currentDist.tariffs[0].green.off_peak_te_in_reais_per_mwh}</TableCell>
               </TableRow>
             </Fragment>
           </TableBody>
