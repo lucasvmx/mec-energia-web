@@ -25,6 +25,7 @@ export interface AppState {
   consumerUnit: {
     isCreateFormOpen: boolean;
     isEditFormOpen: boolean;
+    isRenewContractFormOpen: boolean;
   };
   distributor: {
     isCreateFormOpen: boolean;
@@ -45,6 +46,7 @@ const initialState: AppState = {
   consumerUnit: {
     isCreateFormOpen: false,
     isEditFormOpen: false,
+    isRenewContractFormOpen: false,
   },
   distributor: {
     isCreateFormOpen: false,
@@ -71,6 +73,12 @@ export const appSlice = createSlice({
     },
     setIsConsumerUnitEditFormOpen: (state, action: PayloadAction<boolean>) => {
       state.consumerUnit.isEditFormOpen = action.payload;
+    },
+    setIsConsumerUnitRenewContractFormOpen: (
+      state,
+      action: PayloadAction<boolean>
+    ) => {
+      state.consumerUnit.isRenewContractFormOpen = action.payload;
     },
     setIsDistributorCreateFormOpen: (
       state,
@@ -107,6 +115,7 @@ export const {
   setIsDrawerOpen,
   setIsConsumerUnitCreateFormOpen,
   setIsConsumerUnitEditFormOpen,
+  setIsConsumerUnitRenewContractFormOpen,
   setIsDistributorCreateFormOpen,
   setIsDistributorEditFormOpen,
   setIsTariffCreateFormOpen,
@@ -123,6 +132,10 @@ export const selectIsConsumerUnitCreateFormOpen = (state: RootState) => {
 
 export const selectIsConsumerUnitEditFormOpen = (state: RootState) => {
   return state.app.consumerUnit.isEditFormOpen;
+};
+
+export const selectIsConsumerUnitRenewContractFormOpen = (state: RootState) => {
+  return state.app.consumerUnit.isRenewContractFormOpen;
 };
 
 export const selectIsDistributorCreateFormOpen = (state: RootState) => {
