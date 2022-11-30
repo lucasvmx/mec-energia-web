@@ -1,6 +1,9 @@
-import { useState } from "react";
 import { useRouter } from "next/router";
+import { useDispatch, useSelector } from "react-redux";
 
+import { selectIsDrawerOpen, setIsDrawerOpen } from "@/store/appSlice";
+
+import theme from "@/theme";
 import { styled, Theme, CSSObject } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
@@ -18,7 +21,6 @@ import FactoryRoundedIcon from "@mui/icons-material/FactoryRounded";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 
-import theme from "@/theme";
 import DrawerListItem from "@/components/Drawer/ListItem";
 
 const menuItems = [
@@ -35,9 +37,9 @@ const menuItems = [
     Icon: TungstenRoundedIcon,
   },
   {
-    name: "Operadoras",
-    href: "/op/1", // TODO Tornar o id dinâmico
-    pathname: "/op/[id]",
+    name: "Distribuidoras",
+    href: "/distribuidoras/1", // TODO Tornar o id dinâmico
+    pathname: "/distribuidoras/[id]",
     Icon: FactoryRoundedIcon,
   },
 ];
@@ -82,20 +84,21 @@ const StyledDrawer = styled(MuiDrawer, {
 
 const Drawer = () => {
   const router = useRouter();
-  const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
+  const isDrawerOpen = useSelector(selectIsDrawerOpen);
 
-  const isActiveRoute = (pathname: string) => router.pathname === pathname;
+  const isCurrentRoute = (pathname: string) => pathname === router.pathname;
 
   const handleLogout = () => {
     console.log("Log out");
   };
 
   const handleToggleDrawer = () => {
-    setOpen(!open);
+    dispatch(setIsDrawerOpen(!isDrawerOpen));
   };
 
   return (
-    <StyledDrawer variant="permanent" open={open}>
+    <StyledDrawer variant="permanent" open={isDrawerOpen}>
       <Box
         position="relative"
         display="flex"
@@ -104,7 +107,7 @@ const Drawer = () => {
         height={openDrawerWidth}
         p={1}
       >
-        <Fade in={open}>
+        <Fade in={isDrawerOpen} appear={false}>
           <Toolbar
             disableGutters
             sx={{ position: "absolute", top: 0, right: 0 }}
@@ -115,7 +118,7 @@ const Drawer = () => {
           </Toolbar>
         </Fade>
 
-        <Fade in={!open}>
+        <Fade in={!isDrawerOpen} appear={false}>
           <Box
             mb={3}
             display="flex"
@@ -150,11 +153,10 @@ const Drawer = () => {
         {menuItems.map(({ name, href, pathname, Icon }) => (
           <DrawerListItem
             key={name}
-            open={open}
             Icon={Icon}
             text={name}
             href={href}
-            active={isActiveRoute(pathname)}
+            active={isCurrentRoute(pathname)}
           />
         ))}
       </List>
@@ -163,17 +165,15 @@ const Drawer = () => {
 
       <List>
         <DrawerListItem
-          open={open}
           Icon={AccountCircleRoundedIcon}
           text="Joaquim Cruz" // TODO Resolver glitch de white-space
           href="/perfil"
-          active={isActiveRoute("/perfil")}
+          active={isCurrentRoute("/perfil")}
         />
 
         <Divider />
 
         <DrawerListItem
-          open={open}
           Icon={LogoutRoundedIcon}
           text="Sair"
           onClick={handleLogout}
