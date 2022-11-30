@@ -97,14 +97,18 @@ export const appSlice = createSlice({
       action: PayloadAction<boolean>
     ) => {
       state.tariff.isCreateFormOpen = action.payload;
-      state.tariff.isEditFormOpen = !action.payload;
+      if(action.payload){
+        state.tariff.isEditFormOpen = !action.payload;
+      }
     },
     setIsTariffEdiFormOpen: (
       state,
       action: PayloadAction<boolean>
     ) => {
       state.tariff.isEditFormOpen = action.payload;
-      state.tariff.isCreateFormOpen = !action.payload;
+      if(action.payload){
+        state.tariff.isCreateFormOpen = !action.payload;
+      }
     },
   },
 });
