@@ -1,30 +1,18 @@
 import { NextPage } from "next";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
-import {
-  setIsConsumerUnitCreateFormOpen,
-  setIsConsumerUnitEditFormOpen,
-} from "../../store/appSlice";
+import { setIsConsumerUnitCreateFormOpen } from "@/store/appSlice";
 
-import {
-  Box,
-  Button,
-  Container,
-  IconButton,
-  Toolbar,
-  Typography,
-  useMediaQuery,
-} from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import StarBorderIcon from "@mui/icons-material/StarBorder";
-import theme from "../../theme";
-import ConsumerUnitCardGrid from "../../components/ConsumerUnit/CardGrid";
-import DefaultTemplate from "../../templates/DefaultTemplate";
-import ConsumerUnitCreateForm from "../../components/ConsumerUnit/Form/Create";
-import ConsumerUnitEditForm from "../../components/ConsumerUnit/Form/Edit";
-import ConsumerUnitHeader from "../../components/ConsumerUnit/Header";
-import ConsumerUnitContent from "../../components/ConsumerUnit/Content";
-import ConsumerUnitRenewContractForm from "../../components/ConsumerUnit/Form/RenewContract";
+import theme from "@/theme";
+import { Box, Button, Toolbar, useMediaQuery } from "@mui/material";
+
+import ConsumerUnitCardGrid from "@/components/ConsumerUnit/CardGrid";
+import DefaultTemplate from "@/templates/DefaultTemplate";
+import ConsumerUnitCreateForm from "@/components/ConsumerUnit/Form/Create";
+import ConsumerUnitEditForm from "@/components/ConsumerUnit/Form/Edit";
+import ConsumerUnitHeader from "@/components/ConsumerUnit/Header";
+import ConsumerUnitContent from "@/components/ConsumerUnit/Content";
+import ConsumerUnitRenewContractForm from "@/components/ConsumerUnit/Form/RenewContract";
 
 const ConsumerUnitPage: NextPage = () => {
   const dispatch = useDispatch();

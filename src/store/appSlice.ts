@@ -6,8 +6,6 @@ export enum ConsumerUnitFormEnum {
   EDIT,
 }
 
-type ConsumerUnitFormType = ConsumerUnitFormEnum | null;
-
 export interface AppState {
   isDrawerOpen: boolean;
   consumerUnit: {

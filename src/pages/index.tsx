@@ -3,9 +3,8 @@ import Head from "next/head";
 
 import { Container } from "@mui/material";
 
-import ConsumerUnitCardGrid from "../components/ConsumerUnit/CardGrid";
-import DefaultTemplate from "../templates/DefaultTemplate";
-import Header from "../components/Header";
+import ConsumerUnitCardGrid from "@/components/ConsumerUnit/CardGrid";
+import DefaultTemplate from "@/templates/DefaultTemplate";
 
 const Home: NextPage = () => {
   return (

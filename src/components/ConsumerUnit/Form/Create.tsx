@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { NumericFormat, NumericFormatProps } from "react-number-format";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Controller,
@@ -7,7 +6,6 @@ import {
   SubmitHandler,
   useForm,
 } from "react-hook-form";
-
 import {
   Box,
   Button,
@@ -26,6 +24,7 @@ import {
   Typography,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
+import { NumericFormat } from "react-number-format";
 
 import {
   selectIsConsumerUnitCreateFormOpen,
@@ -262,7 +261,7 @@ const ConsumerUnitCreateForm = () => {
                 name={"supplied"}
                 rules={{ required: "Preencha este campo" }}
                 render={({
-                  field: { onChange, onBlur, value, ref },
+                  field: { onChange, onBlur, value },
                   fieldState: { error },
                 }) => (
                   <NumericFormat
@@ -330,7 +329,7 @@ const ConsumerUnitCreateForm = () => {
                   name="contracted"
                   rules={{ required: "Preencha este campo" }}
                   render={({
-                    field: { onChange, onBlur, value, ref },
+                    field: { onChange, onBlur, value },
                     fieldState: { error },
                   }) => (
                     <NumericFormat
@@ -367,7 +366,7 @@ const ConsumerUnitCreateForm = () => {
                     name="peakContracted"
                     rules={{ required: "Preencha este campo" }}
                     render={({
-                      field: { onChange, onBlur, value, ref },
+                      field: { onChange, onBlur, value },
                       fieldState: { error },
                     }) => (
                       <NumericFormat
@@ -403,7 +402,7 @@ const ConsumerUnitCreateForm = () => {
                     name="outOfPeakContracted"
                     rules={{ required: "Preencha este campo" }}
                     render={({
-                      field: { onChange, onBlur, value, ref },
+                      field: { onChange, onBlur, value },
                       fieldState: { error },
                     }) => (
                       <NumericFormat

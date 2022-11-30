@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import Link from "next/link";
 import {
   Badge,
   Box,
@@ -16,7 +15,7 @@ import {
   Receipt as ReceiptIcon,
   Star as StarIcon,
   StarOutline as StarOutlineIcon,
-  TrendingUp as TrendingUpIcon
+  TrendingUp as TrendingUpIcon,
 } from "@mui/icons-material";
 
 interface Pendency {
@@ -39,12 +38,11 @@ const ConsumerUnitCard = ({
   disabled = false,
   favorite = false,
   pendencies = [],
-  currentRoute
 }: ConsumerUnitCardProps) => {
   const router = useRouter();
   const [longMonth, setLongMonth] = useState("");
   const [badgeCount, setBadgeCount] = useState(0);
-  const [bottomCardText, setBottomCardText] = useState('')
+  const [bottomCardText, setBottomCardText] = useState("");
   const consumerUnitUrl = `/uc/${id}`;
 
   useEffect(() => {
@@ -68,27 +66,31 @@ const ConsumerUnitCard = ({
   }, [favorite]);
 
   useEffect(() => {
-    handleTextBottomCard()
-  }, [])
+    handleTextBottomCard();
+  }, []);
 
   const handleCardClick = () => {
     router.push(consumerUnitUrl);
   };
 
   const handleTextBottomCard = () => {
-    let text = '';
-    if (disabled) text = 'Desativado'
-    else if (pendencies.length === 0) text = 'Em dia';
+    let text = "";
+    if (disabled) text = "Desativado";
+    else if (pendencies.length === 0) text = "Em dia";
     else if (pendencies.length === 1) {
       const today = new Date();
-      if (pendencies[0].year === today.getFullYear() && pendencies[0].month === today.getMonth() + 1) {
-        text = `${longMonth.charAt(0).toUpperCase() + longMonth.slice(1)} disponível`
-      }
-      else text = "1 lançamento pendente"
-    }
-    else if (pendencies.length > 1) text = `${pendencies.length} lançamentos pendentes`;
+      if (
+        pendencies[0].year === today.getFullYear() &&
+        pendencies[0].month === today.getMonth() + 1
+      ) {
+        text = `${
+          longMonth.charAt(0).toUpperCase() + longMonth.slice(1)
+        } disponível`;
+      } else text = "1 lançamento pendente";
+    } else if (pendencies.length > 1)
+      text = `${pendencies.length} lançamentos pendentes`;
     setBottomCardText(text);
-  }
+  };
 
   return (
     <Card
@@ -127,41 +129,41 @@ const ConsumerUnitCard = ({
         <Box ml={1} p={1}>
           <Typography>{bottomCardText}</Typography>
         </Box>
-      ) :
-        (
-          <CardActions sx={{ justifyContent: "space-between", minHeight: "56px" }}>
-            {disabled ? (
-              <Box ml={1}>
-                <Typography>Desativado</Typography>
-              </Box>
-            ) : (
-              <>
-                {pendencies.length == 0 ? (
-                  <Box ml={1}>
-                    <Typography>Em dia</Typography>
-                  </Box>
-                ) : (
-                  <Button variant="outlined" size="small">
-                    Lançar {longMonth}
-                  </Button>
-                )}
-
-                <Box>
-                  <IconButton color="inherit">
-                    <Badge badgeContent={badgeCount} color="warning">
-                      <ReceiptIcon />
-                    </Badge>
-                  </IconButton>
-
-                  <IconButton color="inherit">
-                    <TrendingUpIcon />
-                  </IconButton>
+      ) : (
+        <CardActions
+          sx={{ justifyContent: "space-between", minHeight: "56px" }}
+        >
+          {disabled ? (
+            <Box ml={1}>
+              <Typography>Desativado</Typography>
+            </Box>
+          ) : (
+            <>
+              {pendencies.length == 0 ? (
+                <Box ml={1}>
+                  <Typography>Em dia</Typography>
                 </Box>
-              </>
-            )}
-          </CardActions>
-        )
-      }
+              ) : (
+                <Button variant="outlined" size="small">
+                  Lançar {longMonth}
+                </Button>
+              )}
+
+              <Box>
+                <IconButton color="inherit">
+                  <Badge badgeContent={badgeCount} color="warning">
+                    <ReceiptIcon />
+                  </Badge>
+                </IconButton>
+
+                <IconButton color="inherit">
+                  <TrendingUpIcon />
+                </IconButton>
+              </Box>
+            </>
+          )}
+        </CardActions>
+      )}
     </Card>
   );
 };

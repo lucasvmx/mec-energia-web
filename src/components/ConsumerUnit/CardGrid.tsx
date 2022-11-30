@@ -1,5 +1,5 @@
-import { Box, Container, Grid } from "@mui/material";
-import ConsumerUnitCard from "./Card";
+import { Box } from "@mui/material";
+import ConsumerUnitCard from "@/components/ConsumerUnit/Card";
 
 const mockedConsumerUnits = [
   {
