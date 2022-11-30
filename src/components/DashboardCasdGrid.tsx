@@ -79,7 +79,7 @@ const DashboardCardGrid = () => {
               key={distributor.id}
               id={distributor.id}
               name={distributor.name}
-              disabled={distributor.disabled}
+              is_active={distributor.is_active}
               tariffs={distributor.tariffs}
               consumer_units={distributor.consumer_units}
             />

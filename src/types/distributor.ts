@@ -4,7 +4,7 @@ export interface DistributorPropsTariffs {
   id: number;
   name: string;
   cnpj?:string;
-  disabled: boolean;
+  is_active: boolean;
   consumer_units:number;
   tariffs: Array<Tariff>;
 }

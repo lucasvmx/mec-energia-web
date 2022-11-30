@@ -73,7 +73,7 @@ export const DistributorInfo = () => {
 
   return (
     <Box display={'flex'} justifyContent="space-between" width={'100%'} mt={3}>
-      <Box flex={7} mr={5} display={currentDist?.consumer_units === 0 || currentDist?.disabled ? 'none' : ''}>
+      <Box flex={7} mr={5} display={currentDist?.consumer_units === 0 || !currentDist?.is_active ? 'none' : ''}>
         <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
           <Typography variant='h5'>{titleTariffs}</Typography>
           {!isPendingTariffAddition &&
@@ -116,7 +116,7 @@ export const DistributorInfo = () => {
             })
           }
 
-          {currentDist?.disabled &&
+          {currentDist?.is_active &&
             <Box sx={{ color: 'text.secondary' }} >
               <Typography>
                 Apenas distribuidoras ativas exibem informações de tarifa.

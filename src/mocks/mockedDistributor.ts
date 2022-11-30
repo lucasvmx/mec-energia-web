@@ -5,7 +5,7 @@ export const mockedDistributor: Array<DistributorPropsTariffs> = [
     id: 1,
     name: "CEMIG",
     cnpj: "07.523.555/0001-67",
-    disabled: false,
+    is_active: true,
     consumer_units: 1,
     tariffs: [
       {
@@ -35,7 +35,7 @@ export const mockedDistributor: Array<DistributorPropsTariffs> = [
     id: 2,
     name: "Enel",
     cnpj: "07.523.555/0001-61",
-    disabled: false,
+    is_active: true,
     consumer_units:0,
     tariffs:[]
   },
@@ -43,7 +43,7 @@ export const mockedDistributor: Array<DistributorPropsTariffs> = [
     id: 3,
     name: "Neoenergia",
     cnpj: "07.523.555/0001-62",
-    disabled: false,
+    is_active: true,
     consumer_units:4,
     tariffs: [
       {
@@ -94,7 +94,7 @@ export const mockedDistributor: Array<DistributorPropsTariffs> = [
     id: 4,
     name: "CEB",
     cnpj: "07.523.555/0001-63",
-    disabled: true,
+    is_active: false,
     consumer_units:2,
     tariffs:[]
   },

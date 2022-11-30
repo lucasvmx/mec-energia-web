@@ -135,7 +135,7 @@ const DistributorPage: NextPage = () => {
             </Box>
             <Box pr={3}>
               {
-                !currentDistributor?.disabled &&
+                currentDistributor?.is_active &&
                 <IconButton
                   color="inherit"
                   onClick={handleClickOpen}>
@@ -143,7 +143,7 @@ const DistributorPage: NextPage = () => {
                 </IconButton>
               }
               {
-                currentDistributor?.disabled &&
+                !currentDistributor?.is_active &&
                 <Box mt={2} sx={{ color: 'text.disabled' }} display="flex" justifyContent="center" alignItems="center">
                   <FlashOffIcon />
                   <Typography variant="h5" fontWeight={'medium'}>

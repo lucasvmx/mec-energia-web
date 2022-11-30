@@ -17,7 +17,7 @@ import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 const DistributorCard = ({
   id,
   name: title,
-  disabled = false,
+  is_active = true,
   tariffs,
   consumer_units
 }: DistributorPropsTariffs) => {
@@ -40,7 +40,7 @@ const DistributorCard = ({
     handleTextBottomCard();
   }, [])
   const handleTextBottomCard = () => {
-    if (disabled) setTextBottomCard("Desativada")
+    if (!is_active) setTextBottomCard("Desativada")
     else if (tariffs?.find(tariff => tariff.overdue === true)) setTextBottomCard("Tarifas pendentes")
     else if (consumer_units === 0) setTextBottomCard("Nenhuma unidade consumidora")
     else if (consumer_units === 1) setTextBottomCard("1 unidade consumidora")
@@ -60,7 +60,7 @@ const DistributorCard = ({
               background: overdue ? 'grey' : '',
               color: overdue ? 'white' : ''
             }}
-            variant={disabled ? "outlined" : "elevation"}
+            variant={!is_active ? "outlined" : "elevation"}
             onClick={handleCardClick}
           >
             <CardContent
@@ -92,7 +92,7 @@ const DistributorCard = ({
               background: overdue ? 'grey' : '',
               color: overdue ? 'white' : ''
             }}
-            variant={disabled ? "outlined" : "elevation"}
+            variant={!is_active ? "outlined" : "elevation"}
             onClick={handleCardClick}
           >
             <BusinessIcon sx={{ margin: 2 }} />
