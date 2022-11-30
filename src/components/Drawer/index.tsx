@@ -104,8 +104,9 @@ const Drawer = () => {
         display="flex"
         alignItems="center"
         justifyContent="center"
-        height={openDrawerWidth}
+        height="192px"
         p={1}
+        pb={0}
       >
         <Fade in={isDrawerOpen} appear={false}>
           <Toolbar
@@ -149,15 +150,16 @@ const Drawer = () => {
         />
       </Box>
 
-      <List>
-        {menuItems.map(({ name, href, pathname, Icon }) => (
-          <DrawerListItem
-            key={name}
-            Icon={Icon}
-            text={name}
-            href={href}
-            active={isCurrentRoute(pathname)}
-          />
+      <List sx={{ padding: 0 }}>
+        {menuItems.map(({ name, href, pathname, Icon }, index) => (
+          <Box mt={index > 0 ? 1 : 0} key={name}>
+            <DrawerListItem
+              Icon={Icon}
+              text={name}
+              href={href}
+              active={isCurrentRoute(pathname)}
+            />
+          </Box>
         ))}
       </List>
 
