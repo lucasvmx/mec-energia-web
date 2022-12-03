@@ -6,20 +6,6 @@ export enum ConsumerUnitFormEnum {
   EDIT,
 }
 
-export enum DistributorFormEnum {
-  CREATE,
-  EDIT,
-}
-
-export enum TariffFormEnum {
-  CREATE,
-  EDIT,
-}
-
-type ConsumerUnitFormType = ConsumerUnitFormEnum | null;
-type DistributorFormType = DistributorFormEnum | null;
-type TariffFormType = TariffFormEnum | null;
-
 export interface AppState {
   isDrawerOpen: boolean;
   consumerUnit: {

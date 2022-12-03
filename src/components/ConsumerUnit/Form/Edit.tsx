@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { NumericFormat } from "react-number-format";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Controller,
@@ -7,19 +6,14 @@ import {
   SubmitHandler,
   useForm,
 } from "react-hook-form";
-
+import { NumericFormat } from "react-number-format";
+import { isAfter, isFuture, isValid } from "date-fns";
 import {
   Alert,
   Box,
   Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   FormControl,
   FormControlLabel,
-  FormGroup,
   FormHelperText,
   FormLabel,
   Grid,
@@ -38,11 +32,10 @@ import { DatePicker } from "@mui/x-date-pickers";
 import {
   selectIsConsumerUnitEditFormOpen,
   setIsConsumerUnitEditFormOpen,
-} from "../../../store/appSlice";
-import FormDrawer from "../../Form/Drawer";
-import { EditConsumerUnitForm } from "../../../types/consumerUnit";
-import FormWarningDialog from "./WarningDialog";
-import { isAfter, isFuture, isValid } from "date-fns";
+} from "@/store/appSlice";
+import FormDrawer from "@/components/Form/Drawer";
+import { EditConsumerUnitForm } from "@/types/consumerUnit";
+import FormWarningDialog from "@/components/ConsumerUnit/Form/WarningDialog";
 
 const defaultValues: EditConsumerUnitForm = {
   isActive: true,
@@ -303,7 +296,7 @@ const ConsumerUnitEditForm = () => {
                 name={"supplied"}
                 rules={{ required: "Preencha este campo" }}
                 render={({
-                  field: { onChange, onBlur, value, ref },
+                  field: { onChange, onBlur, value },
                   fieldState: { error },
                 }) => (
                   <NumericFormat
@@ -369,7 +362,7 @@ const ConsumerUnitEditForm = () => {
                   name="contracted"
                   rules={{ required: "Preencha este campo" }}
                   render={({
-                    field: { onChange, onBlur, value, ref },
+                    field: { onChange, onBlur, value },
                     fieldState: { error },
                   }) => (
                     <NumericFormat
@@ -406,7 +399,7 @@ const ConsumerUnitEditForm = () => {
                     name="peakContracted"
                     rules={{ required: "Preencha este campo" }}
                     render={({
-                      field: { onChange, onBlur, value, ref },
+                      field: { onChange, onBlur, value },
                       fieldState: { error },
                     }) => (
                       <NumericFormat
@@ -442,7 +435,7 @@ const ConsumerUnitEditForm = () => {
                     name="outOfPeakContracted"
                     rules={{ required: "Preencha este campo" }}
                     render={({
-                      field: { onChange, onBlur, value, ref },
+                      field: { onChange, onBlur, value },
                       fieldState: { error },
                     }) => (
                       <NumericFormat

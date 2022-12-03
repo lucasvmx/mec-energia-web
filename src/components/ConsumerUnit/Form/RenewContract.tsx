@@ -1,3 +1,15 @@
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { isAfter, isFuture, isValid } from "date-fns";
+
+import {
+  Controller,
+  FormProvider,
+  SubmitHandler,
+  useForm,
+} from "react-hook-form";
+import { NumericFormat } from "react-number-format";
+
 import {
   Box,
   Button,
@@ -16,23 +28,14 @@ import {
   Typography,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
-import { isAfter, isFuture, isValid } from "date-fns";
-import { useEffect, useState } from "react";
-import {
-  Controller,
-  FormProvider,
-  SubmitHandler,
-  useForm,
-} from "react-hook-form";
-import { NumericFormat } from "react-number-format";
-import { useDispatch, useSelector } from "react-redux";
+
 import {
   selectIsConsumerUnitRenewContractFormOpen,
   setIsConsumerUnitRenewContractFormOpen,
-} from "../../../store/appSlice";
-import { RenewConsumerUnitContractForm } from "../../../types/consumerUnit";
-import FormDrawer from "../../Form/Drawer";
-import FormWarningDialog from "./WarningDialog";
+} from "@/store/appSlice";
+import { RenewConsumerUnitContractForm } from "@/types/consumerUnit";
+import FormDrawer from "@/components/Form/Drawer";
+import FormWarningDialog from "@/components/ConsumerUnit/Form/WarningDialog";
 
 const defaultValues: RenewConsumerUnitContractForm = {
   supplier: "",
@@ -216,7 +219,7 @@ const ConsumerUnitRenewContractForm = () => {
                 name={"supplied"}
                 rules={{ required: "Preencha este campo" }}
                 render={({
-                  field: { onChange, onBlur, value, ref },
+                  field: { onChange, onBlur, value },
                   fieldState: { error },
                 }) => (
                   <NumericFormat
@@ -284,7 +287,7 @@ const ConsumerUnitRenewContractForm = () => {
                   name="contracted"
                   rules={{ required: "Preencha este campo" }}
                   render={({
-                    field: { onChange, onBlur, value, ref },
+                    field: { onChange, onBlur, value },
                     fieldState: { error },
                   }) => (
                     <NumericFormat
@@ -321,7 +324,7 @@ const ConsumerUnitRenewContractForm = () => {
                     name="peakContracted"
                     rules={{ required: "Preencha este campo" }}
                     render={({
-                      field: { onChange, onBlur, value, ref },
+                      field: { onChange, onBlur, value },
                       fieldState: { error },
                     }) => (
                       <NumericFormat
@@ -357,7 +360,7 @@ const ConsumerUnitRenewContractForm = () => {
                     name="outOfPeakContracted"
                     rules={{ required: "Preencha este campo" }}
                     render={({
-                      field: { onChange, onBlur, value, ref },
+                      field: { onChange, onBlur, value },
                       fieldState: { error },
                     }) => (
                       <NumericFormat

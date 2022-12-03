@@ -1,7 +1,7 @@
 import { SyntheticEvent, useState } from "react";
-import { Box, Tab, Tabs, Typography } from "@mui/material";
-import ConsumerUnitContractContent from "./Contract";
+import { Box, Tab, Tabs } from "@mui/material";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
+import ConsumerUnitContractContent from "@/components/ConsumerUnit/Content/Contract";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -33,9 +33,6 @@ const ConsumerUnitContent = () => {
     setSelectedTab(tabIndex);
   };
 
-  const handleChangeIndex = (tabIndex: number) => {
-    setSelectedTab(tabIndex);
-  };
   return (
     <>
       <Tabs value={selectedTab} variant="fullWidth" onChange={handleTabChange}>
