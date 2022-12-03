@@ -110,7 +110,7 @@ export const DistributorInfo = () => {
             </Box>
           ) :
             currentConsumerUnitList?.subgroups[0].consumer_units?.map(consumer_unit => {
-              return <ul>
+              return <ul key={consumer_unit.id}>
                 <li><Typography><Link href={`/uc/${consumer_unit.id}`}><MUILink sx={{ cursor: 'pointer' }} color="inherit">{consumer_unit.name}</MUILink></Link></Typography></li>
               </ul>
             })

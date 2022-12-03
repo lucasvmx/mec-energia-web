@@ -1,4 +1,4 @@
-import { Box, Container, Grid } from "@mui/material";
+import { Box } from "@mui/material";
 import { mockedDistributor } from "../mocks/mockedDistributor";
 import ConsumerUnitCard from "./ConsumerUnit/Card";
 import DistributorCard from "./Distributor/DistributorCard";

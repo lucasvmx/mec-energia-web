@@ -30,14 +30,14 @@ export const TariffTable = () => {
       if (currentDist?.tariffs[0].start_date === '') setStartDate('')
       else {
         setStartDate(format(new Date(currentDist?.tariffs[0].start_date), "dd'/'MM'/'yyyy"))
-        setOverdue(currentDist?.tariffs[0].overdue!)
+        setOverdue(currentDist?.tariffs[0].overdue)
       }
     } else setStartDate('')
     if (currentDist.tariffs.length > 0) {
       if (currentDist?.tariffs[0].end_date === '') setEndDate('')
       else {
         setEndDate(format(new Date(currentDist?.tariffs[0].end_date), "dd'/'MM'/'yyyy"))
-        setOverdue(currentDist?.tariffs[0].overdue!)
+        setOverdue(currentDist?.tariffs[0].overdue)
       }
     } else {
       setStartDate('')

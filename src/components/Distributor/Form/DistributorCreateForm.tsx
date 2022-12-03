@@ -26,8 +26,6 @@ const DistributorCreateForm = () => {
     control,
     reset,
     handleSubmit,
-    watch,
-    setValue,
     formState: { isDirty },
   } = form;
   const handleCancelEdition = () => {
@@ -48,7 +46,7 @@ const DistributorCreateForm = () => {
     setShouldShowCancelDialog(false);
   };
 
-  const onSubmitHandler: SubmitHandler<CreateDistributorForm> = (data: any) => {
+  const onSubmitHandler: SubmitHandler<CreateDistributorForm> = (data) => {
     console.log(data);
   };
   return (
@@ -96,7 +94,7 @@ const DistributorCreateForm = () => {
                 name="cnpj"
                 rules={{ required: "Campo obrigatório" }}
                 render={({
-                  field: { onChange, onBlur, value, ref },
+                  field: { onChange, onBlur, value },
                   fieldState: { error },
                 }) => (
                   <PatternFormat

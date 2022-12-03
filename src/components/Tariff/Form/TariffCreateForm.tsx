@@ -41,8 +41,6 @@ const TariffCreateForm = () => {
     control,
     reset,
     handleSubmit,
-    setValue,
-    watch,
     formState: { isDirty }
   } = form;
 
@@ -65,7 +63,7 @@ const TariffCreateForm = () => {
     setShouldShowCancelDialog(false);
   }
 
-  const onSubmitHandler: SubmitHandler<CreateAndEditTariffForm> = (data: any) => {
+  const onSubmitHandler: SubmitHandler<CreateAndEditTariffForm> = (data) => {
     console.log(data);
   }
 
@@ -186,7 +184,7 @@ const TariffCreateForm = () => {
                 name={"blue.peak_tusd_in_reais_per_kw"}
                 rules={{ required: "Campo obrigatório" }}
                 render={({
-                  field: { onChange, onBlur, value, ref },
+                  field: { onChange, onBlur, value },
                   fieldState: { error },
                 }) => (
                   <NumericFormat
@@ -219,7 +217,7 @@ const TariffCreateForm = () => {
                 name={"blue.peak_tusd_in_reais_per_mwh"}
                 rules={{ required: "Campo obrigatório" }}
                 render={({
-                  field: { onChange, onBlur, value, ref },
+                  field: { onChange, onBlur, value },
                   fieldState: { error },
                 }) => (
                   <NumericFormat
@@ -252,7 +250,7 @@ const TariffCreateForm = () => {
                 name={"blue.peak_te_in_reais_per_mwh"}
                 rules={{ required: "Campo obrigatório" }}
                 render={({
-                  field: { onChange, onBlur, value, ref },
+                  field: { onChange, onBlur, value },
                   fieldState: { error },
                 }) => (
                   <NumericFormat
@@ -289,7 +287,7 @@ const TariffCreateForm = () => {
                 name={"blue.off_peak_tusd_in_reais_per_kw"}
                 rules={{ required: "Campo obrigatório" }}
                 render={({
-                  field: { onChange, onBlur, value, ref },
+                  field: { onChange, onBlur, value },
                   fieldState: { error },
                 }) => (
                   <NumericFormat
@@ -322,7 +320,7 @@ const TariffCreateForm = () => {
                 name={"blue.off_peak_tusd_in_reais_per_mwh"}
                 rules={{ required: "Campo obrigatório" }}
                 render={({
-                  field: { onChange, onBlur, value, ref },
+                  field: { onChange, onBlur, value },
                   fieldState: { error },
                 }) => (
                   <NumericFormat
@@ -355,7 +353,7 @@ const TariffCreateForm = () => {
                 name={"blue.off_peak_te_in_reais_per_mwh"}
                 rules={{ required: "Campo obrigatório" }}
                 render={({
-                  field: { onChange, onBlur, value, ref },
+                  field: { onChange, onBlur, value },
                   fieldState: { error },
                 }) => (
                   <NumericFormat
@@ -399,7 +397,7 @@ const TariffCreateForm = () => {
                 name={"green.na_tusd_in_reais_per_kw"}
                 rules={{ required: "Campo obrigatório" }}
                 render={({
-                  field: { onChange, onBlur, value, ref },
+                  field: { onChange, onBlur, value },
                   fieldState: { error },
                 }) => (
                   <NumericFormat
@@ -437,7 +435,7 @@ const TariffCreateForm = () => {
                 name={"green.peak_tusd_in_reais_per_mwh"}
                 rules={{ required: "Campo obrigatório" }}
                 render={({
-                  field: { onChange, onBlur, value, ref },
+                  field: { onChange, onBlur, value },
                   fieldState: { error },
                 }) => (
                   <NumericFormat
@@ -470,7 +468,7 @@ const TariffCreateForm = () => {
                 name={"green.peak_te_in_reais_per_mwh"}
                 rules={{ required: "Campo obrigatório" }}
                 render={({
-                  field: { onChange, onBlur, value, ref },
+                  field: { onChange, onBlur, value },
                   fieldState: { error },
                 }) => (
                   <NumericFormat
@@ -507,7 +505,7 @@ const TariffCreateForm = () => {
                 name={"green.off_peak_tusd_in_reais_per_mwh"}
                 rules={{ required: "Campo obrigatório" }}
                 render={({
-                  field: { onChange, onBlur, value, ref },
+                  field: { onChange, onBlur, value },
                   fieldState: { error },
                 }) => (
                   <NumericFormat
@@ -540,7 +538,7 @@ const TariffCreateForm = () => {
                 name={"green.off_peak_te_in_reais_per_mwh"}
                 rules={{ required: "Campo obrigatório" }}
                 render={({
-                  field: { onChange, onBlur, value, ref },
+                  field: { onChange, onBlur, value },
                   fieldState: { error },
                 }) => (
                   <NumericFormat

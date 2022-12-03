@@ -1,7 +1,6 @@
 import * as React from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { DistributorPropsTariffs } from '../../types/distributor';
 import { useEffect, useState } from 'react';
@@ -47,7 +46,6 @@ function a11yProps(index: string) {
 export default function DistributorContainer() {
   const [value, setValue] = useState(0);
   const [subgroups, setSubgroups] = useState(Array<SubGroup>)
-  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const [currentDist, setCurrentDist] = useState<DistributorPropsTariffs | undefined>()
@@ -68,28 +66,21 @@ export default function DistributorContainer() {
       }
     })
     setSubgroups(sub)
-
   }
 
   useEffect(() => {
-    setLoading(true)
     const { id } = router.query
     setCurrentDist(mockedDistributor[Number(id) - 1])
     getAllSubgroups()
-    setLoading(false)
   }, [])
 
   useEffect(() => {
-    setLoading(true);
     const { id } = router.query
     setCurrentDist(mockedDistributor[Number(id) - 1])
-    setLoading(false)
   }, [router.asPath])
 
   useEffect(() => {
-    setLoading(true)
     getAllSubgroups()
-    setLoading(false)
   }, [currentDist])
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -124,7 +115,7 @@ export default function DistributorContainer() {
           </Box>
           {subgroups.map((sub, index) => {
             return (
-              <TabPanel value={value} index={index}>
+              <TabPanel key={index} value={value} index={index}>
                 <DistributorInfo />
               </TabPanel>
             )

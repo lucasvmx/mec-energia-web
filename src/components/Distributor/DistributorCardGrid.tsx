@@ -1,6 +1,4 @@
-import { Box, Container, Grid } from "@mui/material";
-import ConsumerUnitCard from "../ConsumerUnit/Card";
-import { useRouter } from "next/router";
+import { Box } from "@mui/material";
 import DistributorCard from "./DistributorCard";
 import { mockedDistributor } from "../../mocks/mockedDistributor";
 
