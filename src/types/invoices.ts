@@ -7,8 +7,8 @@ export interface Invoice{
   mountNumber:number;
   analyzable:boolean;
   consumption_peak:number;
-  consumptionoff_peak:number;
-  demand:number;
+  consumption_off_peak:number;
+  demand_peak:number;
   demand_off_peak:number;
   invoice_value: number;
 }
