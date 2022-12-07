@@ -1,4 +1,4 @@
-import { Badge, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
+import { Badge, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from '@mui/material'
 import InfoIcon from '@mui/icons-material/Info';
 import React, { Fragment, useEffect, useState } from 'react'
 import { mockedDistributor } from '../../mocks/mockedDistributor';
@@ -91,7 +91,9 @@ export const TariffTable = () => {
                     <Typography>
                       TUSD
                     </Typography>
-                    <InfoIcon />
+                    <Tooltip title="Tarifa de uso do sistema de distribuição">
+                      <InfoIcon />
+                    </Tooltip>
                   </Box>
                   <Box display='flex' justifyContent='space-between' width='80%'>
                     <Box>
@@ -106,7 +108,10 @@ export const TariffTable = () => {
               <TableCell sx={{ color: '#fff' }}>
                 <Box display='flex' flexDirection='column' justifyContent='center' alignItems='center'>
                   <Box display='flex' justifyContent='space-between' alignItems='center' width='30%'>
-                    <Box>TE</Box> <InfoIcon />
+                    <Box>TE</Box>
+                    <Tooltip title="Tarifa de energia">
+                      <InfoIcon />
+                    </Tooltip>
                   </Box>
                   <Box>R$/MWh</Box>
                 </Box>

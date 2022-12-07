@@ -68,7 +68,7 @@ const DistributorCreateForm = () => {
               <Controller
                 control={control}
                 name="name"
-                rules={{ required: "Campo obrigatório" }}
+                rules={{ required: "Preencha este campo" }}
                 render={({
                   field: { onChange, onBlur, value, ref },
                   fieldState: { error },
@@ -77,7 +77,6 @@ const DistributorCreateForm = () => {
                     ref={ref}
                     value={value}
                     label="Nome"
-                    required
                     error={Boolean(error)}
                     helperText={error?.message ?? " "}
                     fullWidth
@@ -92,7 +91,13 @@ const DistributorCreateForm = () => {
               <Controller
                 control={control}
                 name="cnpj"
-                rules={{ required: "Campo obrigatório" }}
+                rules={{
+                  required: "Preencha este campo",
+                  pattern: {
+                    value: /([0-9]{2}[\.]?[0-9]{3}[\.]?[0-9]{3}[\/]?[0-9]{4}[-]?[0-9]{2})/,
+                    message: "Preencha corretamente a informaçõe de CNPJ"
+                  }
+                }}
                 render={({
                   field: { onChange, onBlur, value },
                   fieldState: { error },
@@ -102,7 +107,6 @@ const DistributorCreateForm = () => {
                     customInput={TextField}
                     label="CNPJ"
                     format='##.###.###/####-##'
-                    required
                     error={Boolean(error)}
                     helperText={error?.message ?? " "}
                     fullWidth

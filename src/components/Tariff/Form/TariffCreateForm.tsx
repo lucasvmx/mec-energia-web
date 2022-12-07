@@ -114,7 +114,7 @@ const TariffCreateForm = () => {
                 control={control}
                 name="start_date"
                 rules={{
-                  required: "Campo obrigatório",
+                  required: "Preencha este campo",
                   validate: isValidDate,
                 }}
                 render={({
@@ -126,9 +126,14 @@ const TariffCreateForm = () => {
                     label="Início da vigência *"
                     minDate={new Date("2010")}
                     disableFuture
+                    toolbarPlaceholder="kajsdfh"
                     renderInput={(params) => (
                       <TextField
                         {...params}
+                        inputProps={{
+                          ...params.inputProps,
+                          placeholder: "dd/mm/aaaa"
+                        }}
                         helperText={error?.message ?? " "}
                         error={!!error}
                       />
@@ -144,7 +149,7 @@ const TariffCreateForm = () => {
                 control={control}
                 name="end_date"
                 rules={{
-                  required: "Campo obrigatório",
+                  required: "Preencha este campo",
                   validate: isValidDate,
                 }}
                 render={({
@@ -154,10 +159,13 @@ const TariffCreateForm = () => {
                   <DatePicker
                     value={value}
                     label="Fim da vigência *"
-                    disableFuture
                     renderInput={(params) => (
                       <TextField
                         {...params}
+                        inputProps={{
+                          ...params.inputProps,
+                          placeholder: "dd/mm/aaaa"
+                        }}
                         helperText={error?.message ?? " "}
                         error={!!error}
                       />
@@ -182,13 +190,13 @@ const TariffCreateForm = () => {
               <Controller
                 control={control}
                 name={"blue.peak_tusd_in_reais_per_kw"}
-                rules={{ required: "Campo obrigatório" }}
+                rules={{ required: "Preencha este campo" }}
                 render={({
                   field: { onChange, onBlur, value },
                   fieldState: { error },
                 }) => (
                   <NumericFormat
-                    value={value}
+                    value={value !== 0 ? value : null}
                     customInput={TextField}
                     label="TUSD R$/kW  *"
                     helperText={error?.message ?? " "}
@@ -198,6 +206,7 @@ const TariffCreateForm = () => {
                       startAdornment: (
                         <InputAdornment position="start">R$</InputAdornment>
                       ),
+                      placeholder: "0,00"
                     }}
                     type="text"
                     allowNegative={false}
@@ -215,13 +224,13 @@ const TariffCreateForm = () => {
               <Controller
                 control={control}
                 name={"blue.peak_tusd_in_reais_per_mwh"}
-                rules={{ required: "Campo obrigatório" }}
+                rules={{ required: "Preencha este campo" }}
                 render={({
                   field: { onChange, onBlur, value },
                   fieldState: { error },
                 }) => (
                   <NumericFormat
-                    value={value}
+                    value={value !== 0 ? value : null}
                     customInput={TextField}
                     label="TUSD R$/MWh *"
                     helperText={error?.message ?? " "}
@@ -231,6 +240,7 @@ const TariffCreateForm = () => {
                       startAdornment: (
                         <InputAdornment position="start">R$</InputAdornment>
                       ),
+                      placeholder: "0,00"
                     }}
                     type="text"
                     allowNegative={false}
@@ -248,13 +258,13 @@ const TariffCreateForm = () => {
               <Controller
                 control={control}
                 name={"blue.peak_te_in_reais_per_mwh"}
-                rules={{ required: "Campo obrigatório" }}
+                rules={{ required: "Preencha este campo" }}
                 render={({
                   field: { onChange, onBlur, value },
                   fieldState: { error },
                 }) => (
                   <NumericFormat
-                    value={value}
+                    value={value !== 0 ? value : null}
                     customInput={TextField}
                     label="TE R$/MWh  *"
                     helperText={error?.message ?? " "}
@@ -264,6 +274,7 @@ const TariffCreateForm = () => {
                       startAdornment: (
                         <InputAdornment position="start">R$</InputAdornment>
                       ),
+                      placeholder: "0,00"
                     }}
                     type="text"
                     allowNegative={false}
@@ -285,13 +296,13 @@ const TariffCreateForm = () => {
               <Controller
                 control={control}
                 name={"blue.off_peak_tusd_in_reais_per_kw"}
-                rules={{ required: "Campo obrigatório" }}
+                rules={{ required: "Preencha este campo" }}
                 render={({
                   field: { onChange, onBlur, value },
                   fieldState: { error },
                 }) => (
                   <NumericFormat
-                    value={value}
+                    value={value !== 0 ? value : null}
                     customInput={TextField}
                     label="TUSD R$/kW  *"
                     helperText={error?.message ?? " "}
@@ -301,6 +312,7 @@ const TariffCreateForm = () => {
                       startAdornment: (
                         <InputAdornment position="start">R$</InputAdornment>
                       ),
+                      placeholder: "0,00"
                     }}
                     type="text"
                     allowNegative={false}
@@ -318,13 +330,13 @@ const TariffCreateForm = () => {
               <Controller
                 control={control}
                 name={"blue.off_peak_tusd_in_reais_per_mwh"}
-                rules={{ required: "Campo obrigatório" }}
+                rules={{ required: "Preencha este campo" }}
                 render={({
                   field: { onChange, onBlur, value },
                   fieldState: { error },
                 }) => (
                   <NumericFormat
-                    value={value}
+                    value={value !== 0 ? value : null}
                     customInput={TextField}
                     label="TUSD R$/MWh *"
                     helperText={error?.message ?? " "}
@@ -334,6 +346,7 @@ const TariffCreateForm = () => {
                       startAdornment: (
                         <InputAdornment position="start">R$</InputAdornment>
                       ),
+                      placeholder: "0,00"
                     }}
                     type="text"
                     allowNegative={false}
@@ -351,13 +364,13 @@ const TariffCreateForm = () => {
               <Controller
                 control={control}
                 name={"blue.off_peak_te_in_reais_per_mwh"}
-                rules={{ required: "Campo obrigatório" }}
+                rules={{ required: "Preencha este campo" }}
                 render={({
                   field: { onChange, onBlur, value },
                   fieldState: { error },
                 }) => (
                   <NumericFormat
-                    value={value}
+                    value={value !== 0 ? value : undefined}
                     customInput={TextField}
                     label="TE R$/MWh  *"
                     helperText={error?.message ?? " "}
@@ -367,9 +380,13 @@ const TariffCreateForm = () => {
                       startAdornment: (
                         <InputAdornment position="start">R$</InputAdornment>
                       ),
+                      placeholder: "0,00"
                     }}
                     type="text"
                     allowNegative={false}
+                    isAllowed={({ floatValue }) =>
+                      !floatValue || floatValue >= 1 || floatValue <= 9999.99
+                    }
                     decimalScale={2}
                     decimalSeparator=","
                     thousandSeparator={" "}
@@ -395,13 +412,13 @@ const TariffCreateForm = () => {
               <Controller
                 control={control}
                 name={"green.na_tusd_in_reais_per_kw"}
-                rules={{ required: "Campo obrigatório" }}
+                rules={{ required: "Preencha este campo" }}
                 render={({
                   field: { onChange, onBlur, value },
                   fieldState: { error },
                 }) => (
                   <NumericFormat
-                    value={value}
+                    value={value !== 0 ? value : null}
                     customInput={TextField}
                     label="TUSD R$/kW  *"
                     helperText={error?.message ?? " "}
@@ -411,6 +428,7 @@ const TariffCreateForm = () => {
                       startAdornment: (
                         <InputAdornment position="start">R$</InputAdornment>
                       ),
+                      placeholder: "0,00"
                     }}
                     type="text"
                     allowNegative={false}
@@ -433,13 +451,13 @@ const TariffCreateForm = () => {
               <Controller
                 control={control}
                 name={"green.peak_tusd_in_reais_per_mwh"}
-                rules={{ required: "Campo obrigatório" }}
+                rules={{ required: "Preencha este campo" }}
                 render={({
                   field: { onChange, onBlur, value },
                   fieldState: { error },
                 }) => (
                   <NumericFormat
-                    value={value}
+                    value={value !== 0 ? value : null}
                     customInput={TextField}
                     label="TUSD R$/MWh *"
                     helperText={error?.message ?? " "}
@@ -449,6 +467,7 @@ const TariffCreateForm = () => {
                       startAdornment: (
                         <InputAdornment position="start">R$</InputAdornment>
                       ),
+                      placeholder: "0,00"
                     }}
                     type="text"
                     allowNegative={false}
@@ -466,13 +485,13 @@ const TariffCreateForm = () => {
               <Controller
                 control={control}
                 name={"green.peak_te_in_reais_per_mwh"}
-                rules={{ required: "Campo obrigatório" }}
+                rules={{ required: "Preencha este campo" }}
                 render={({
                   field: { onChange, onBlur, value },
                   fieldState: { error },
                 }) => (
                   <NumericFormat
-                    value={value}
+                    value={value !== 0 ? value : null}
                     customInput={TextField}
                     label="TE R$/MWh  *"
                     helperText={error?.message ?? " "}
@@ -482,6 +501,7 @@ const TariffCreateForm = () => {
                       startAdornment: (
                         <InputAdornment position="start">R$</InputAdornment>
                       ),
+                      placeholder: "0,00"
                     }}
                     type="text"
                     allowNegative={false}
@@ -503,13 +523,13 @@ const TariffCreateForm = () => {
               <Controller
                 control={control}
                 name={"green.off_peak_tusd_in_reais_per_mwh"}
-                rules={{ required: "Campo obrigatório" }}
+                rules={{ required: "Preencha este campo" }}
                 render={({
                   field: { onChange, onBlur, value },
                   fieldState: { error },
                 }) => (
                   <NumericFormat
-                    value={value}
+                    value={value !== 0 ? value : null}
                     customInput={TextField}
                     label="TUSD R$/MWh *"
                     helperText={error?.message ?? " "}
@@ -519,6 +539,7 @@ const TariffCreateForm = () => {
                       startAdornment: (
                         <InputAdornment position="start">R$</InputAdornment>
                       ),
+                      placeholder: "0,00"
                     }}
                     type="text"
                     allowNegative={false}
@@ -536,13 +557,13 @@ const TariffCreateForm = () => {
               <Controller
                 control={control}
                 name={"green.off_peak_te_in_reais_per_mwh"}
-                rules={{ required: "Campo obrigatório" }}
+                rules={{ required: "Preencha este campo" }}
                 render={({
                   field: { onChange, onBlur, value },
                   fieldState: { error },
                 }) => (
                   <NumericFormat
-                    value={value}
+                    value={value !== 0 ? value : null}
                     customInput={TextField}
                     label="TE R$/MWh  *"
                     helperText={error?.message ?? " "}
@@ -552,6 +573,7 @@ const TariffCreateForm = () => {
                       startAdornment: (
                         <InputAdornment position="start">R$</InputAdornment>
                       ),
+                      placeholder: "0,00"
                     }}
                     type="text"
                     allowNegative={false}

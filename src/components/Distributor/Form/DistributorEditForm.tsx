@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { selectIsDistributorEditFormOpen, setIsDistributorEditFormOpen } from '../../../store/appSlice';
 import { CreateDistributorForm, EditDistributorForm } from '../../../types/distributor';
@@ -36,10 +36,6 @@ const DistributorEditForm = () => {
     }
     handleDiscardForm();
   };
-
-  useEffect(() => {
-    console.log("editarrrrr")
-  })
 
   const handleDiscardForm = () => {
     handleCloseDialog();

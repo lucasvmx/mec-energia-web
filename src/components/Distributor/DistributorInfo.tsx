@@ -11,6 +11,7 @@ import { mockedDistributor } from '../../mocks/mockedDistributor';
 import { mockedDistributorComsumerUnit } from '../../mocks/mockedDistributor';
 import { setIsTariffCreateFormOpen, setIsTariffEdiFormOpen } from '../../store/appSlice';
 import { useDispatch } from 'react-redux';
+//import { Tariff } from '@/types/tariffs';
 
 
 export const DistributorInfo = () => {
@@ -18,6 +19,7 @@ export const DistributorInfo = () => {
 
   const [currentDist, setCurrentDist] = useState<DistributorPropsTariffs>(mockedDistributor[0])
   const [currentConsumerUnitList, setCurrentConsumerUnitList] = useState<DistributorConsumerUnits>()
+  //const [currentTariff, setCurrentTariff] = useState<Tariff>()
   const [titleTariffs, setTitleTariffs] = useState('Tarifas')
   const [isOverdue, setisOverdue] = useState(false);
   const [isPendingTariffAddition, setIsPendingTariffAddition] = useState(false);
@@ -30,7 +32,7 @@ export const DistributorInfo = () => {
       if (isOverdue) setTitleTariffs(`Tarifas do subgrupo ${tarrif.subgroup} pendentes`)
       else setTitleTariffs(`Tarifas do subgrupo ${tarrif.subgroup}`)
     }
-    else if (currentDist?.tariffs.length !== 1) {
+    else if (currentDist?.tariffs.length > 1) {
       if (!isOverdue) setTitleTariffs('Tarifas')
       else setTitleTariffs('Tarifas com atualizações pendentes')
     }
@@ -116,7 +118,7 @@ export const DistributorInfo = () => {
             })
           }
 
-          {currentDist?.is_active &&
+          {!currentDist?.is_active &&
             <Box sx={{ color: 'text.secondary' }} >
               <Typography>
                 Apenas distribuidoras ativas exibem informações de tarifa.
