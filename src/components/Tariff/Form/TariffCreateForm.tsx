@@ -15,19 +15,19 @@ const defaultValues: CreateAndEditTariffForm = {
   start_date: '',
   end_date: '',
   blue: {
-    peak_tusd_in_reais_per_kw: 0,
-    peak_tusd_in_reais_per_mwh: 0,
-    peak_te_in_reais_per_mwh: 0,
-    off_peak_tusd_in_reais_per_kw: 0,
-    off_peak_tusd_in_reais_per_mwh: 0,
-    off_peak_te_in_reais_per_mwh: 0,
+    peak_tusd_in_reais_per_kw: undefined,
+    peak_tusd_in_reais_per_mwh: undefined,
+    peak_te_in_reais_per_mwh: undefined,
+    off_peak_tusd_in_reais_per_kw: undefined,
+    off_peak_tusd_in_reais_per_mwh: undefined,
+    off_peak_te_in_reais_per_mwh: undefined,
   },
   green: {
-    peak_tusd_in_reais_per_mwh: 0,
-    peak_te_in_reais_per_mwh: 0,
-    off_peak_tusd_in_reais_per_mwh: 0,
-    off_peak_te_in_reais_per_mwh: 0,
-    na_tusd_in_reais_per_kw: 0,
+    peak_tusd_in_reais_per_mwh: undefined,
+    peak_te_in_reais_per_mwh: undefined,
+    off_peak_tusd_in_reais_per_mwh: undefined,
+    off_peak_te_in_reais_per_mwh: undefined,
+    na_tusd_in_reais_per_kw: undefined,
   }
 }
 
@@ -36,6 +36,7 @@ const TariffCreateForm = () => {
   const isCreateTariffFormOpen = useSelector(selectIsTariffCreateFormOpen);
   const isEditTariffFormOpen = useSelector(selectIsTariffEditFormOpen)
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
+  const [startDate, setStartDate] = useState(new Date(2010))
   const form = useForm({ defaultValues })
   const {
     control,
@@ -69,15 +70,29 @@ const TariffCreateForm = () => {
 
   const isValidDate = (date: CreateAndEditTariffForm["start_date"]) => {
     if (!date || !isValid(date)) {
-      return "Data inválida";
+      return "Insira uma data válida no formato dd/mm/aaaa.";
     }
 
     if (isFuture(new Date(date))) {
-      return "Datas futuras não são permitidas";
+      return "Insira uma data anterior ou igual a data atual no formato dd/mm/aaaa";
     }
 
     if (!isAfter(new Date(date), new Date("2010"))) {
-      return "Datas antes de 2010 não são permitidas";
+      return "Insira uma data a partir de 2010";
+    }
+
+    setStartDate(new Date(date))
+
+    return true;
+  };
+
+  const isValidEndDate = (date: CreateAndEditTariffForm["end_date"]) => {
+    if (!date || !isValid(date)) {
+      return "Insira uma data válida no formato dd/mm/aaaa.";
+    }
+
+    if (!isAfter(new Date(date), startDate)) {
+      return "Insira uma data posterior à data de início";
     }
 
     return true;
@@ -150,7 +165,7 @@ const TariffCreateForm = () => {
                 name="end_date"
                 rules={{
                   required: "Preencha este campo",
-                  validate: isValidDate,
+                  validate: isValidEndDate,
                 }}
                 render={({
                   field: { value, onChange },
@@ -190,13 +205,19 @@ const TariffCreateForm = () => {
               <Controller
                 control={control}
                 name={"blue.peak_tusd_in_reais_per_kw"}
-                rules={{ required: "Preencha este campo" }}
+                rules={{
+                  required: "Preencha este campo",
+                  min: {
+                    value: 0.01,
+                    message: "Insira um valor maior que R$ 0,00"
+                  }
+                }}
                 render={({
                   field: { onChange, onBlur, value },
                   fieldState: { error },
                 }) => (
                   <NumericFormat
-                    value={value !== 0 ? value : null}
+                    value={value}
                     customInput={TextField}
                     label="TUSD R$/kW  *"
                     helperText={error?.message ?? " "}
@@ -210,6 +231,9 @@ const TariffCreateForm = () => {
                     }}
                     type="text"
                     allowNegative={false}
+                    isAllowed={({ floatValue }) =>
+                      !floatValue || floatValue <= 9999.99
+                    }
                     decimalScale={2}
                     decimalSeparator=","
                     thousandSeparator={" "}
@@ -224,7 +248,13 @@ const TariffCreateForm = () => {
               <Controller
                 control={control}
                 name={"blue.peak_tusd_in_reais_per_mwh"}
-                rules={{ required: "Preencha este campo" }}
+                rules={{
+                  required: "Preencha este campo",
+                  min: {
+                    value: 0.01,
+                    message: "Insira um valor maior que R$ 0,00"
+                  }
+                }}
                 render={({
                   field: { onChange, onBlur, value },
                   fieldState: { error },
@@ -258,7 +288,13 @@ const TariffCreateForm = () => {
               <Controller
                 control={control}
                 name={"blue.peak_te_in_reais_per_mwh"}
-                rules={{ required: "Preencha este campo" }}
+                rules={{
+                  required: "Preencha este campo",
+                  min: {
+                    value: 0.01,
+                    message: "Insira um valor maior que R$ 0,00"
+                  }
+                }}
                 render={({
                   field: { onChange, onBlur, value },
                   fieldState: { error },
@@ -296,7 +332,13 @@ const TariffCreateForm = () => {
               <Controller
                 control={control}
                 name={"blue.off_peak_tusd_in_reais_per_kw"}
-                rules={{ required: "Preencha este campo" }}
+                rules={{
+                  required: "Preencha este campo",
+                  min: {
+                    value: 0.01,
+                    message: "Insira um valor maior que R$ 0,00"
+                  }
+                }}
                 render={({
                   field: { onChange, onBlur, value },
                   fieldState: { error },
@@ -330,7 +372,13 @@ const TariffCreateForm = () => {
               <Controller
                 control={control}
                 name={"blue.off_peak_tusd_in_reais_per_mwh"}
-                rules={{ required: "Preencha este campo" }}
+                rules={{
+                  required: "Preencha este campo",
+                  min: {
+                    value: 0.01,
+                    message: "Insira um valor maior que R$ 0,00"
+                  }
+                }}
                 render={({
                   field: { onChange, onBlur, value },
                   fieldState: { error },
@@ -364,7 +412,13 @@ const TariffCreateForm = () => {
               <Controller
                 control={control}
                 name={"blue.off_peak_te_in_reais_per_mwh"}
-                rules={{ required: "Preencha este campo" }}
+                rules={{
+                  required: "Preencha este campo",
+                  min: {
+                    value: 0.01,
+                    message: "Insira um valor maior que R$ 0,00"
+                  }
+                }}
                 render={({
                   field: { onChange, onBlur, value },
                   fieldState: { error },
@@ -412,7 +466,13 @@ const TariffCreateForm = () => {
               <Controller
                 control={control}
                 name={"green.na_tusd_in_reais_per_kw"}
-                rules={{ required: "Preencha este campo" }}
+                rules={{
+                  required: "Preencha este campo",
+                  min: {
+                    value: 0.01,
+                    message: "Insira um valor maior que R$ 0,00"
+                  }
+                }}
                 render={({
                   field: { onChange, onBlur, value },
                   fieldState: { error },
@@ -451,7 +511,13 @@ const TariffCreateForm = () => {
               <Controller
                 control={control}
                 name={"green.peak_tusd_in_reais_per_mwh"}
-                rules={{ required: "Preencha este campo" }}
+                rules={{
+                  required: "Preencha este campo",
+                  min: {
+                    value: 0.01,
+                    message: "Insira um valor maior que R$ 0,00"
+                  }
+                }}
                 render={({
                   field: { onChange, onBlur, value },
                   fieldState: { error },
@@ -485,7 +551,13 @@ const TariffCreateForm = () => {
               <Controller
                 control={control}
                 name={"green.peak_te_in_reais_per_mwh"}
-                rules={{ required: "Preencha este campo" }}
+                rules={{
+                  required: "Preencha este campo",
+                  min: {
+                    value: 0.01,
+                    message: "Insira um valor maior que R$ 0,00"
+                  }
+                }}
                 render={({
                   field: { onChange, onBlur, value },
                   fieldState: { error },
@@ -523,7 +595,13 @@ const TariffCreateForm = () => {
               <Controller
                 control={control}
                 name={"green.off_peak_tusd_in_reais_per_mwh"}
-                rules={{ required: "Preencha este campo" }}
+                rules={{
+                  required: "Preencha este campo",
+                  min: {
+                    value: 0.01,
+                    message: "Insira um valor maior que R$ 0,00"
+                  }
+                }}
                 render={({
                   field: { onChange, onBlur, value },
                   fieldState: { error },
@@ -557,7 +635,13 @@ const TariffCreateForm = () => {
               <Controller
                 control={control}
                 name={"green.off_peak_te_in_reais_per_mwh"}
-                rules={{ required: "Preencha este campo" }}
+                rules={{
+                  required: "Preencha este campo",
+                  min: {
+                    value: 0.01,
+                    message: "Insira um valor maior que R$ 0,00"
+                  }
+                }}
                 render={({
                   field: { onChange, onBlur, value },
                   fieldState: { error },
