@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  next-app:
+    container_name: mec-energia-web
+    build:
+      context: ./
+      dockerfile: Dockerfile.prod
+      args:
+        ENV_VARIABLE: ${ENV_VARIABLE}
+        NEXT_PUBLIC_ENV_VARIABLE: ${NEXT_PUBLIC_ENV_VARIABLE}
+    restart: always
+    ports:
+      - 3000:3000
+  #   networks:
+  #     - mec-energia
+
+  # mec-energia:
+  #   external: true

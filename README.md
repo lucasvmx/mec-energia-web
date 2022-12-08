@@ -1,13 +1,83 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+## Development
 
-First, run the development server:
+### Docker
+
+Create a network, which allows containers to communicate with each other, by using their container name as a hostname.
 
 ```bash
-npm run dev
-# or
-yarn dev
+docker network create mec-energia-network
+```
+
+Install the dependencies.
+
+```bash
+docker-compose -f docker-compose.dev.yml build
+```
+
+Start the development server.
+
+```bash
+docker-compose -f docker-compose.dev.yml up
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+### Local
+
+Install the dependencies.
+
+```bash
+yarn install
+```
+
+Start the development server.
+
+```bash
+yarn install
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Production
+
+### Docker
+
+Multistage builds are highly recommended in production. Combined with the Next Output Standalone feature, only node_modules files required for production are copied into the final Docker image.
+
+Create a network, which allows containers to communicate with each other, by using their container name as a hostname.
+
+```bash
+docker network create mec-energia-network
+```
+
+Generate an optimized version of your application for production.
+
+```bash
+docker-compose -f docker-compose.prod.yml build
+```
+
+Start the production server.
+
+```bash
+docker-compose -f docker-compose.prod.yml up
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+### Local
+
+Generate an optimized version of your application for production.
+
+```bash
+yarn build
+```
+
+Start the production server.
+
+```bash
+yarn start
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
