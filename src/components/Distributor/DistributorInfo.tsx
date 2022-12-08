@@ -28,7 +28,7 @@ export const DistributorInfo = () => {
   const createTitleTariffs = () => {
     if (currentDist?.tariffs.length === 0) setTitleTariffs('');
     else if (currentDist?.tariffs.length === 1) {
-      const tarrif = currentDist.tariffs[0];
+      const tarrif = currentDist?.tariffs[0];
       if (isOverdue) setTitleTariffs(`Tarifas do subgrupo ${tarrif.subgroup} pendentes`)
       else setTitleTariffs(`Tarifas do subgrupo ${tarrif.subgroup}`)
     }
@@ -43,17 +43,17 @@ export const DistributorInfo = () => {
     setCurrentDist(mockedDistributor[Number(id) - 1])
     setCurrentConsumerUnitList(mockedDistributorComsumerUnit[Number(id) - 1])
 
-    const overdue = mockedDistributor[Number(id) - 1].tariffs.find(tariff => tariff.overdue === true);
+    const overdue = mockedDistributor[Number(id) - 1]?.tariffs.find(tariff => tariff.overdue === true);
     if (overdue === undefined) setisOverdue(false)
     else setisOverdue(true)
-    const hasConsumerUnit = mockedDistributor[Number(id) - 1].consumer_units > 0 ? true : false;
-    const needAddTariff = mockedDistributor[Number(id) - 1].tariffs.find(tariff => tariff.start_date === '' && tariff.end_date === '' && hasConsumerUnit);
+    const hasConsumerUnit = mockedDistributor[Number(id) - 1]?.consumer_units > 0 ? true : false;
+    const needAddTariff = mockedDistributor[Number(id) - 1]?.tariffs.find(tariff => tariff.start_date === '' && tariff.end_date === '' && hasConsumerUnit);
     if (needAddTariff === undefined) setIsPendingTariffAddition(false)
     else setIsPendingTariffAddition(true)
 
     createTitleTariffs()
 
-  }, [])
+  }, [router.query])
 
   useEffect(() => {
     createTitleTariffs()
@@ -63,7 +63,7 @@ export const DistributorInfo = () => {
     const { id } = router.query
     setCurrentDist(mockedDistributor[Number(id) - 1])
     setCurrentConsumerUnitList(mockedDistributorComsumerUnit[Number(id) - 1])
-  }, [router.asPath])
+  }, [router.asPath, router.query])
 
   const handleEditTariffClick = () => {
     dispatch(setIsTariffEdiFormOpen(true));
@@ -85,7 +85,7 @@ export const DistributorInfo = () => {
           }
         </Box>
         <Divider />
-        {!isPendingTariffAddition && currentDist.tariffs.length > 0 &&
+        {!isPendingTariffAddition && currentDist?.tariffs.length > 0 &&
           <TariffTable />
         }
         {isPendingTariffAddition &&
