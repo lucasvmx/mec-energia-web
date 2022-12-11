@@ -15,34 +15,12 @@ import Toolbar from "@mui/material/Toolbar";
 
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
-import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
-import TungstenRoundedIcon from "@mui/icons-material/TungstenRounded";
-import FactoryRoundedIcon from "@mui/icons-material/FactoryRounded";
+
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 
 import DrawerListItem from "@/components/Drawer/ListItem";
-
-const menuItems = [
-  {
-    name: "Painel",
-    href: "/",
-    pathname: "/",
-    Icon: DashboardRoundedIcon,
-  },
-  {
-    name: "Unidades Consumidoras",
-    href: "/uc/1", // TODO Tornar o id dinâmico
-    pathname: "/uc/[id]",
-    Icon: TungstenRoundedIcon,
-  },
-  {
-    name: "Distribuidoras",
-    href: "/distribuidoras/1", // TODO Tornar o id dinâmico
-    pathname: "/distribuidoras/[id]",
-    Icon: FactoryRoundedIcon,
-  },
-];
+import routes from "@/routes";
 
 export const openDrawerWidth = 224;
 export const closedDrawerWidth = `calc(${theme.spacing(8)} + 1px)`;
@@ -151,16 +129,18 @@ const Drawer = () => {
       </Box>
 
       <List sx={{ padding: 0 }}>
-        {menuItems.map(({ name, href, pathname, Icon }, index) => (
-          <Box mt={index > 0 ? 1 : 0} key={name}>
-            <DrawerListItem
-              Icon={Icon}
-              text={name}
-              href={href}
-              active={isCurrentRoute(pathname)}
-            />
-          </Box>
-        ))}
+        {Object.entries(routes).map(
+          ([pathname, { title, href, Icon }], index) => (
+            <Box mt={index > 0 ? 1 : 0} key={pathname}>
+              <DrawerListItem
+                Icon={Icon}
+                text={title}
+                href={href}
+                active={isCurrentRoute(pathname)}
+              />
+            </Box>
+          )
+        )}
       </List>
 
       <Box flexGrow={1} />

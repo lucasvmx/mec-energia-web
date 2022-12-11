@@ -1,23 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { makeStore } from ".";
 
-export enum ConsumerUnitFormEnum {
-  CREATE,
-  EDIT,
-}
-
-export interface AppState {
-  isDrawerOpen: boolean;
-  consumerUnit: {
-    isCreateFormOpen: boolean;
-    isEditFormOpen: boolean;
-    isRenewContractFormOpen: boolean;
-  };
-}
-
-export type AppDispatch = Store["dispatch"];
-export type RootState = ReturnType<Store["getState"]>;
-type Store = ReturnType<typeof makeStore>;
+import { AppState, RootState } from "@/types/app";
 
 const initialState: AppState = {
   isDrawerOpen: true,
