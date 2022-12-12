@@ -1,8 +1,8 @@
 version: '3.8'
 
 services:
-  next-app:
-    container_name: mec-energia-web
+  prod:
+    container_name: mec-energia-web-prod
     build:
       context: ./
       dockerfile: Dockerfile.prod
@@ -12,8 +12,3 @@ services:
     restart: always
     ports:
       - 3000:3000
-  #   networks:
-  #     - mec-energia
-
-  # mec-energia:
-  #   external: true

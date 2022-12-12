@@ -1,20 +1,22 @@
-import { createTheme } from "@mui/material/styles";
-import { red } from "@mui/material/colors";
-import { ptBR } from "@mui/x-date-pickers";
+import createTheme from "@mui/material/styles/createTheme";
 import { ptBR as corePtBR } from "@mui/material/locale";
+import { ptBR } from "@mui/x-date-pickers";
+import { PaletteOptions } from "@mui/material";
+
+const palette: PaletteOptions = {
+  primary: {
+    main: "#0A5C67",
+  },
+  secondary: {
+    main: "#FB736C",
+  },
+};
 
 const theme = createTheme(
   {
-    palette: {
-      primary: {
-        main: "#264653",
-      },
-      secondary: {
-        main: "#19857b",
-      },
-      error: {
-        main: red.A400,
-      },
+    palette,
+    typography: {
+      fontFamily: ["Lexend", "sans-serif"].join(","),
     },
     components: {
       MuiListItemButton: {

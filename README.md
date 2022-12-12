@@ -2,6 +2,12 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Development
 
+Regardless of running locally or through docker, you need to install the dependencies for the commit hooks (husky, commitlint and lint-staged) to work.
+
+```bash
+yarn install
+```
+
 ### Docker
 
 Create a network, which allows containers to communicate with each other, by using their container name as a hostname.
@@ -26,16 +32,10 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ### Local
 
-Install the dependencies.
-
-```bash
-yarn install
-```
-
 Start the development server.
 
 ```bash
-yarn install
+yarn dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
@@ -67,6 +67,12 @@ docker-compose -f docker-compose.prod.yml up
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 ### Local
+
+Install the dependencies.
+
+```bash
+yarn install
+```
 
 Generate an optimized version of your application for production.
 
