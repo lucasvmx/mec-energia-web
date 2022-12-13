@@ -1,20 +1,24 @@
 import createTheme from "@mui/material/styles/createTheme";
 import { ptBR as corePtBR } from "@mui/material/locale";
 import { ptBR } from "@mui/x-date-pickers";
-import { PaletteOptions } from "@mui/material";
-
-const palette: PaletteOptions = {
-  primary: {
-    main: "#0A5C67",
-  },
-  secondary: {
-    main: "#FB736C",
-  },
-};
 
 const theme = createTheme(
   {
-    palette,
+    palette: {
+      primary: {
+        main: "#0A5C67",
+      },
+      secondary: {
+        main: "#FB736C",
+      },
+      background: {
+        default: "#EEF4F4",
+        paper: "#fff",
+      },
+      warning: {
+        main: "#FB736C",
+      },
+    },
     typography: {
       fontFamily: ["Lexend", "sans-serif"].join(","),
     },

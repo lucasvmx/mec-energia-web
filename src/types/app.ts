@@ -1,6 +1,6 @@
 import { makeStore } from "@/store";
 import { SvgIconProps } from "@mui/material";
-import { ComponentType } from "react";
+import { ComponentType, ReactNode } from "react";
 
 export interface AppState {
   isDrawerOpen: boolean;
@@ -21,3 +21,10 @@ export interface Routes {
     Icon: ComponentType<SvgIconProps>;
   };
 }
+
+export type CardWrapperProps = {
+  dense?: boolean;
+  variant?: "default" | "warning" | "disabled";
+  selected?: boolean;
+  children?: ReactNode;
+};
