@@ -30,7 +30,7 @@ export type RootState = ReturnType<Store["getState"]>;
 type Store = ReturnType<typeof makeStore>;
 
 const initialState: AppState = {
-  isDrawerOpen: false,
+  isDrawerOpen: true,
   consumerUnit: {
     isCreateFormOpen: false,
     isEditFormOpen: false,
