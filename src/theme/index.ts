@@ -10,9 +10,9 @@ const palette: PaletteOptions = {
   secondary: {
     main: "#FB736C",
   },
-  background:{
-    default:'#EFF4F4',
-  }
+  background: {
+    default: "#EFF4F4",
+  },
 };
 
 const theme = createTheme(
@@ -30,7 +30,6 @@ const theme = createTheme(
         },
       },
     },
-
   },
   ptBR,
   corePtBR
