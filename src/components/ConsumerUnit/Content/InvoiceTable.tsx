@@ -14,7 +14,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 interface TableValues {
-  id: number,
+  id: string,
   analyzable: React.ReactNode,
   consumption_peak: number,
   consumption_off_peak: number,
@@ -37,6 +37,8 @@ export const InvoiceTable = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [tableValues, setTableValues] = useState<Array<TableValues>>()
 
+  //const allMounths = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
   useEffect(() => {
     setInvoicesYearActive(invoices[0].year)
     getTableValues(invoices[0].year)
@@ -53,8 +55,12 @@ export const InvoiceTable = () => {
   const getTableValues = (year: number) => {
     const activeInvoicesYear = invoices.find(invoice => invoice.year === year)
     const rows = activeInvoicesYear?.invoicesYear.map((invoice) => {
+      const date = new Date();
+      date.setMonth(invoice.mounthNumber - 1)
+      let mounth = date.toLocaleString('pt-BR', { month: 'long' })
+      mounth = mounth.charAt(0).toUpperCase() + mounth.slice(1);
       return {
-        id: invoice.mountNumber,
+        id: mounth,
         consumption_peak: invoice.consumption_peak,
         analyzable: invoice.analyzable,
         consumption_off_peak: invoice.consumption_off_peak,
@@ -79,7 +85,7 @@ export const InvoiceTable = () => {
       field: 'id',
       headerName: 'Mês',
       width: 150,
-      type: 'number',
+      type: 'string',
       headerAlign: 'center',
       headerClassName: 'header',
     },
@@ -106,7 +112,7 @@ export const InvoiceTable = () => {
       headerClassName: 'header',
     },
     {
-      field: 'consumption_ff_peak',
+      field: 'consumption_off_peak',
       headerName: 'Fora Ponta',
       width: 150,
       type: 'number',
@@ -197,13 +203,13 @@ export const InvoiceTable = () => {
 
       <Box
         sx={{
-          height: 400,
+          height: 550,
           width: '100%',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           backgroundColor: '#fff',
-          minHeight: '500px',
+          minHeight: '100%',
           '& .header': {
             backgroundColor: '#0A5C67',
             color: '#fff',
@@ -221,7 +227,6 @@ export const InvoiceTable = () => {
         />
 
       </Box>
-
 
     </Box >
   )
