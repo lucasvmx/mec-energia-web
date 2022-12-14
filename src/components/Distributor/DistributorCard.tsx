@@ -21,7 +21,7 @@ const DistributorCard = ({
   consumer_units
 }: DistributorPropsTariffs) => {
   const router = useRouter();
-  const DistributorUrl = `/dt/${id}`;
+  const DistributorUrl = `/distribuidoras/${id}`;
   const [overdue, setOverdue] = useState(false);
   const [textBottomCard, setTextBottomCard] = useState('');
 
@@ -49,7 +49,7 @@ const DistributorCard = ({
   return (
     <>
       {
-        router.pathname === "/dt/[id]" ?
+        router.pathname === "/distribuidoras/[id]" ?
           <Card
             sx={{
               height: 120,

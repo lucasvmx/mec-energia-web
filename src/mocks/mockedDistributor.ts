@@ -71,8 +71,8 @@ export const mockedDistributor: Array<DistributorPropsTariffs> = [
         },
       },
       {
-        start_date: "2020-08-18",
-        end_date: "2021-09-18",
+        start_date: "2020-8-18",
+        end_date: "2021-9-18",
         subgroup: "A3",
         overdue: true,
         blue: {

@@ -52,9 +52,9 @@ const initialState: AppState = {
         peak_tusd_in_reais_per_kw: 0,
         peak_tusd_in_reais_per_mwh: 8,
       },
-      end_date: "20-09-2010",
+      end_date: "2010-1-1",
       overdue: false,
-      start_date: "20-09-2010",
+      start_date: "2010-1-1",
       subgroup: "A0",
       green: {
         na_tusd_in_reais_per_kw: 9,
