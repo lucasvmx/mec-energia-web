@@ -9,6 +9,8 @@ import { DistributorInfo } from './DistributorInfo';
 import { SubGroup } from '../../types/tariffs';
 import { Badge } from '@mui/material';
 import { mockedDistributor } from '../../mocks/mockedDistributor';
+import { setCurrenTariff } from '@/store/appSlice';
+import { useDispatch } from "react-redux";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -18,7 +20,6 @@ interface TabPanelProps {
 
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
-  console.log("INDEX", index);
   return (
     <div
       role="tabpanel"
@@ -47,8 +48,8 @@ export default function DistributorContainer() {
   const [value, setValue] = useState(0);
   const [subgroups, setSubgroups] = useState(Array<SubGroup>)
   const router = useRouter();
-
   const [currentDist, setCurrentDist] = useState<DistributorPropsTariffs | undefined>()
+  const dispatch = useDispatch()
 
   const getAllSubgroups = () => {
     const sub: Array<SubGroup> = [];
@@ -85,9 +86,11 @@ export default function DistributorContainer() {
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
+    const currentTariff = currentDist?.tariffs[newValue]
+    if (currentTariff) {
+      dispatch(setCurrenTariff(currentTariff))
+    }
   };
-
-  console.log(subgroups);
 
   return (
     <Box sx={{ width: '100%' }} mt={8}>

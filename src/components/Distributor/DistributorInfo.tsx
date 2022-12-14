@@ -9,8 +9,8 @@ import { Link as MUILink, IconButton } from '@mui/material';
 import { TariffTable } from '../Tariff/TariffTable';
 import { mockedDistributor } from '../../mocks/mockedDistributor';
 import { mockedDistributorComsumerUnit } from '../../mocks/mockedDistributor';
-import { setIsTariffCreateFormOpen, setIsTariffEdiFormOpen } from '../../store/appSlice';
-import { useDispatch } from 'react-redux';
+import { selectCurrentTariff, setIsTariffCreateFormOpen, setIsTariffEdiFormOpen } from '../../store/appSlice';
+import { useDispatch, useSelector } from 'react-redux';
 //import { Tariff } from '@/types/tariffs';
 
 
@@ -19,18 +19,19 @@ export const DistributorInfo = () => {
 
   const [currentDist, setCurrentDist] = useState<DistributorPropsTariffs>(mockedDistributor[0])
   const [currentConsumerUnitList, setCurrentConsumerUnitList] = useState<DistributorConsumerUnits>()
-  //const [currentTariff, setCurrentTariff] = useState<Tariff>()
   const [titleTariffs, setTitleTariffs] = useState('Tarifas')
   const [isOverdue, setisOverdue] = useState(false);
   const [isPendingTariffAddition, setIsPendingTariffAddition] = useState(false);
   const dispatch = useDispatch()
+  const currentTariff = useSelector(selectCurrentTariff)
 
   const createTitleTariffs = () => {
     if (currentDist?.tariffs.length === 0) setTitleTariffs('');
     else if (currentDist?.tariffs.length === 1) {
-      const tarrif = currentDist?.tariffs[0];
-      if (isOverdue) setTitleTariffs(`Tarifas do subgrupo ${tarrif.subgroup} pendentes`)
-      else setTitleTariffs(`Tarifas do subgrupo ${tarrif.subgroup}`)
+      if (currentTariff) {
+        if (isOverdue) setTitleTariffs(`Tarifas do subgrupo ${currentTariff.subgroup} pendentes`)
+        else setTitleTariffs(`Tarifas do subgrupo ${currentTariff.subgroup}`)
+      }
     }
     else if (currentDist?.tariffs.length > 1) {
       if (!isOverdue) setTitleTariffs('Tarifas')
@@ -43,9 +44,8 @@ export const DistributorInfo = () => {
     setCurrentDist(mockedDistributor[Number(id) - 1])
     setCurrentConsumerUnitList(mockedDistributorComsumerUnit[Number(id) - 1])
 
-    const overdue = mockedDistributor[Number(id) - 1]?.tariffs.find(tariff => tariff.overdue === true);
-    if (overdue === undefined) setisOverdue(false)
-    else setisOverdue(true)
+    const overdue = currentTariff?.overdue
+    if (overdue !== undefined) setisOverdue(overdue)
     const hasConsumerUnit = mockedDistributor[Number(id) - 1]?.consumer_units > 0 ? true : false;
     const needAddTariff = mockedDistributor[Number(id) - 1]?.tariffs.find(tariff => tariff.start_date === '' && tariff.end_date === '' && hasConsumerUnit);
     if (needAddTariff === undefined) setIsPendingTariffAddition(false)

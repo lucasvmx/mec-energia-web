@@ -100,7 +100,6 @@ const DistributorPage: NextPage = () => {
 
   const handleSlideChange = (event: Event, newValue: number | number[]) => {
     setSlideValue(newValue as number);
-    console.log("slide", newValue)
   };
 
   return (

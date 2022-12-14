@@ -1,43 +1,30 @@
 import { Badge, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from '@mui/material'
 import InfoIcon from '@mui/icons-material/Info';
 import React, { Fragment, useEffect, useState } from 'react'
-import { mockedDistributor } from '../../mocks/mockedDistributor';
-import { DistributorPropsTariffs } from '../../types/distributor';
-import { useRouter } from 'next/router';
 import { format } from 'date-fns';
+import { useSelector } from 'react-redux';
+import { selectCurrentTariff } from '@/store/appSlice';
 
 export const TariffTable = () => {
 
-  const router = useRouter();
-
-  const [currentDist, setCurrentDist] = useState<DistributorPropsTariffs>(mockedDistributor[0])
   const [startDate, setStartDate] = useState('')
   const [endDate, setEndDate] = useState('')
   const [overdue, setOverdue] = useState(false)
-
-  useEffect(() => {
-    const { id } = router.query
-    setCurrentDist(mockedDistributor[Number(id) - 1])
-  }, [])
-
-  useEffect(() => {
-    const { id } = router.query
-    setCurrentDist(mockedDistributor[Number(id) - 1])
-  }, [router.asPath])
+  const currentTariff = useSelector(selectCurrentTariff)
 
   const formatDate = () => {
-    if (currentDist.tariffs.length > 0) {
-      if (currentDist?.tariffs[0].start_date === '') setStartDate('')
+    if (currentTariff) {
+      if (currentTariff.start_date === '') setStartDate('')
       else {
-        setStartDate(format(new Date(currentDist?.tariffs[0].start_date), "dd'/'MM'/'yyyy"))
-        setOverdue(currentDist?.tariffs[0].overdue)
+        setStartDate(format(new Date(currentTariff.start_date), "dd'/'MM'/'yyyy"))
+        setOverdue(currentTariff.overdue)
       }
     } else setStartDate('')
-    if (currentDist.tariffs.length > 0) {
-      if (currentDist?.tariffs[0].end_date === '') setEndDate('')
+    if (currentTariff) {
+      if (currentTariff.end_date === '') setEndDate('')
       else {
-        setEndDate(format(new Date(currentDist?.tariffs[0].end_date), "dd'/'MM'/'yyyy"))
-        setOverdue(currentDist?.tariffs[0].overdue)
+        setEndDate(format(new Date(currentTariff.end_date), "dd'/'MM'/'yyyy"))
+        setOverdue(currentTariff.overdue)
       }
     } else {
       setStartDate('')
@@ -47,7 +34,7 @@ export const TariffTable = () => {
 
   useEffect(() => {
     formatDate()
-  }, [currentDist])
+  }, [currentTariff])
 
   return (
     <Box width={'100%'}>
@@ -127,21 +114,21 @@ export const TariffTable = () => {
                 <TableCell align='center'> Ponta</TableCell>
                 <TableCell>
                   <Box display='flex' justifyContent='space-between' width='80%' m='0 auto'>
-                    <Box>{currentDist.tariffs[0].blue.peak_tusd_in_reais_per_kw}</Box>
-                    <Box>{currentDist.tariffs[0].blue.peak_tusd_in_reais_per_mwh}</Box>
+                    <Box>{currentTariff.blue.peak_tusd_in_reais_per_kw}</Box>
+                    <Box>{currentTariff.blue.peak_tusd_in_reais_per_mwh}</Box>
                   </Box>
                 </TableCell>
-                <TableCell align='center'>{currentDist.tariffs[0].blue.peak_te_in_reais_per_mwh}</TableCell>
+                <TableCell align='center'>{currentTariff.blue.peak_te_in_reais_per_mwh}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell align='center'> Fora Ponta</TableCell>
                 <TableCell>
                   <Box display='flex' justifyContent='space-between' width='80%' m='0 auto'>
-                    <Box>{currentDist.tariffs[0].blue.off_peak_tusd_in_reais_per_kw}</Box>
-                    <Box>{currentDist.tariffs[0].blue.off_peak_tusd_in_reais_per_mwh}</Box>
+                    <Box>{currentTariff.blue.off_peak_tusd_in_reais_per_kw}</Box>
+                    <Box>{currentTariff.blue.off_peak_tusd_in_reais_per_mwh}</Box>
                   </Box>
                 </TableCell>
-                <TableCell align='center'>{currentDist.tariffs[0].blue.off_peak_te_in_reais_per_mwh}</TableCell>
+                <TableCell align='center'>{currentTariff.blue.off_peak_te_in_reais_per_mwh}</TableCell>
               </TableRow>
             </Fragment>
             <Fragment>
@@ -152,7 +139,7 @@ export const TariffTable = () => {
                 <TableCell align='center'> NA</TableCell>
                 <TableCell>
                   <Box display='flex' justifyContent='space-between' width='80%' m='0 auto'>
-                    <Box>{currentDist.tariffs[0].green.na_tusd_in_reais_per_kw}</Box>
+                    <Box>{currentTariff.green.na_tusd_in_reais_per_kw}</Box>
                     <Box> - </Box>
                   </Box>
                 </TableCell>
@@ -163,20 +150,20 @@ export const TariffTable = () => {
                 <TableCell>
                   <Box display='flex' justifyContent='space-between' width='80%' m='0 auto'>
                     <Box> - </Box>
-                    <Box>{currentDist.tariffs[0].green.peak_tusd_in_reais_per_mwh}</Box>
+                    <Box>{currentTariff.green.peak_tusd_in_reais_per_mwh}</Box>
                   </Box>
                 </TableCell>
-                <TableCell align='center'>{currentDist.tariffs[0].green.peak_te_in_reais_per_mwh}</TableCell>
+                <TableCell align='center'>{currentTariff.green.peak_te_in_reais_per_mwh}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell align='center'> Fora Ponta</TableCell>
                 <TableCell>
                   <Box display='flex' justifyContent='space-between' width='80%' m='0 auto'>
                     <Box> - </Box>
-                    <Box> {currentDist.tariffs[0].green.off_peak_tusd_in_reais_per_mwh} </Box>
+                    <Box> {currentTariff.green.off_peak_tusd_in_reais_per_mwh} </Box>
                   </Box>
                 </TableCell>
-                <TableCell align='center'>{currentDist.tariffs[0].green.off_peak_te_in_reais_per_mwh}</TableCell>
+                <TableCell align='center'>{currentTariff.green.off_peak_te_in_reais_per_mwh}</TableCell>
               </TableRow>
             </Fragment>
           </TableBody>
