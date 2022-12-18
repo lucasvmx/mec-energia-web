@@ -6,7 +6,7 @@ import { Button, createTheme, IconButton, ThemeProvider, Typography } from '@mui
 import { invoices } from '@/mocks/invoices';
 import { InvoicesYear } from '@/types/invoices';
 import DoneIcon from '@mui/icons-material/Done';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridColumnGroupingModel } from '@mui/x-data-grid';
 import InsightsIcon from '@mui/icons-material/Insights';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -36,8 +36,6 @@ export const InvoiceTable = () => {
   const [invoicesYearActive, setInvoicesYearActive] = useState(0);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [tableValues, setTableValues] = useState<Array<TableValues>>()
-
-  //const allMounths = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
   useEffect(() => {
     setInvoicesYearActive(invoices[0].year)
@@ -84,8 +82,9 @@ export const InvoiceTable = () => {
     {
       field: 'id',
       headerName: 'Mês',
-      width: 150,
+      flex: 2,
       type: 'string',
+      align: 'center',
       headerAlign: 'center',
       headerClassName: 'header',
     },
@@ -96,28 +95,31 @@ export const InvoiceTable = () => {
         if (params.row.analyzable) return (<CheckCircleOutlineIcon />)
         else return (<CancelIcon />)
       },
-      width: 90,
+      flex: 1,
       sortable: false,
       type: 'boolean',
+      align: 'center',
       headerAlign: 'center',
       headerClassName: 'header',
     },
     {
       field: 'consumption_peak',
       headerName: 'Ponta',
-      width: 150,
+      flex: 2,
       sortable: false,
       type: 'number',
       headerAlign: 'center',
+      align: 'center',
       headerClassName: 'header',
     },
     {
       field: 'consumption_off_peak',
       headerName: 'Fora Ponta',
-      width: 150,
+      flex: 2,
       type: 'number',
       sortable: false,
       headerAlign: 'center',
+      align: 'center',
       headerClassName: 'header',
 
     },
@@ -125,32 +127,36 @@ export const InvoiceTable = () => {
       field: 'demand_peak',
       headerName: 'Ponta',
       type: 'number',
-      width: 150,
+      flex: 2,
       sortable: false,
+      align: 'center',
       headerAlign: 'center',
       headerClassName: 'header',
     },
     {
       field: 'demand_off_peak',
       headerName: 'Fora Ponta',
-      width: 150,
+      flex: 2,
       type: 'number',
       sortable: false,
+      align: 'center',
       headerAlign: 'center',
       headerClassName: 'header',
     },
     {
       field: 'value',
       headerName: 'Value',
-      width: 150,
+      flex: 2,
       type: 'number',
       sortable: false,
+      align: 'center',
       headerAlign: 'center',
       headerClassName: 'header',
     },
     {
       field: ' ',
       headerName: ' ',
+      align: 'center',
       renderCell: (params) => {
         return (
           <>
@@ -168,13 +174,43 @@ export const InvoiceTable = () => {
           </>
         )
       },
-      width: 150,
+      flex: 2,
       type: 'number',
       sortable: false,
       headerAlign: 'center',
       headerClassName: 'header',
     }
   ];
+
+  const columnGroupingModel: GridColumnGroupingModel = [
+    {
+      groupId: 'consumption',
+      headerName: 'Consumo (kWh)',
+      headerClassName: 'header-column-group',
+      headerAlign: 'center',
+      renderHeaderGroup: ({ headerName }) => (
+        <Typography variant='inherit'><strong>{headerName}</strong></Typography>
+      ),
+      children: [
+        { field: 'consumption_peak' },
+        { field: 'consumption_off_peak' }
+      ]
+    },
+    {
+      groupId: 'demand',
+      headerName: 'Demanda (kWh)',
+      headerClassName: 'header-column-group',
+      headerAlign: 'center',
+      renderHeaderGroup: ({ headerName }) => (
+        <Typography variant='inherit'><strong>{headerName}</strong></Typography>
+      ),
+      children: [
+        { field: 'demand_peak' },
+        { field: 'demand_off_peak' }
+      ]
+    }
+  ]
+
   return (
     <Box >
       <Box mb={3} >
@@ -203,7 +239,6 @@ export const InvoiceTable = () => {
 
       <Box
         sx={{
-          height: 550,
           width: '100%',
           display: 'flex',
           alignItems: 'center',
@@ -213,6 +248,13 @@ export const InvoiceTable = () => {
           '& .header': {
             backgroundColor: '#0A5C67',
             color: '#fff',
+
+          },
+          '& .header-column-group': {
+            backgroundColor: '#DDE8E9',
+          },
+          '& .risk-border': {
+            borderRight: '3px solid #000'
           }
         }}
       >
@@ -221,9 +263,13 @@ export const InvoiceTable = () => {
           rows={tableValues || []}
           columns={columns}
           pageSize={12}
+          hideFooter
+          autoHeight
+          disableColumnMenu
           rowsPerPageOptions={[12]}
           disableSelectionOnClick
-          experimentalFeatures={{ newEditingApi: true }}
+          experimentalFeatures={{ newEditingApi: true, columnGrouping: true }}
+          columnGroupingModel={columnGroupingModel}
         />
 
       </Box>
