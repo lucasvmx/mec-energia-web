@@ -12,10 +12,11 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CancelIcon from '@mui/icons-material/Cancel';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import WarningIcon from '@mui/icons-material/Warning';
 
 interface TableValues {
   id: string,
-  analyzable: React.ReactNode,
+  isAtypical: React.ReactNode,
   consumption_peak: number,
   consumption_off_peak: number,
   demand_peak: number,
@@ -33,9 +34,14 @@ const theme = createTheme({
 
 export const InvoiceTable = () => {
   const buttonStyle = { borderRadius: 50, textTransform: 'none', marginLeft: 1 }
+  const InvoiceButtonStyle = { textTransform: 'none' }
   const [invoicesYearActive, setInvoicesYearActive] = useState(0);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [tableValues, setTableValues] = useState<Array<TableValues>>()
+  //const allMonthsNumber = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+  const curretMonth = new Date('2023-12-18').getMonth() + 1
+  console.log("Mes atual", curretMonth)
+  //const [pendingMonth, setPendingMonth] = useState(0)
 
   useEffect(() => {
     setInvoicesYearActive(invoices[0].year)
@@ -60,7 +66,7 @@ export const InvoiceTable = () => {
       return {
         id: mounth,
         consumption_peak: invoice.consumption_peak,
-        analyzable: invoice.analyzable,
+        isAtypical: invoice.isAtypical,
         consumption_off_peak: invoice.consumption_off_peak,
         demand_peak: invoice.demand_peak,
         demand_off_peak: invoice.demand_off_peak,
@@ -92,8 +98,8 @@ export const InvoiceTable = () => {
       field: 'analyzable',
       renderHeader: () => <InsightsIcon />,
       renderCell: (params) => {
-        if (params.row.analyzable) return (<CheckCircleOutlineIcon />)
-        else return (<CancelIcon />)
+        if (params.row.isAtypical) return (<CancelIcon />)
+        else return (<CheckCircleOutlineIcon />)
       },
       flex: 1,
       sortable: false,
@@ -272,7 +278,15 @@ export const InvoiceTable = () => {
           columnGroupingModel={columnGroupingModel}
         />
 
+
       </Box>
+      <Button
+        startIcon={<WarningIcon />}
+        variant='contained'
+        color={'secondary'}
+        sx={InvoiceButtonStyle}>
+        <Typography sx={{ fontWeight: 'bold' }}>Lançar setembro</Typography>
+      </Button>
 
     </Box >
   )

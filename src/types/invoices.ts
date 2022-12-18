@@ -5,11 +5,11 @@ export interface InvoicesYear {
 
 export interface Invoice {
   mounthNumber: number;
-  mounth: string;
-  analyzable: boolean;
+  isAtypical: boolean;
   consumption_peak: number;
   consumption_off_peak: number;
   demand_peak: number;
   demand_off_peak: number;
   invoice_value: number;
+  isPending: boolean;
 }
