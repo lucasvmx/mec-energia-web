@@ -58,7 +58,7 @@ const DistributorPage: NextPage = () => {
     const { id } = router.query
     setCurrentDistributor(mockedDistributor[Number(id) - 1])
     setIsErrorColor(false)
-  }, [])
+  }, [router.query])
 
   useEffect(() => {
     const { id } = router.query
