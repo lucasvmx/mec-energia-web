@@ -1,6 +1,6 @@
 export interface InvoicesYear {
   year: number;
-  invoicesYear: Array<Invoice>;
+  invoices: Array<Invoice>;
 }
 
 export interface Invoice {
@@ -12,4 +12,5 @@ export interface Invoice {
   demand_off_peak: number;
   invoice_value: number;
   isPending: boolean;
+  currentMonthPending?: boolean;
 }

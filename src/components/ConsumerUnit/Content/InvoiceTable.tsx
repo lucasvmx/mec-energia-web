@@ -4,7 +4,7 @@ import CardContent from '@mui/material/CardContent';
 import { Box } from '@mui/system';
 import { Button, createTheme, IconButton, ThemeProvider, Typography } from '@mui/material';
 import { invoices } from '@/mocks/invoices';
-import { InvoicesYear } from '@/types/invoices';
+import { Invoice, InvoicesYear } from '@/types/invoices';
 import DoneIcon from '@mui/icons-material/Done';
 import { DataGrid, GridColDef, GridColumnGroupingModel } from '@mui/x-data-grid';
 import InsightsIcon from '@mui/icons-material/Insights';
@@ -15,13 +15,15 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import WarningIcon from '@mui/icons-material/Warning';
 
 interface TableValues {
-  id: string,
+  id: number,
+  month: string,
   isAtypical: React.ReactNode,
   consumption_peak: number,
   consumption_off_peak: number,
   demand_peak: number,
   demand_off_peak: number,
-  value: number
+  value: number,
+  isCurrent?: boolean
 }
 
 const theme = createTheme({
@@ -38,9 +40,10 @@ export const InvoiceTable = () => {
   const [invoicesYearActive, setInvoicesYearActive] = useState(0);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [tableValues, setTableValues] = useState<Array<TableValues>>()
-  //const allMonthsNumber = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-  const curretMonth = new Date('2023-12-18').getMonth() + 1
-  console.log("Mes atual", curretMonth)
+  const curretDate = {
+    month: new Date().getMonth() + 1,
+    year: new Date().getFullYear(),
+  }
   //const [pendingMonth, setPendingMonth] = useState(0)
 
   useEffect(() => {
@@ -56,23 +59,53 @@ export const InvoiceTable = () => {
     setInvoicesYearActive(year)
   }
 
+  const getMonthName = (monthNumber: number) => {
+    const date = new Date();
+    date.setMonth(monthNumber - 1)
+    let month = date.toLocaleString('pt-BR', { month: 'long' })
+    month = month.charAt(0).toUpperCase() + month.slice(1);
+    return month
+  }
+
   const getTableValues = (year: number) => {
     const activeInvoicesYear = invoices.find(invoice => invoice.year === year)
-    const rows = activeInvoicesYear?.invoicesYear.map((invoice) => {
+    const rows = activeInvoicesYear?.invoices.map((invoice) => {
       const date = new Date();
       date.setMonth(invoice.mounthNumber - 1)
-      let mounth = date.toLocaleString('pt-BR', { month: 'long' })
-      mounth = mounth.charAt(0).toUpperCase() + mounth.slice(1);
+      const month = getMonthName(invoice.mounthNumber)
       return {
-        id: mounth,
+        id: invoice.mounthNumber,
+        month: month,
         consumption_peak: invoice.consumption_peak,
         isAtypical: invoice.isAtypical,
         consumption_off_peak: invoice.consumption_off_peak,
         demand_peak: invoice.demand_peak,
         demand_off_peak: invoice.demand_off_peak,
-        value: invoice.invoice_value
+        value: invoice.invoice_value,
+        isPending: invoice.isPending,
+        currentMonthPending: invoice.currentMonthPending
       }
     })
+    if (year === curretDate.year) {
+      const hasCurrentMonth = activeInvoicesYear?.invoices.some(
+        (invoice: Invoice) => invoice.mounthNumber === curretDate.month
+      )
+      if (!hasCurrentMonth) {
+        const month = getMonthName(curretDate.month)
+        rows?.push({
+          id: curretDate.month,
+          month: month,
+          consumption_peak: 0,
+          isAtypical: false,
+          consumption_off_peak: 0,
+          demand_peak: 0,
+          demand_off_peak: 0,
+          value: 0,
+          isPending: false,
+          currentMonthPending: true,
+        })
+      }
+    }
     setTableValues(rows)
   }
 
@@ -86,13 +119,40 @@ export const InvoiceTable = () => {
 
   const columns: GridColDef[] = [
     {
-      field: 'id',
+      field: 'month',
       headerName: 'Mês',
+      hideable: true,
       flex: 2,
       type: 'string',
-      align: 'center',
+      align: 'left',
       headerAlign: 'center',
       headerClassName: 'header',
+      colSpan: (params) => {
+
+        if (params.row.isPending || params.row.currentMonthPending) {
+          return 8;
+        }
+        return undefined;
+      },
+      renderCell: (params) => {
+        if (params.row.isPending) return (
+          <Button
+            startIcon={<WarningIcon />}
+            variant='contained'
+            color={'secondary'}
+            sx={InvoiceButtonStyle}>
+            <Typography sx={{ fontWeight: 'bold' }}>Lançar {params.row.month}</Typography>
+          </Button>
+        )
+        if (params.row.currentMonthPending) return (
+          <Button
+            variant='contained'
+            color={'primary'}
+            sx={InvoiceButtonStyle}>
+            <Typography sx={{ fontWeight: 'bold' }}>Lançar {params.row.month}</Typography>
+          </Button>
+        )
+      }
     },
     {
       field: 'analyzable',
@@ -192,7 +252,7 @@ export const InvoiceTable = () => {
     {
       groupId: 'consumption',
       headerName: 'Consumo (kWh)',
-      headerClassName: 'header-column-group',
+      headerClassName: 'header-column-group risk-border',
       headerAlign: 'center',
       renderHeaderGroup: ({ headerName }) => (
         <Typography variant='inherit'><strong>{headerName}</strong></Typography>
@@ -252,16 +312,35 @@ export const InvoiceTable = () => {
           backgroundColor: '#fff',
           minHeight: '100%',
           '& .header': {
-            backgroundColor: '#0A5C67',
+            bgcolor: '#0A5C67',
             color: '#fff',
 
           },
           '& .header-column-group': {
-            backgroundColor: '#DDE8E9',
+            bgcolor: '#DDE8E9',
           },
           '& .risk-border': {
-            borderRight: '3px solid #000'
-          }
+            borderRight: '3px solid #EFF4F4',
+            bgcolor: '#EFF4F4'
+          },
+          '& .isPending': {
+            bgcolor: '#EFE5E4',
+            '&:hover': {
+              bgcolor: '#E0C7C5'
+            }
+          },
+          '& .even': {
+            bgcolor: '#EFF4F4',
+            '&:hover': {
+              bgcolor: '#ABD3D3'
+            }
+          },
+          '& .odd': {
+            bgcolor: '#fff',
+            '&:hover': {
+              bgcolor: '#ABD3D3'
+            }
+          },
         }}
       >
 
@@ -276,18 +355,17 @@ export const InvoiceTable = () => {
           disableSelectionOnClick
           experimentalFeatures={{ newEditingApi: true, columnGrouping: true }}
           columnGroupingModel={columnGroupingModel}
+          getRowClassName={(params) => {
+            if (params.row.isPending) return 'isPending'
+            if (params.row.id % 2 === 0) return 'even'
+            if (params.row.id % 2 === 1) return 'odd'
+            return ''
+          }
+          }
         />
 
 
       </Box>
-      <Button
-        startIcon={<WarningIcon />}
-        variant='contained'
-        color={'secondary'}
-        sx={InvoiceButtonStyle}>
-        <Typography sx={{ fontWeight: 'bold' }}>Lançar setembro</Typography>
-      </Button>
-
     </Box >
   )
 }
