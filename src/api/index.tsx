@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { ConsumerUnitCards } from "@/types/consumerUnit";
+import { DistributorCards } from "@/types/supplier";
 
 // const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 const baseUrl = "/api"; // mocked from /pages/api/
@@ -12,9 +13,13 @@ export const mecEnergiaApi = createApi({
     fetchConsumerUnits: builder.query<ConsumerUnitCards, void>({
       query: () => "consumer-units",
     }),
+    fetchDistributors: builder.query<DistributorCards, void>({
+      query: () => "distributors",
+    }),
   }),
 });
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useFetchConsumerUnitsQuery } = mecEnergiaApi;
+export const { useFetchConsumerUnitsQuery, useFetchDistributorsQuery } =
+  mecEnergiaApi;
