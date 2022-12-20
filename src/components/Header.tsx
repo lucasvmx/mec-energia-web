@@ -11,7 +11,7 @@ const Header = () => {
   const { Icon, title, href } = routes[pathname];
 
   return (
-    <AppBar position="static" elevation={0} sx={{ bgcolor: "white" }}>
+    <AppBar position="static" elevation={0} color="default">
       <Toolbar>
         <Typography variant="h6">
           <NextLink href={href} passHref legacyBehavior>
