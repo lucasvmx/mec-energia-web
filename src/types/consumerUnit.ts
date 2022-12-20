@@ -35,7 +35,7 @@ export interface RenewConsumerUnitContractForm {
   outOfPeakContracted: number | "";
 }
 
-export type ConsumerUnitCard = {
+export type ConsumerUnit = {
   id: number;
   title: string;
   postedCurrentInvoice: boolean;
@@ -44,4 +44,4 @@ export type ConsumerUnitCard = {
   disabled: boolean;
 };
 
-export type ConsumerUnitCards = ConsumerUnitCard[];
+export type ConsumerUnitsPayload = ConsumerUnit[];

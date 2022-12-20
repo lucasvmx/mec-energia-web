@@ -1,170 +1,82 @@
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import {
-  Badge,
-  Box,
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  Divider,
-  IconButton,
-  Typography,
-} from "@mui/material";
-import {
-  Receipt as ReceiptIcon,
-  Star as StarIcon,
-  StarOutline as StarOutlineIcon,
-  TrendingUp as TrendingUpIcon,
-} from "@mui/icons-material";
+import { useMemo } from "react";
+import { format } from "date-fns";
+import ptBR from "date-fns/locale/pt-BR";
+import { CardProps } from "@/types/app";
+import { ConsumerUnit } from "@/types/consumerUnit";
+import { Button, Typography } from "@mui/material";
+import InsightsRoundedIcon from "@mui/icons-material/InsightsRounded";
+import ReceiptLongRoundedIcon from "@mui/icons-material/ReceiptLongRounded";
+import Card from "@/components/Card";
 
-interface Pendency {
-  month: number;
-  year: number;
+interface ConsumerUnitCardActionProps {
+  postedCurrentInvoice: ConsumerUnit["postedCurrentInvoice"];
+  variant: CardProps["variant"];
 }
 
-interface ConsumerUnitCardProps {
-  id: number;
-  title: string;
-  disabled?: boolean;
-  favorite?: boolean;
-  pendencies?: Pendency[];
-  currentRoute?: string;
-}
+const ConsumerUnitCardAction = ({
+  postedCurrentInvoice,
+  variant,
+}: ConsumerUnitCardActionProps) => {
+  const isWarning = variant === "warning";
+
+  if (postedCurrentInvoice) {
+    return (
+      <Typography color={isWarning ? "text.primary" : "text.secondary"}>
+        Em dia
+      </Typography>
+    );
+  }
+
+  return (
+    <Button
+      sx={{
+        textTransform: "none",
+        ...(isWarning && { color: "black", borderColor: "black" }),
+      }}
+      variant={isWarning ? "outlined" : "contained"}
+      size="small"
+      disableElevation
+    >
+      Lançar {format(new Date(), "MMMM", { locale: ptBR })}
+    </Button>
+  );
+};
 
 const ConsumerUnitCard = ({
-  id,
+  disabled,
+  favorite,
+  pendenciesCount,
+  postedCurrentInvoice,
   title,
-  disabled = false,
-  favorite = false,
-  pendencies = [],
-}: ConsumerUnitCardProps) => {
-  const router = useRouter();
-  const [longMonth, setLongMonth] = useState("");
-  const [badgeCount, setBadgeCount] = useState(0);
-  const [bottomCardText, setBottomCardText] = useState("");
-  const consumerUnitUrl = `/uc/${id}`;
-
-  useEffect(() => {
-    if (pendencies.length == 0) {
-      setBadgeCount(0);
-      return;
+}: ConsumerUnit) => {
+  const variant = useMemo(() => {
+    if (disabled) {
+      return "disabled";
     }
 
-    const { year, month } = pendencies[pendencies.length - 1];
-    const date = new Date(year, month - 1);
-    const longMonth = date.toLocaleString("pt-br", { month: "long" });
-
-    setLongMonth(longMonth);
-    setBadgeCount(pendencies.length - 1);
-  }, [pendencies]);
-
-  useEffect(() => {
-    if (favorite) {
-      router.prefetch(consumerUnitUrl);
+    if (pendenciesCount > 0) {
+      return "warning";
     }
-  }, [favorite]);
 
-  useEffect(() => {
-    handleTextBottomCard();
-  }, []);
-
-  const handleCardClick = () => {
-    router.push(consumerUnitUrl);
-  };
-
-  const handleTextBottomCard = () => {
-    let text = "";
-    if (disabled) text = "Desativado";
-    else if (pendencies.length === 0) text = "Em dia";
-    else if (pendencies.length === 1) {
-      const today = new Date();
-      if (
-        pendencies[0].year === today.getFullYear() &&
-        pendencies[0].month === today.getMonth() + 1
-      ) {
-        text = `${
-          longMonth.charAt(0).toUpperCase() + longMonth.slice(1)
-        } disponível`;
-      } else text = "1 lançamento pendente";
-    } else if (pendencies.length > 1)
-      text = `${pendencies.length} lançamentos pendentes`;
-    setBottomCardText(text);
-  };
+    return "default";
+  }, [disabled, pendenciesCount]);
 
   return (
     <Card
-      sx={{
-        height: 196,
-        display: "flex",
-        flexDirection: "column",
-        cursor: "pointer",
-      }}
-      variant={disabled ? "outlined" : "elevation"}
-      onClick={handleCardClick}
-    >
-      {!disabled && (
-        <CardActions>
-          <IconButton color="inherit">
-            {favorite ? <StarIcon /> : <StarOutlineIcon />}
-          </IconButton>
-        </CardActions>
-      )}
-
-      <CardContent
-        sx={{
-          flexGrow: 1,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "end",
-          pt: 0,
-        }}
-      >
-        <Typography variant="h5">{title}</Typography>
-      </CardContent>
-
-      <Divider />
-
-      {router.pathname === "/uc/[id]" ? (
-        <Box ml={1} p={1}>
-          <Typography>{bottomCardText}</Typography>
-        </Box>
-      ) : (
-        <CardActions
-          sx={{ justifyContent: "space-between", minHeight: "56px" }}
-        >
-          {disabled ? (
-            <Box ml={1}>
-              <Typography>Desativado</Typography>
-            </Box>
-          ) : (
-            <>
-              {pendencies.length == 0 ? (
-                <Box ml={1}>
-                  <Typography>Em dia</Typography>
-                </Box>
-              ) : (
-                <Button variant="outlined" size="small">
-                  Lançar {longMonth}
-                </Button>
-              )}
-
-              <Box>
-                <IconButton color="inherit">
-                  <Badge badgeContent={badgeCount} color="warning">
-                    <ReceiptIcon />
-                  </Badge>
-                </IconButton>
-
-                <IconButton color="inherit">
-                  <TrendingUpIcon />
-                </IconButton>
-              </Box>
-            </>
-          )}
-        </CardActions>
-      )}
-    </Card>
+      title={title}
+      variant={variant}
+      favorite={favorite}
+      action={
+        <ConsumerUnitCardAction
+          postedCurrentInvoice={postedCurrentInvoice}
+          variant={variant}
+        />
+      }
+      ActionIcon={
+        variant === "warning" ? ReceiptLongRoundedIcon : InsightsRoundedIcon
+      }
+      actionIconBadgeContent={pendenciesCount}
+    />
   );
 };
 

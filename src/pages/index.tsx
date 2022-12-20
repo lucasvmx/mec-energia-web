@@ -1,39 +1,13 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-
-import {
-  AttachMoneyRounded,
-  InsightsRounded,
-  TungstenOutlined,
-} from "@mui/icons-material";
-
+import { Box, Container } from "@mui/material";
+import { useFetchConsumerUnitsQuery } from "@/api";
 import DefaultTemplate from "@/templates/DefaultTemplate";
-import { Box, Button, Container } from "@mui/material";
-import Card from "@/components/Card";
-
-const MockButton = () => (
-  <Button
-    sx={{ textTransform: "none" }}
-    variant="contained"
-    size="small"
-    disableElevation
-  >
-    Lançar novembro
-  </Button>
-);
-
-const MockButton2 = () => (
-  <Button
-    sx={{ textTransform: "none", color: "black", borderColor: "black" }}
-    variant="outlined"
-    size="small"
-    disableElevation
-  >
-    Lançar novembro
-  </Button>
-);
+import ConsumerUnitCard from "@/components/ConsumerUnit/Card";
 
 const Home: NextPage = () => {
+  const { data: consumerUnits } = useFetchConsumerUnitsQuery();
+
   return (
     <>
       <Head>
@@ -43,36 +17,17 @@ const Home: NextPage = () => {
       <DefaultTemplate>
         <Container disableGutters>
           <Box display="flex" justifyContent="space-evenly">
-            <Card
-              title="Neoenergia"
-              variant="warning"
-              action="Tarifas pendentes"
-              ActionIcon={AttachMoneyRounded}
-              actionIconBadgeContent="!"
-            />
-
-            <Card
-              title="Campus Gama"
-              variant="warning"
-              favorite
-              action={<MockButton2 />}
-              ActionIcon={TungstenOutlined}
-              actionIconBadgeContent={3}
-            />
-
-            <Card
-              title="Campus Darcy Gleba A"
-              favorite={false}
-              action={<MockButton />}
-              ActionIcon={InsightsRounded}
-            />
-
-            <Card
-              title="Campus Darcy Gleba A"
-              favorite
-              action={"Em dia"}
-              ActionIcon={InsightsRounded}
-            />
+            {consumerUnits?.map((card) => (
+              <ConsumerUnitCard
+                disabled={card.disabled}
+                favorite={card.favorite}
+                id={card.id}
+                pendenciesCount={card.pendenciesCount}
+                postedCurrentInvoice={card.postedCurrentInvoice}
+                title={card.title}
+                key={card.id}
+              />
+            ))}
           </Box>
         </Container>
       </DefaultTemplate>

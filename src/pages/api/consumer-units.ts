@@ -1,8 +1,8 @@
 // TODO Remove when integrated
 import { NextApiRequest, NextApiResponse } from "next";
-import { ConsumerUnitCards } from "@/types/consumerUnit";
+import { ConsumerUnitsPayload } from "@/types/consumerUnit";
 
-const fakeConsumerUnits: ConsumerUnitCards = [
+const fakeConsumerUnits: ConsumerUnitsPayload = [
   {
     id: 0,
     title: "Campus Gama",

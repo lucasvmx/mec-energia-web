@@ -1,5 +1,5 @@
 import { makeStore } from "@/store";
-import { SvgIconProps } from "@mui/material";
+import { BadgeProps, SvgIconProps } from "@mui/material";
 import { ComponentType, ReactNode } from "react";
 
 export interface AppState {
@@ -28,3 +28,12 @@ export type CardWrapperProps = {
   selected?: boolean;
   children?: ReactNode;
 };
+
+export interface CardProps extends CardWrapperProps {
+  title: string;
+  favorite?: boolean;
+  BackgroundIcon?: ComponentType<SvgIconProps>;
+  action: ReactNode;
+  ActionIcon?: ComponentType<SvgIconProps>;
+  actionIconBadgeContent?: BadgeProps["badgeContent"];
+}

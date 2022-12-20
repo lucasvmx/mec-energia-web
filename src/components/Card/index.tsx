@@ -1,28 +1,10 @@
-import { ComponentType, ReactNode } from "react";
+import { CardProps } from "@/types/app";
 
-import {
-  Badge,
-  BadgeProps,
-  Box,
-  IconButton,
-  SvgIconProps,
-  Typography,
-  useTheme,
-} from "@mui/material";
+import { Badge, Box, IconButton, Typography, useTheme } from "@mui/material";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import StarOutlineRoundedIcon from "@mui/icons-material/StarOutlineRounded";
 
-import { CardWrapperProps } from "@/types/app";
 import CardWrapper from "@/components/Card/CardWrapper";
-
-interface CardProps extends CardWrapperProps {
-  title: string;
-  favorite?: boolean;
-  BackgroundIcon?: ComponentType<SvgIconProps>;
-  action: ReactNode;
-  ActionIcon?: ComponentType<SvgIconProps>;
-  actionIconBadgeContent?: BadgeProps["badgeContent"];
-}
 
 const Card = ({
   title,
@@ -30,13 +12,14 @@ const Card = ({
   dense,
   variant,
   favorite,
-  // BackgroundIcon,
+  // TODO BackgroundIcon,
   action,
   ActionIcon,
   actionIconBadgeContent,
 }: CardProps) => {
   const theme = useTheme();
   const isActive = variant !== "disabled";
+  const isDisabled = variant === "disabled";
   const isWarning = variant === "warning";
   const canFavorite = favorite !== undefined;
   const shouldShowFavoriteIconButton = canFavorite && isActive;
@@ -78,7 +61,11 @@ const Card = ({
             alignItems="end"
             {...(!dense && { minHeight: "30.75px" })}
           >
-            {action}
+            {isDisabled ? (
+              <Typography color="text.secondary">Desativada</Typography>
+            ) : (
+              action
+            )}
 
             {shouldShowActionIconButton && (
               <Box alignSelf="center">

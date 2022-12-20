@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { ConsumerUnitCards } from "@/types/consumerUnit";
+import { ConsumerUnitsPayload } from "@/types/consumerUnit";
 import { DistributorCards } from "@/types/supplier";
 
 // const baseUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -10,7 +10,7 @@ export const mecEnergiaApi = createApi({
   reducerPath: "mecEnergiaApi",
   baseQuery: fetchBaseQuery({ baseUrl }),
   endpoints: (builder) => ({
-    fetchConsumerUnits: builder.query<ConsumerUnitCards, void>({
+    fetchConsumerUnits: builder.query<ConsumerUnitsPayload, void>({
       query: () => "consumer-units",
     }),
     fetchDistributors: builder.query<DistributorCards, void>({
