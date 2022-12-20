@@ -2,6 +2,16 @@ import createTheme from "@mui/material/styles/createTheme";
 import { ptBR as corePtBR } from "@mui/material/locale";
 import { ptBR } from "@mui/x-date-pickers";
 
+declare module "@mui/material/styles" {
+  interface Palette {
+    highlighted: Palette["primary"];
+  }
+
+  interface PaletteOptions {
+    highlighted: PaletteOptions["primary"];
+  }
+}
+
 const theme = createTheme(
   {
     palette: {
@@ -18,6 +28,9 @@ const theme = createTheme(
       warning: {
         main: "#FB736C",
       },
+      highlighted: {
+        main: "rgba(10, 92, 103, 0.12)",
+      },
     },
     typography: {
       fontFamily: ["Lexend", "sans-serif"].join(","),
@@ -27,6 +40,13 @@ const theme = createTheme(
         styleOverrides: {
           root: {
             borderRadius: "8px",
+          },
+        },
+      },
+      MuiButton: {
+        styleOverrides: {
+          root: {
+            textTransform: "none",
           },
         },
       },

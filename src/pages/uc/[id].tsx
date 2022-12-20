@@ -7,7 +7,7 @@ import theme from "@/theme";
 import { Box, Button, Toolbar, useMediaQuery } from "@mui/material";
 
 import ConsumerUnitCardGrid from "@/components/ConsumerUnit/CardGrid";
-import DefaultTemplate from "@/templates/DefaultTemplate";
+import DefaultTemplate from "@/templates/Default";
 import ConsumerUnitCreateForm from "@/components/ConsumerUnit/Form/Create";
 import ConsumerUnitEditForm from "@/components/ConsumerUnit/Form/Edit";
 import ConsumerUnitHeader from "@/components/ConsumerUnit/Header";

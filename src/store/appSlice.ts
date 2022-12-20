@@ -1,9 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { AppState, RootState } from "@/types/app";
+import { AppState, DashboardFilter, RootState } from "@/types/app";
 
 const initialState: AppState = {
   isDrawerOpen: true,
+  dashboard: {
+    activeFilter: "all",
+  },
   consumerUnit: {
     isCreateFormOpen: false,
     isEditFormOpen: false,
@@ -17,6 +20,12 @@ export const appSlice = createSlice({
   reducers: {
     setIsDrawerOpen: (state, action: PayloadAction<boolean>) => {
       state.isDrawerOpen = action.payload;
+    },
+    setDashboardActiveFilter: (
+      state,
+      action: PayloadAction<DashboardFilter>
+    ) => {
+      state.dashboard.activeFilter = action.payload;
     },
     setIsConsumerUnitCreateFormOpen: (
       state,
@@ -40,6 +49,7 @@ export default appSlice.reducer;
 
 export const {
   setIsDrawerOpen,
+  setDashboardActiveFilter,
   setIsConsumerUnitCreateFormOpen,
   setIsConsumerUnitEditFormOpen,
   setIsConsumerUnitRenewContractFormOpen,
@@ -47,6 +57,10 @@ export const {
 
 export const selectIsDrawerOpen = (state: RootState) => {
   return state.app.isDrawerOpen;
+};
+
+export const selectDashboardActiveFilter = (state: RootState) => {
+  return state.app.dashboard.activeFilter;
 };
 
 export const selectIsConsumerUnitCreateFormOpen = (state: RootState) => {

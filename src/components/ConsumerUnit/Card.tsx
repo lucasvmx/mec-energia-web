@@ -30,7 +30,6 @@ const ConsumerUnitCardAction = ({
   return (
     <Button
       sx={{
-        textTransform: "none",
         ...(isWarning && { color: "black", borderColor: "black" }),
       }}
       variant={isWarning ? "outlined" : "contained"}

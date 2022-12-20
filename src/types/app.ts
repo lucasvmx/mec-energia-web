@@ -2,8 +2,13 @@ import { makeStore } from "@/store";
 import { BadgeProps, SvgIconProps } from "@mui/material";
 import { ComponentType, ReactNode } from "react";
 
+export type DashboardFilter = "all" | "active" | "pending";
+
 export interface AppState {
   isDrawerOpen: boolean;
+  dashboard: {
+    activeFilter: DashboardFilter;
+  };
   consumerUnit: {
     isCreateFormOpen: boolean;
     isEditFormOpen: boolean;
