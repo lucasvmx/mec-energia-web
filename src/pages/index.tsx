@@ -1,8 +1,9 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { Box, Container } from "@mui/material";
+import { Container } from "@mui/material";
 import { useFetchConsumerUnitsQuery } from "@/api";
 import DefaultTemplate from "@/templates/DefaultTemplate";
+import DashboardCardGrid from "@/components/Card/DashboardGrid";
 import ConsumerUnitCard from "@/components/ConsumerUnit/Card";
 
 const Home: NextPage = () => {
@@ -14,9 +15,9 @@ const Home: NextPage = () => {
         <title>Dashboard</title>
       </Head>
 
-      <DefaultTemplate>
-        <Container disableGutters>
-          <Box display="flex" justifyContent="space-evenly">
+      <DefaultTemplate disableGutters>
+        <Container disableGutters maxWidth="xl">
+          <DashboardCardGrid>
             {consumerUnits?.map((card) => (
               <ConsumerUnitCard
                 disabled={card.disabled}
@@ -28,7 +29,7 @@ const Home: NextPage = () => {
                 key={card.id}
               />
             ))}
-          </Box>
+          </DashboardCardGrid>
         </Container>
       </DefaultTemplate>
     </>
