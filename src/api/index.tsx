@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { ConsumerUnitsPayload } from "@/types/consumerUnit";
-import { DistributorCards } from "@/types/supplier";
+import { DistributorsPayload } from "@/types/supplier";
 
 // const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 const baseUrl = "/api"; // mocked from /pages/api/
@@ -13,7 +13,7 @@ export const mecEnergiaApi = createApi({
     fetchConsumerUnits: builder.query<ConsumerUnitsPayload, void>({
       query: () => "consumer-units",
     }),
-    fetchDistributors: builder.query<DistributorCards, void>({
+    fetchDistributors: builder.query<DistributorsPayload, void>({
       query: () => "distributors",
     }),
   }),

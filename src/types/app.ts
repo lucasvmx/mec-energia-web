@@ -33,7 +33,7 @@ export interface CardProps extends CardWrapperProps {
   title: string;
   favorite?: boolean;
   BackgroundIcon?: ComponentType<SvgIconProps>;
-  action: ReactNode;
+  action?: ReactNode;
   ActionIcon?: ComponentType<SvgIconProps>;
   actionIconBadgeContent?: BadgeProps["badgeContent"];
 }

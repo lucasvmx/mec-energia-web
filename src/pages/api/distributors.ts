@@ -1,8 +1,8 @@
 // TODO Remove when integrated
 import { NextApiRequest, NextApiResponse } from "next";
-import { DistributorCards } from "@/types/supplier";
+import { DistributorsPayload } from "@/types/supplier";
 
-const fakeDistributors: DistributorCards = [
+const fakeDistributors: DistributorsPayload = [
   {
     id: 0,
     title: "Mocked Enel",
