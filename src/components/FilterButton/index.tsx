@@ -27,7 +27,7 @@ const FilterButton = ({ buttons }: FilterButtonProps) => {
           key={title}
           onClick={onClick}
         >
-          <Icon fontSize="small" />
+          <Icon fontSize="small" color={active ? "inherit" : "action"} />
 
           {active && <Box ml={0.5}>{title}</Box>}
         </Button>
