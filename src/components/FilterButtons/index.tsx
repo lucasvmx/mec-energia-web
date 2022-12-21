@@ -12,7 +12,7 @@ type FilterButtonProps = {
   buttons: FilterButton[];
 };
 
-const FilterButton = ({ buttons }: FilterButtonProps) => {
+const FilterButtons = ({ buttons }: FilterButtonProps) => {
   return (
     <ButtonGroup>
       {buttons.map(({ active, Icon, title, onClick }) => (
@@ -36,4 +36,4 @@ const FilterButton = ({ buttons }: FilterButtonProps) => {
   );
 };
 
-export default FilterButton;
+export default FilterButtons;

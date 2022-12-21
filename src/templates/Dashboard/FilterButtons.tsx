@@ -7,7 +7,7 @@ import { DashboardFilter } from "@/types/app";
 import WarningRoundedIcon from "@mui/icons-material/WarningRounded";
 import FlashOnRoundedIcon from "@mui/icons-material/FlashOnRounded";
 import ViewModuleRoundedIcon from "@mui/icons-material/ViewModuleRounded";
-import FilterButton from "@/components/FilterButton";
+import FilterButtons from "@/components/FilterButtons";
 
 const DashboardFilterButtons = () => {
   const dispatch = useDispatch();
@@ -18,7 +18,7 @@ const DashboardFilterButtons = () => {
   };
 
   return (
-    <FilterButton
+    <FilterButtons
       buttons={[
         {
           active: activeFilter === "pending",
