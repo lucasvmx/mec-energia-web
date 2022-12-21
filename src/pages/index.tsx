@@ -2,10 +2,8 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { Container } from "@mui/material";
 import DefaultTemplate from "@/templates/Default";
-import DashboardCardGrid from "@/templates/Dashboard/Grid";
 import DashboardFilterButtons from "@/templates/Dashboard/FilterButtons";
-import DashboardDistributorsCards from "@/templates/Dashboard/DistributorsCards";
-import DashboardConsumerUnitsCards from "@/templates/Dashboard/ConsumerUnitsCards";
+import DashboardCardGrid from "@/templates/Dashboard/Grid";
 
 const Dashboard: NextPage = () => {
   return (
@@ -15,12 +13,8 @@ const Dashboard: NextPage = () => {
       </Head>
 
       <DefaultTemplate disableGutters headerAction={<DashboardFilterButtons />}>
-        <Container disableGutters maxWidth="xl">
-          <DashboardCardGrid>
-            <DashboardDistributorsCards />
-
-            <DashboardConsumerUnitsCards />
-          </DashboardCardGrid>
+        <Container maxWidth="xl">
+          <DashboardCardGrid />
         </Container>
       </DefaultTemplate>
     </>
