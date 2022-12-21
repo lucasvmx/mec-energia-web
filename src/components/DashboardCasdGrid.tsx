@@ -1,5 +1,7 @@
 import { Box } from "@mui/material";
-import ConsumerUnitCard from "@/components/ConsumerUnit/Card";
+import { mockedDistributor } from "../mocks/mockedDistributor";
+import ConsumerUnitCard from "./ConsumerUnit/Card";
+import DistributorCard from "./Distributor/DistributorCard";
 
 const mockedConsumerUnits = [
   {
@@ -62,7 +64,7 @@ const mockedConsumerUnits = [
   },
 ];
 
-const ConsumerUnitCardGrid = () => {
+const DashboardCardGrid = () => {
   return (
     // Can't use Grid componente https://github.com/mui/material-ui/issues/34605
     <Box
@@ -70,6 +72,22 @@ const ConsumerUnitCardGrid = () => {
       gridTemplateColumns="repeat(auto-fit, minmax(250px, 1fr))"
       gap={2}
     >
+      {mockedDistributor.map((distributor) => {
+        if (distributor.tariffs.length !== 0 && distributor.tariffs.find(tariff => tariff.overdue === true) !== undefined) {
+          return (
+            <DistributorCard
+              key={distributor.id}
+              id={distributor.id}
+              name={distributor.name}
+              is_active={distributor.is_active}
+              tariffs={distributor.tariffs}
+              consumer_units={distributor.consumer_units}
+            />
+          )
+        }
+      }
+      )}
+
       {mockedConsumerUnits.map((consumerUnit) => (
         <ConsumerUnitCard
           key={consumerUnit.id}
@@ -84,4 +102,4 @@ const ConsumerUnitCardGrid = () => {
   );
 };
 
-export default ConsumerUnitCardGrid;
+export default DashboardCardGrid;

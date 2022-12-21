@@ -1,3 +1,4 @@
+import { Tariff } from "@/types/tariffs";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { makeStore } from ".";
 
@@ -13,9 +14,14 @@ export interface AppState {
     isEditFormOpen: boolean;
     isRenewContractFormOpen: boolean;
   };
-  electricityBill:{
+  distributor: {
     isCreateFormOpen: boolean;
     isEditFormOpen: boolean;
+  };
+  tariff: {
+    isCreateFormOpen: boolean;
+    isEditFormOpen: boolean;
+    currentTariff: Tariff;
   };
 }
 
@@ -30,10 +36,35 @@ const initialState: AppState = {
     isEditFormOpen: false,
     isRenewContractFormOpen: false,
   },
-  electricityBill:{
-    isCreateFormOpen:false,
-    isEditFormOpen:false
-  }
+  distributor: {
+    isCreateFormOpen: false,
+    isEditFormOpen: false,
+  },
+  tariff: {
+    isCreateFormOpen: false,
+    isEditFormOpen: false,
+    currentTariff: {
+      blue: {
+        off_peak_te_in_reais_per_mwh: 0,
+        off_peak_tusd_in_reais_per_kw: 0,
+        off_peak_tusd_in_reais_per_mwh: 0,
+        peak_te_in_reais_per_mwh: 0,
+        peak_tusd_in_reais_per_kw: 0,
+        peak_tusd_in_reais_per_mwh: 8,
+      },
+      end_date: "2010-1-1",
+      overdue: false,
+      start_date: "2010-1-1",
+      subgroup: "A0",
+      green: {
+        na_tusd_in_reais_per_kw: 9,
+        off_peak_te_in_reais_per_mwh: 2,
+        off_peak_tusd_in_reais_per_mwh: 8,
+        peak_te_in_reais_per_mwh: 6,
+        peak_tusd_in_reais_per_mwh: 9,
+      },
+    },
+  },
 };
 
 export const appSlice = createSlice({
@@ -58,6 +89,27 @@ export const appSlice = createSlice({
     ) => {
       state.consumerUnit.isRenewContractFormOpen = action.payload;
     },
+    setIsDistributorCreateFormOpen: (state, action: PayloadAction<boolean>) => {
+      state.distributor.isCreateFormOpen = action.payload;
+    },
+    setIsDistributorEditFormOpen: (state, action: PayloadAction<boolean>) => {
+      state.distributor.isEditFormOpen = action.payload;
+    },
+    setIsTariffCreateFormOpen: (state, action: PayloadAction<boolean>) => {
+      state.tariff.isCreateFormOpen = action.payload;
+      if (action.payload) {
+        state.tariff.isEditFormOpen = !action.payload;
+      }
+    },
+    setIsTariffEdiFormOpen: (state, action: PayloadAction<boolean>) => {
+      state.tariff.isEditFormOpen = action.payload;
+      if (action.payload) {
+        state.tariff.isCreateFormOpen = !action.payload;
+      }
+    },
+    setCurrenTariff: (state, action: PayloadAction<Tariff>) => {
+      state.tariff.currentTariff = action.payload;
+    },
   },
 });
 
@@ -68,6 +120,11 @@ export const {
   setIsConsumerUnitCreateFormOpen,
   setIsConsumerUnitEditFormOpen,
   setIsConsumerUnitRenewContractFormOpen,
+  setIsDistributorCreateFormOpen,
+  setIsDistributorEditFormOpen,
+  setIsTariffCreateFormOpen,
+  setIsTariffEdiFormOpen,
+  setCurrenTariff,
 } = appSlice.actions;
 
 export const selectIsDrawerOpen = (state: RootState) => {
@@ -84,4 +141,23 @@ export const selectIsConsumerUnitEditFormOpen = (state: RootState) => {
 
 export const selectIsConsumerUnitRenewContractFormOpen = (state: RootState) => {
   return state.app.consumerUnit.isRenewContractFormOpen;
+};
+
+export const selectIsDistributorCreateFormOpen = (state: RootState) => {
+  return state.app.distributor.isCreateFormOpen;
+};
+
+export const selectIsDistributorEditFormOpen = (state: RootState) => {
+  return state.app.distributor.isEditFormOpen;
+};
+
+export const selectIsTariffCreateFormOpen = (state: RootState) => {
+  return state.app.tariff.isCreateFormOpen;
+};
+
+export const selectIsTariffEditFormOpen = (state: RootState) => {
+  return state.app.tariff.isEditFormOpen;
+};
+export const selectCurrentTariff = (state: RootState) => {
+  return state.app.tariff.currentTariff;
 };
