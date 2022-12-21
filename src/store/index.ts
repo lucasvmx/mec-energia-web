@@ -28,6 +28,8 @@ const reducer = (
 export const makeStore = () =>
   configureStore({
     reducer,
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware().concat(mecEnergiaApi.middleware),
   });
 
 export const wrapper = createWrapper(makeStore);
