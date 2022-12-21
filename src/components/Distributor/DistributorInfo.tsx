@@ -35,7 +35,7 @@ export const DistributorInfo = () => {
     }
     else if (currentDist?.tariffs.length > 1) {
       if (!isOverdue) setTitleTariffs('Tarifas')
-      else setTitleTariffs('Tarifas com atualizações pendentes')
+      else setTitleTariffs('Tarifas com atualização pendente')
     }
   }
 
