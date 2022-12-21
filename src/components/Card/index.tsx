@@ -4,7 +4,7 @@ import { Badge, Box, IconButton, Typography, useTheme } from "@mui/material";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import StarOutlineRoundedIcon from "@mui/icons-material/StarOutlineRounded";
 
-import CardWrapper from "@/components/Card/CardWrapper";
+import CardWrapper from "@/components/Card/Wrapper";
 
 const Card = ({
   title,

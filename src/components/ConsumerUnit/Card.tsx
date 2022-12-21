@@ -30,7 +30,13 @@ const ConsumerUnitCardAction = ({
   return (
     <Button
       sx={{
-        ...(isWarning && { color: "black", borderColor: "black" }),
+        ...(isWarning && {
+          color: "black",
+          borderColor: "black",
+          ":hover": {
+            borderColor: "black",
+          },
+        }),
       }}
       variant={isWarning ? "outlined" : "contained"}
       size="small"
