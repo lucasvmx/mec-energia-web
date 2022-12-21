@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Grid } from "@mui/material";
+import { Box } from "@mui/material";
 import { useFetchConsumerUnitsQuery, useFetchDistributorsQuery } from "@/api";
 import { selectDashboardActiveFilter } from "@/store/appSlice";
 import { DistributorsPayload } from "@/types/supplier";
@@ -62,49 +62,33 @@ const DashboardCardGrid = () => {
   }, [activeFilter, consumerUnitsData]);
 
   return (
-    <Grid container spacing={5} py={3}>
+    <Box
+      sx={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, 240px)',
+        gap: 3,
+        justifyContent: 'center',
+      }}
+    >
       {distributors?.map((card) => (
-        <Grid
-          key={card.id}
-          item
-          xs={12}
-          sm={6}
-          md={4}
-          lg={3}
-          display="flex"
-          justifyContent="center"
-        >
-          <DistributorCard
-            disabled={card.disabled}
-            id={card.id}
-            hasPendencies={card.hasPendencies}
-            title={card.title}
-          />
-        </Grid>
+        <DistributorCard
+          disabled={card.disabled}
+          id={card.id}
+          hasPendencies={card.hasPendencies}
+          title={card.title}
+        />
       ))}
-
       {consumerUnits?.map((card) => (
-        <Grid
-          key={card.id}
-          item
-          xs={12}
-          sm={6}
-          md={4}
-          lg={3}
-          display="flex"
-          justifyContent="center"
-        >
-          <ConsumerUnitCard
-            disabled={card.disabled}
-            favorite={card.favorite}
-            id={card.id}
-            pendenciesCount={card.pendenciesCount}
-            postedCurrentInvoice={card.postedCurrentInvoice}
-            title={card.title}
-          />
-        </Grid>
+        <ConsumerUnitCard
+          disabled={card.disabled}
+          favorite={card.favorite}
+          id={card.id}
+          pendenciesCount={card.pendenciesCount}
+          postedCurrentInvoice={card.postedCurrentInvoice}
+          title={card.title}
+        />
       ))}
-    </Grid>
+    </Box>
   );
 };
 
