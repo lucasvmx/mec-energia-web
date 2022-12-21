@@ -13,6 +13,9 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import WarningIcon from '@mui/icons-material/Warning';
+import { setIsElectricityBillCreateFormOpen } from '@/store/appSlice';
+import { useDispatch } from 'react-redux';
+import CreateEditElectricityBillForm from '@/components/ElectricityBill/Form/CreateEditElectricityBillForm';
 
 interface TableValues {
   id: number,
@@ -45,6 +48,8 @@ export const InvoiceTable = () => {
     year: new Date().getFullYear(),
   }
   //const [pendingMonth, setPendingMonth] = useState(0)
+
+  const dispatch = useDispatch()
 
   useEffect(() => {
     setInvoicesYearActive(invoices[0].year)
@@ -117,6 +122,10 @@ export const InvoiceTable = () => {
     console.log("@handleRemove-ID", id)
   }
 
+  const handleCreateDistributorClick = () => {
+    dispatch(setIsElectricityBillCreateFormOpen(true));
+  };
+
   const columns: GridColDef[] = [
     {
       field: 'month',
@@ -140,7 +149,8 @@ export const InvoiceTable = () => {
             startIcon={<WarningIcon />}
             variant='contained'
             color={'secondary'}
-            sx={InvoiceButtonStyle}>
+            sx={InvoiceButtonStyle}
+            onClick={handleCreateDistributorClick}>
             <Typography sx={{ fontWeight: 'bold' }}>Lançar {params.row.month}</Typography>
           </Button>
         )
@@ -148,7 +158,8 @@ export const InvoiceTable = () => {
           <Button
             variant='contained'
             color={'primary'}
-            sx={InvoiceButtonStyle}>
+            sx={InvoiceButtonStyle}
+            onClick={handleCreateDistributorClick}>
             <Typography sx={{ fontWeight: 'bold' }}>Lançar {params.row.month}</Typography>
           </Button>
         )
@@ -381,6 +392,7 @@ export const InvoiceTable = () => {
 
 
       </Box>
+      <CreateEditElectricityBillForm />
     </Box >
   )
 }

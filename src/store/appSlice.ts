@@ -23,6 +23,10 @@ export interface AppState {
     isEditFormOpen: boolean;
     currentTariff: Tariff;
   };
+  electricityBill: {
+    isCreateFormOpen: boolean;
+    isEditFormOpen: boolean;
+  };
 }
 
 export type AppDispatch = Store["dispatch"];
@@ -65,6 +69,10 @@ const initialState: AppState = {
       },
     },
   },
+  electricityBill:{
+    isCreateFormOpen:false,
+    isEditFormOpen:false,
+  }
 };
 
 export const appSlice = createSlice({
@@ -110,6 +118,18 @@ export const appSlice = createSlice({
     setCurrenTariff: (state, action: PayloadAction<Tariff>) => {
       state.tariff.currentTariff = action.payload;
     },
+    setIsElectricityBillCreateFormOpen: (state, action: PayloadAction<boolean>) => {
+      state.electricityBill.isCreateFormOpen = action.payload;
+      if (action.payload) {
+        state.electricityBill.isEditFormOpen = !action.payload;
+      }
+    },
+    setIsElectricityBillEdiFormOpen: (state, action: PayloadAction<boolean>) => {
+      state.electricityBill.isEditFormOpen = action.payload;
+      if (action.payload) {
+        state.electricityBill.isCreateFormOpen = !action.payload;
+      }
+    },
   },
 });
 
@@ -125,6 +145,8 @@ export const {
   setIsTariffCreateFormOpen,
   setIsTariffEdiFormOpen,
   setCurrenTariff,
+  setIsElectricityBillCreateFormOpen,
+  setIsElectricityBillEdiFormOpen
 } = appSlice.actions;
 
 export const selectIsDrawerOpen = (state: RootState) => {
@@ -160,4 +182,12 @@ export const selectIsTariffEditFormOpen = (state: RootState) => {
 };
 export const selectCurrentTariff = (state: RootState) => {
   return state.app.tariff.currentTariff;
+};
+
+export const selectIsElectricityBillCreateFormOpen = (state: RootState) => {
+  return state.app.electricityBill.isCreateFormOpen;
+};
+
+export const selectIsElectricityBillEditFormOpen = (state: RootState) => {
+  return state.app.electricityBill.isEditFormOpen;
 };
