@@ -13,6 +13,10 @@ export interface AppState {
     isEditFormOpen: boolean;
     isRenewContractFormOpen: boolean;
   };
+  electricityBill:{
+    isCreateFormOpen: boolean;
+    isEditFormOpen: boolean;
+  };
 }
 
 export type AppDispatch = Store["dispatch"];
@@ -26,6 +30,10 @@ const initialState: AppState = {
     isEditFormOpen: false,
     isRenewContractFormOpen: false,
   },
+  electricityBill:{
+    isCreateFormOpen:false,
+    isEditFormOpen:false
+  }
 };
 
 export const appSlice = createSlice({

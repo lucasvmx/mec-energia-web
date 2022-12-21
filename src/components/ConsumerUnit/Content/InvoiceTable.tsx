@@ -250,6 +250,18 @@ export const InvoiceTable = () => {
 
   const columnGroupingModel: GridColumnGroupingModel = [
     {
+      groupId: 'gap',
+      headerName: ' ',
+      headerClassName: 'gap',
+      children: [
+        { field: 'month' },
+        { field: 'analyzable' },
+        { field: 'value' },
+        { field: ' ' }
+      ]
+
+    },
+    {
       groupId: 'consumption',
       headerName: 'Consumo (kWh)',
       headerClassName: 'header-column-group risk-border',
@@ -319,9 +331,12 @@ export const InvoiceTable = () => {
           '& .header-column-group': {
             bgcolor: '#DDE8E9',
           },
+          '& .gap': {
+            bgcolor: '#EFF4F4',
+            borderColor: '#EFF4F4'
+          },
           '& .risk-border': {
             borderRight: '3px solid #EFF4F4',
-            bgcolor: '#EFF4F4'
           },
           '& .isPending': {
             bgcolor: '#EFE5E4',
