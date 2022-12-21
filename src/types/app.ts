@@ -32,6 +32,7 @@ export type CardWrapperProps = {
   variant?: "default" | "warning" | "disabled";
   selected?: boolean;
   children?: ReactNode;
+  onClick?: () => void;
 };
 
 export interface CardProps extends CardWrapperProps {

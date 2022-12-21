@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useRouter } from "next/router";
 import { format } from "date-fns";
 import ptBR from "date-fns/locale/pt-BR";
 import { CardProps } from "@/types/app";
@@ -50,10 +51,13 @@ const ConsumerUnitCardAction = ({
 const ConsumerUnitCard = ({
   disabled,
   favorite,
+  id,
   pendenciesCount,
   postedCurrentInvoice,
   title,
 }: ConsumerUnit) => {
+  const router = useRouter();
+
   const variant = useMemo(() => {
     if (disabled) {
       return "disabled";
@@ -65,6 +69,10 @@ const ConsumerUnitCard = ({
 
     return "default";
   }, [disabled, pendenciesCount]);
+
+  const handleConsumerUnitClick = () => {
+    router.push(`/uc/${id}`);
+  };
 
   return (
     <Card
@@ -81,6 +89,7 @@ const ConsumerUnitCard = ({
         variant === "warning" ? ReceiptLongRoundedIcon : InsightsRoundedIcon
       }
       actionIconBadgeContent={pendenciesCount}
+      onClick={handleConsumerUnitClick}
     />
   );
 };

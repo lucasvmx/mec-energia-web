@@ -16,6 +16,7 @@ const Card = ({
   action,
   ActionIcon,
   actionIconBadgeContent,
+  onClick,
 }: CardProps) => {
   const theme = useTheme();
   const isActive = variant !== "disabled";
@@ -27,7 +28,12 @@ const Card = ({
   const shouldShowActionIconButton = ActionIcon && !dense && isActive;
 
   return (
-    <CardWrapper selected={selected} dense={dense} variant={variant}>
+    <CardWrapper
+      selected={selected}
+      dense={dense}
+      variant={variant}
+      onClick={onClick}
+    >
       <Box
         display="flex"
         flexDirection="column"

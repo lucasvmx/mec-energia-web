@@ -6,6 +6,7 @@ const CardWrapper = ({
   dense,
   variant = "default",
   children,
+  onClick,
 }: CardWrapperProps) => (
   <Paper
     sx={{
@@ -30,6 +31,10 @@ const CardWrapper = ({
       ...(variant === "disabled" && {
         backgroundColor: "background.default",
       }),
+
+      ...(onClick && {
+        cursor: "pointer",
+      }),
     }}
     {...(variant === "disabled" && {
       variant: "outlined",
@@ -38,6 +43,7 @@ const CardWrapper = ({
       variant: "elevation",
       elevation: 8,
     })}
+    onClick={onClick}
   >
     {children}
   </Paper>
