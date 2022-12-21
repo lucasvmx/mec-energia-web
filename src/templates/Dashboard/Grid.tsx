@@ -6,7 +6,7 @@ import { selectDashboardActiveFilter } from "@/store/appSlice";
 import { DistributorsPayload } from "@/types/supplier";
 import { ConsumerUnitsPayload } from "@/types/consumerUnit";
 import DistributorCard from "@/components/Distributor/Card";
-import ConsumerUnitCard from "@/components/ConsumerUnit/Card";
+import ConsumerUnitCard from "@/components/ConsumerUnit/CardV2";
 
 const DashboardCardGrid = () => {
   const { data: distributorsData } = useFetchDistributorsQuery();
