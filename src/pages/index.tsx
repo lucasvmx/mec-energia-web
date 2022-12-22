@@ -1,25 +1,24 @@
 import type { NextPage } from "next";
 import Head from "next/head";
+import { Container } from "@mui/material";
+import DefaultTemplate from "@/templates/Default";
+import DashboardFilterButtons from "@/templates/Dashboard/FilterButtons";
+import DashboardCardGrid from "@/templates/Dashboard/Grid";
 
-import Container from "@mui/material/Container";
-
-import DefaultTemplate from "@/templates/DefaultTemplate";
-import ConsumerUnitCardGrid from "@/components/ConsumerUnit/CardGrid";
-
-const Home: NextPage = () => {
+const Dashboard: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Dashboard</title>
+        <title>Painel</title>
       </Head>
 
-      <DefaultTemplate>
-        <Container disableGutters>
-          <ConsumerUnitCardGrid />
+      <DefaultTemplate disableGutters headerAction={<DashboardFilterButtons />}>
+        <Container maxWidth="xl">
+          <DashboardCardGrid />
         </Container>
       </DefaultTemplate>
     </>
   );
 };
 
-export default Home;
+export default Dashboard;

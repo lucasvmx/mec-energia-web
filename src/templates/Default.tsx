@@ -8,18 +8,20 @@ import Header from "@/components/Header";
 interface DefaultTemplateProps {
   children: ReactNode;
   disableGutters?: boolean;
+  headerAction?: ReactNode;
 }
 
 const DefaultTemplate = ({
   children,
   disableGutters,
+  headerAction,
 }: DefaultTemplateProps) => {
   return (
     <Box display="flex" minHeight="100vh">
       <Drawer />
 
       <Box flexGrow={1} minHeight="100%" display="flex" flexDirection="column">
-        <Header />
+        <Header>{headerAction}</Header>
 
         <Box component="main" flexGrow={1} p={disableGutters ? 0 : 3}>
           {children}
