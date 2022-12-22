@@ -34,3 +34,14 @@ export interface RenewConsumerUnitContractForm {
   peakContracted: number | "";
   outOfPeakContracted: number | "";
 }
+
+export type ConsumerUnit = {
+  id: number;
+  title: string;
+  postedCurrentInvoice: boolean;
+  pendenciesCount: number;
+  favorite: boolean;
+  disabled: boolean;
+};
+
+export type ConsumerUnitsPayload = ConsumerUnit[];

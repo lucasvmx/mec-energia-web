@@ -2,7 +2,6 @@ import { NextPage } from "next";
 import {
   Box,
   Button,
-  createTheme,
   Dialog,
   DialogActions,
   DialogContent,
@@ -11,7 +10,6 @@ import {
   IconButton,
   Slider,
   Stack,
-  ThemeProvider,
   Toolbar,
   Typography,
   useMediaQuery,
@@ -22,7 +20,7 @@ import HelpIcon from '@mui/icons-material/Help';
 import FlashOffIcon from '@mui/icons-material/FlashOff';
 import BusinessIcon from "@mui/icons-material/Business";
 import theme from "../../theme";
-import DefaultTemplate from "../../templates/DefaultTemplate";
+import DefaultTemplate from "../../templates/Default";
 import DistributorCardGrid from "../../components/Distributor/DistributorCardGrid";
 import DistributorContainer from "../../components/Distributor/DistributorContainer";
 import { mockedDistributor } from "../../mocks/mockedDistributor";
@@ -34,15 +32,6 @@ import { useDispatch } from "react-redux";
 import DistributorCreateForm from "../../components/Distributor/Form/DistributorCreateForm";
 import DistributorEditForm from "../../components/Distributor/Form/DistributorEditForm";
 import TariffCreateForm from "../../components/Tariff/Form/TariffCreateForm";
-import { red } from "@mui/material/colors";
-
-const removeTheme = createTheme({
-  palette: {
-    secondary: {
-      main: red.A400,
-    },
-  },
-});
 
 const DistributorPage: NextPage = () => {
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
@@ -230,13 +219,11 @@ const DistributorPage: NextPage = () => {
             <Box display={'flex'} flexDirection='column'>
               <Box sx={{ width: 300 }}>
                 <Stack spacing={2} direction="row" sx={{ mb: 1 }} alignItems="center">
-                  <ThemeProvider theme={removeTheme}>
-                    <BusinessIcon color={isErrorColor ? 'secondary' : 'primary'} />
-                    <Slider color={isErrorColor ? 'secondary' : 'primary'} aria-label="Volume"
-                      value={slidevalue}
-                      onChange={handleSlideChange} />
-                    <DeleteIcon color="secondary" />
-                  </ThemeProvider>
+                  <BusinessIcon color={isErrorColor ? 'secondary' : 'primary'} />
+                  <Slider color={isErrorColor ? 'secondary' : 'primary'} aria-label="Volume"
+                    value={slidevalue}
+                    onChange={handleSlideChange} />
+                  <DeleteIcon color="secondary" />
                 </Stack>
               </Box>
               <Box display={'flex'} justifyContent='flex-end'>

@@ -1,19 +1,19 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-
 import { Container } from "@mui/material";
-import DashboardCardGrid from "../components/DashboardCasdGrid";
-import DefaultTemplate from "../templates/DefaultTemplate";
+import DefaultTemplate from "@/templates/Default";
+import DashboardFilterButtons from "@/templates/Dashboard/FilterButtons";
+import DashboardCardGrid from "@/templates/Dashboard/Grid";
 
-const Home: NextPage = () => {
+const Dashboard: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Dashboard</title>
+        <title>Painel</title>
       </Head>
 
-      <DefaultTemplate>
-        <Container disableGutters>
+      <DefaultTemplate disableGutters headerAction={<DashboardFilterButtons />}>
+        <Container maxWidth="xl">
           <DashboardCardGrid />
         </Container>
       </DefaultTemplate>
@@ -21,4 +21,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export default Dashboard;

@@ -2,6 +2,8 @@ import { SyntheticEvent, useState } from "react";
 import { Box, Tab, Tabs } from "@mui/material";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 import ConsumerUnitContractContent from "@/components/ConsumerUnit/Content/Contract";
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
+import { InvoiceTable } from "./InvoiceTable";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -36,7 +38,10 @@ const ConsumerUnitContent = () => {
   return (
     <>
       <Tabs value={selectedTab} variant="fullWidth" onChange={handleTabChange}>
-        <Tab label="Faturas" disabled />
+        <Tab
+          icon={<ReceiptLongIcon />}
+          label="Faturas"
+          iconPosition="start" />
         <Tab label="Análise" disabled />
         <Tab
           icon={<ContentPasteIcon />}
@@ -44,6 +49,10 @@ const ConsumerUnitContent = () => {
           iconPosition="start"
         />
       </Tabs>
+
+      <TabPanel value={selectedTab} index={0}>
+        <InvoiceTable />
+      </TabPanel>
 
       <TabPanel value={selectedTab} index={2}>
         <ConsumerUnitContractContent />
