@@ -11,12 +11,14 @@
     "postinstall": "husky install"
   },
   "dependencies": {
+    "@babel/core": "^7.0.0-0",
     "@emotion/css": "^11.10.0",
     "@emotion/react": "^11.10.4",
     "@emotion/server": "^11.10.0",
     "@emotion/styled": "^11.10.4",
     "@mui/icons-material": "^5.10.6",
     "@mui/material": "^5.10.6",
+    "@mui/x-data-grid": "^5.17.14",
     "@mui/x-date-pickers": "^5.0.5",
     "@reduxjs/toolkit": "^1.8.5",
     "date-fns": "^2.29.3",

@@ -1,4 +1,4 @@
-import createTheme from "@mui/material/styles/createTheme";
+import { createTheme } from "@mui/material";
 import { ptBR as corePtBR } from "@mui/material/locale";
 import { ptBR } from "@mui/x-date-pickers";
 

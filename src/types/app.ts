@@ -1,6 +1,7 @@
 import { makeStore } from "@/store";
 import { BadgeProps, SvgIconProps } from "@mui/material";
 import { ComponentType, ReactNode } from "react";
+import { Tariff } from "./tariffs";
 
 export type DashboardFilter = "all" | "active" | "pending";
 
@@ -13,6 +14,15 @@ export interface AppState {
     isCreateFormOpen: boolean;
     isEditFormOpen: boolean;
     isRenewContractFormOpen: boolean;
+  };
+  distributor: {
+    isCreateFormOpen: boolean;
+    isEditFormOpen: boolean;
+  };
+  tariff: {
+    isCreateFormOpen: boolean;
+    isEditFormOpen: boolean;
+    currentTariff: Tariff;
   };
 }
 
