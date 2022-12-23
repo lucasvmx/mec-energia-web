@@ -30,20 +30,6 @@ var myChart = new Chart(ctx, {
                 stack: 'Proposto',
                 barPercentage: 1.1,
             },
-
-            {
-                label: 'Indisponível',
-                data: [null, null, null, 120000, null, null, null, null, null, null, null, null],
-                type: 'bar',
-                backgroundColor: '#F5F5F5',
-                borderColor: '#C3C3C3',
-                borderWidth: 1,
-                pointStyle: 'star',
-                stack: 'Atual',
-                barPercentage: 2.2,
-                categoryPercentage: 0.5,
-            },
-
         ]
     },
     options: {
@@ -70,34 +56,29 @@ var myChart = new Chart(ctx, {
             tooltip: {
                 usePointStyle: true,
                 callbacks: {
-
                     title: function (context) {
                         let title = context[0].label || '';
-                        return title.replace(',', '/');
+                        title = title.replace(',', '/');
+                        if (context[0].parsed.y == null) {
+                            title += ' - Indisponível';
+                        }
+                        return title;
                     },
                     label: function (context) {
-                        let label = context.dataset.label || '';
                         if (context.parsed.y == null) {
                             return null;
+                        } else {
+                            let label = context.dataset.label || '';
+                            label += ': ' + new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(context.parsed.y);
+                            return label;
                         }
-                        if (label == 'Indisponível') {
-                            return 'Informações indisponíveis'
-                        }
-                        if (label) {
-                            label += ': ';
-                        }
-                        if (context.parsed.y !== null) {
-                            label += new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(context.parsed.y);
-                        }
-                        return label;
                     },
                     footer: function (tooltipItems) {
-                        if (tooltipItems.length <= 1){
+                        if (tooltipItems[0].parsed.y == null || tooltipItems.length <= 1){
                             return null
                         }
 
                         let sum = 0;
-
                         tooltipItems.forEach(function(tooltipItem) {
                           sum += tooltipItem.parsed.y;
                         });

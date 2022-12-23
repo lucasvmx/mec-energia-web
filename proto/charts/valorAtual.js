@@ -18,16 +18,6 @@ var myChart = new Chart(ctx, {
                 backgroundColor: '#FB736C', //colorSecondary
                 pointStyle: 'triangle',
             },
-            {
-                label: 'Indisponível',
-                data: [null, null, null, 120000, null, null, null, null, null, null, null, null],
-                type: 'bar',
-                backgroundColor: '#F5F5F5',
-                borderColor: '#C3C3C3',
-                borderWidth: 1,
-                pointStyle: 'star',
-            },
-
         ]
     },
     options: {
@@ -40,7 +30,7 @@ var myChart = new Chart(ctx, {
         plugins: {
             title: {
                 display: true,
-                text: 'Valores Atuais',
+                text: 'Custo-base atual',
                 font: {
                     size: 16,
                 },
@@ -54,27 +44,23 @@ var myChart = new Chart(ctx, {
             tooltip: {
                 usePointStyle: true,
                 callbacks: {
-
                     title: function (context) {
                         let title = context[0].label || '';
-                        return title.replace(',', '/');
+                        title = title.replace(',', '/');
+                        if (context[0].parsed.y == null) {
+                            title += ' - Indisponível';
+                        }
+                        return title;
                     },
                     label: function (context) {
-                        let label = context.dataset.label || '';
                         if (context.parsed.y == null) {
                             return null;
+                        } else {
+                            let label = context.dataset.label || '';
+                            label += ': ' + new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(context.parsed.y);
+                            return label;
                         }
-                        if (label == 'Indisponível') {
-                            return 'Informações indisponíveis'
-                        }
-                        if (label) {
-                            label += ': ';
-                        }
-                        if (context.parsed.y !== null) {
-                            label += new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(context.parsed.y);
-                        }
-                        return label;
-                    }
+                    },
                 }
             }
         },
