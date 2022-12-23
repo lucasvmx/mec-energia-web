@@ -61,6 +61,17 @@ var myChart = new Chart(ctx, {
                             return label;
                         }
                     },
+                    footer: function (tooltipItems) {
+                        if (tooltipItems[0].parsed.y == null || tooltipItems.length <= 1){
+                            return null
+                        }
+
+                        let sum = 0;
+                        tooltipItems.forEach(function(tooltipItem) {
+                          sum += tooltipItem.parsed.y;
+                        });
+                        return 'Total: ' + new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sum);
+                    },
                 }
             }
         },
