@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Grid } from "@mui/material";
-import { useFetchConsumerUnitsQuery, useFetchDistributorsQuery } from "@/api";
+import { useFetchConsumerUnitsQuery, useFetchDistributorsQuery } from "@/api/mocked";
 import { selectDashboardActiveFilter } from "@/store/appSlice";
 import { DistributorsPayload } from "@/types/supplier";
 import { ConsumerUnitsPayload } from "@/types/consumerUnit";

@@ -22,6 +22,8 @@ import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import DrawerListItem from "@/components/Drawer/ListItem";
 import routes from "@/routes";
 
+import { signOut } from 'next-auth/react'
+
 export const openDrawerWidth = 224;
 export const closedDrawerWidth = `calc(${theme.spacing(8)} + 1px)`;
 
@@ -69,6 +71,7 @@ const Drawer = () => {
 
   const handleLogout = () => {
     console.log("Log out");
+    signOut({ callbackUrl: '/api/auth/signin' })// TODO Quando tiver página de login, redirecionar para ela
   };
 
   const handleToggleDrawer = () => {

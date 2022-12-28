@@ -1,10 +1,12 @@
 import { mecEnergiaApi } from "@/api";
+import { mockedMecEnergiaApi } from "@/api/mocked";
 import { AnyAction, combineReducers, configureStore } from "@reduxjs/toolkit";
 import { createWrapper } from "next-redux-wrapper";
 import app from "./appSlice";
 
 const combinedReducer = combineReducers({
   app,
+  [mockedMecEnergiaApi.reducerPath]: mockedMecEnergiaApi.reducer,
   [mecEnergiaApi.reducerPath]: mecEnergiaApi.reducer,
 });
 
@@ -29,7 +31,10 @@ export const makeStore = () =>
   configureStore({
     reducer,
     middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat(mecEnergiaApi.middleware),
+      getDefaultMiddleware().concat(
+        mecEnergiaApi.middleware,
+        mockedMecEnergiaApi.middleware
+      ),
   });
 
 export const wrapper = createWrapper(makeStore);
