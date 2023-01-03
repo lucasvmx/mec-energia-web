@@ -1,6 +1,6 @@
 Chart.defaults.font.family = 'Lexend';
 Chart.defaults.color = '#000';
-var ctx = document.getElementById("demandaPropostaAzul");
+var ctx = document.getElementById("demandProposedBlue");
 var myChart = new Chart(ctx, {
     type: 'line',
     data: {
