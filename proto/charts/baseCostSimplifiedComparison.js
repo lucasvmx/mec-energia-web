@@ -7,16 +7,16 @@ var myChart = new Chart(ctx, {
         labels: [['Jan', '2022'], ['Fev', '2022'], ['Mar', '2022'], ['Abr', '2022'], ['Mai', '2022'], ['Jun', '2022'], ['Jul', '2022'], ['Ago', '2022'], ['Set', '2022'], ['Out', '2022'], ['Nov', '2022'], ['Dez', '2022'],],
         datasets: [
             {
-                label: 'Valor Dem. + Cons. atual',
+                label: 'Custo-base atual',
                 data: [69752.33, 78480.95, 92580.35, null, 93015.08, 80428.31, 62896.03, 73503.07, 107831.62, 104863.07, 116390.71, 96271.07],
-                backgroundColor: '#FB736C', //colorSecondary
+                backgroundColor: '#0A5C67',  //colorPrimary
                 pointStyle: 'rect',
                 stack: 'Atual',
             },
             {
-                label: 'Valor Dem. + Cons. estimado',
+                label: 'Custo-base proposto',
                 data: [71885.96, 77871.87, 80615.97, null, 82629.15, 74301.37, 64757.12, 69971.75, 92285.47, 91423.45, 107447.38, 83667.60],
-                backgroundColor: '#0A5C67',  //colorPrimary
+                backgroundColor: '#FB736C', //colorSecondary
                 pointStyle: 'circle',
                 stack: 'Proposto',
             },
@@ -32,7 +32,7 @@ var myChart = new Chart(ctx, {
         plugins: {
             title: {
                 display: true,
-                text: 'Custo-base: atual x estimado',
+                text: 'Custo-base: atual x proposto',
                 font: {
                     size: 16,
                 },
