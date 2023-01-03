@@ -4,13 +4,14 @@ export interface InvoicesYear {
 }
 
 export interface Invoice {
-  mounthNumber: number;
-  isAtypical: boolean;
-  consumption_peak: number;
-  consumption_off_peak: number;
-  demand_peak: number;
-  demand_off_peak: number;
-  invoice_value: number;
+  id?: number;
+  month: number;
+  isAtypical?: boolean;
+  consumption_peak?: number;
+  consumption_off_peak?: number;
+  demand_peak?: number;
+  demand_off_peak?: number;
+  value?: number;
   isPending: boolean;
   currentMonthPending?: boolean;
 }

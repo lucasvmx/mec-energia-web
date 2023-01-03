@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import { Box } from '@mui/system';
-import { Button, createTheme, IconButton, ThemeProvider, Typography } from '@mui/material';
+import { Button, IconButton, Typography } from '@mui/material';
 import { invoices } from '@/mocks/invoices';
 import { Invoice, InvoicesYear } from '@/types/invoices';
 import DoneIcon from '@mui/icons-material/Done';
@@ -26,79 +26,81 @@ interface TableValues {
   demand_peak: number,
   demand_off_peak: number,
   value: number,
-  isCurrent?: boolean
+  isPending: boolean,
+  currentMonthPending: boolean
 }
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#000',
-    },
-  },
-});
 
 export const InvoiceTable = () => {
   const buttonStyle = { borderRadius: 50, textTransform: 'none', marginLeft: 1 }
   const InvoiceButtonStyle = { textTransform: 'none' }
   const [invoicesYearActive, setInvoicesYearActive] = useState(0);
+  const [isPendingActive, setIsPendingActive] = useState(false);
+  const [pendingInvoices, setPendingInvoices] = useState<Array<TableValues>>()
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [tableValues, setTableValues] = useState<Array<TableValues>>()
+  const dispatch = useDispatch()
   const curretDate = {
     month: new Date().getMonth() + 1,
     year: new Date().getFullYear(),
   }
-  //const [pendingMonth, setPendingMonth] = useState(0)
 
-  const dispatch = useDispatch()
-
-  useEffect(() => {
-    setInvoicesYearActive(invoices[0].year)
-    getTableValues(invoices[0].year)
+  const getAllPending = useCallback(() => {
+    let pending: Array<TableValues> = []
+    let id = 1;
+    invoices.slice().reverse().forEach(invoicesYear => {
+      invoicesYear.invoices.forEach(invoice => {
+        if (invoice.isPending) {
+          const month = getMonthName(invoice.month)
+          pending = [
+            ...pending,
+            {
+              id: id++,
+              month: `${month} - ${invoicesYear.year}`,
+              consumption_peak: 0,
+              isAtypical: false,
+              consumption_off_peak: 0,
+              demand_peak: 0,
+              demand_off_peak: 0,
+              value: 0,
+              isPending: true,
+              currentMonthPending: invoice.currentMonthPending || false
+            }
+          ]
+        }
+      })
+    })
+    if (pending) {
+      setPendingInvoices(pending)
+    };
   }, [])
 
-  useEffect(() => {
-    getTableValues(invoicesYearActive)
-  }, [invoicesYearActive])
-
-  const handlerClick = (year: number) => {
-    setInvoicesYearActive(year)
-  }
-
-  const getMonthName = (monthNumber: number) => {
-    const date = new Date();
-    date.setMonth(monthNumber - 1)
-    let month = date.toLocaleString('pt-BR', { month: 'long' })
-    month = month.charAt(0).toUpperCase() + month.slice(1);
-    return month
-  }
-
-  const getTableValues = (year: number) => {
+  const getTableValues = useCallback((year: number) => {
     const activeInvoicesYear = invoices.find(invoice => invoice.year === year)
     const rows = activeInvoicesYear?.invoices.map((invoice) => {
       const date = new Date();
-      date.setMonth(invoice.mounthNumber - 1)
-      const month = getMonthName(invoice.mounthNumber)
+      date.setMonth(invoice.month - 1)
+      const month = getMonthName(invoice.month)
       return {
-        id: invoice.mounthNumber,
+        id: invoice.month,
         month: month,
-        consumption_peak: invoice.consumption_peak,
-        isAtypical: invoice.isAtypical,
-        consumption_off_peak: invoice.consumption_off_peak,
-        demand_peak: invoice.demand_peak,
-        demand_off_peak: invoice.demand_off_peak,
-        value: invoice.invoice_value,
-        isPending: invoice.isPending,
-        currentMonthPending: invoice.currentMonthPending
+        consumption_peak: invoice.consumption_peak || 0,
+        isAtypical: invoice.isAtypical || false,
+        consumption_off_peak: invoice.consumption_off_peak || 0,
+        demand_peak: invoice.demand_peak || 0,
+        demand_off_peak: invoice.demand_off_peak || 0,
+        value: invoice.value || 0,
+        isPending: invoice.isPending || false,
+        currentMonthPending: invoice.currentMonthPending || false
       }
     })
     if (year === curretDate.year) {
       const hasCurrentMonth = activeInvoicesYear?.invoices.some(
-        (invoice: Invoice) => invoice.mounthNumber === curretDate.month
+        (invoice: Invoice) => invoice.month === curretDate.month
       )
       if (!hasCurrentMonth) {
         const month = getMonthName(curretDate.month)
         rows?.push({
-          id: curretDate.month,
+          id: Number.MAX_SAFE_INTEGER,
           month: month,
           consumption_peak: 0,
           isAtypical: false,
@@ -112,7 +114,33 @@ export const InvoiceTable = () => {
       }
     }
     setTableValues(rows)
+  }, [curretDate.month, curretDate.year])
+
+  useEffect(() => {
+    setInvoicesYearActive(invoices[0].year)
+    getTableValues(invoices[0].year)
+    getAllPending()
+  }, [getAllPending, getTableValues])
+
+  useEffect(() => {
+    if (invoicesYearActive)
+      getTableValues(invoicesYearActive)
+  }, [getTableValues, invoicesYearActive])
+
+  const handlerClick = (year: number) => {
+    setInvoicesYearActive(year)
+    setIsPendingActive(false)
   }
+
+  const getMonthName = (monthNumber: number) => {
+    const date = new Date();
+    date.setMonth(monthNumber - 1)
+    let month = date.toLocaleString('pt-BR', { month: 'long' })
+    month = month.charAt(0).toUpperCase() + month.slice(1);
+    return month
+  }
+
+
 
   const handleEdit = (id: number) => {
     console.log("@handleEdit-ID", id)
@@ -125,6 +153,12 @@ export const InvoiceTable = () => {
   const handleCreateDistributorClick = () => {
     dispatch(setIsElectricityBillCreateFormOpen(true));
   };
+
+  const handlePendingClick = () => {
+    setTableValues(pendingInvoices)
+    setIsPendingActive(true)
+    setInvoicesYearActive(0)
+  }
 
   const columns: GridColDef[] = [
     {
@@ -237,16 +271,16 @@ export const InvoiceTable = () => {
       renderCell: (params) => {
         return (
           <>
-            <ThemeProvider theme={theme}>
-              <IconButton onClick={() => handleEdit(params.row.id)}>
-                <EditIcon color='primary' />
-              </IconButton>
 
-              <IconButton onClick={() => handleRemove(params.row.id)}>
-                <DeleteIcon color='primary' />
-              </IconButton>
+            <IconButton onClick={() => handleEdit(params.row.id)}>
+              <EditIcon sx={{ color: 'black' }} />
+            </IconButton>
 
-            </ThemeProvider>
+            <IconButton onClick={() => handleRemove(params.row.id)}>
+              <DeleteIcon sx={{ color: 'black' }} />
+            </IconButton>
+
+
 
           </>
         )
@@ -307,7 +341,12 @@ export const InvoiceTable = () => {
           <CardContent>
             <Box display='flex' alignItems='center'>
               <Typography sx={{ marginRight: 2 }}>Mostrar:</Typography>
-              <Button color='primary' variant="outlined" sx={buttonStyle}>Pendentes (2)</Button>
+              <Button color='primary'
+                variant={isPendingActive ? "contained" : "outlined"}
+                sx={buttonStyle}
+                onClick={handlePendingClick}
+              >Pendentes ({pendingInvoices?.length})
+              </Button>
               {invoices.map((invoice: InvoicesYear) => {
                 return (
                   <Button
@@ -377,7 +416,7 @@ export const InvoiceTable = () => {
           hideFooter
           autoHeight
           disableColumnMenu
-          rowsPerPageOptions={[12]}
+          rowsPerPageOptions={[13]}
           disableSelectionOnClick
           experimentalFeatures={{ newEditingApi: true, columnGrouping: true }}
           columnGroupingModel={columnGroupingModel}
