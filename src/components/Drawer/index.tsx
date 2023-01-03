@@ -70,7 +70,6 @@ const Drawer = () => {
   const isCurrentRoute = (pathname: string) => pathname === router.pathname;
 
   const handleLogout = () => {
-    console.log("Log out");
     signOut({ callbackUrl: '/api/auth/signin' })// TODO Quando tiver página de login, redirecionar para ela
   };
 

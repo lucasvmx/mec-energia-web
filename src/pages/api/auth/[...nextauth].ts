@@ -5,6 +5,8 @@ import CredentialsProvider from "next-auth/providers/credentials";
 
 export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
+  //@ts-ignore
+  site: process.env.NEXTAUTH_URL,
   providers: [
     CredentialsProvider({
       type: "credentials",
@@ -16,7 +18,7 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         try {
-          const data = await fetch("http://localhost:8080/api/token/", {
+          const data = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/token/`, {
             method: "POST",
             body: JSON.stringify(credentials),
             headers: {
