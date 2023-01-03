@@ -1,7 +1,7 @@
-import { mecEnergiaApi } from "@/api";
-import { mockedMecEnergiaApi } from "@/api/mocked";
 import { AnyAction, combineReducers, configureStore } from "@reduxjs/toolkit";
 import { createWrapper } from "next-redux-wrapper";
+import { mecEnergiaApi } from "@/api";
+import { mockedMecEnergiaApi } from "@/api/mocked";
 import app from "./appSlice";
 
 const combinedReducer = combineReducers({

@@ -1,15 +1,10 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { SignInPayload } from "@/types/auth";
+import { SignInResponsePayload } from "@/types/auth";
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
-
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  site: process.env.NEXTAUTH_URL,
-
   providers: [
     CredentialsProvider({
       type: "credentials",
@@ -29,7 +24,9 @@ export const authOptions: NextAuthOptions = {
             },
           });
 
-          const authPayload: SignInPayload = JSON.parse(await data.text());
+          const authPayload: SignInResponsePayload = JSON.parse(
+            await data.text()
+          );
 
           return {
             email: authPayload.user.email,
@@ -64,7 +61,6 @@ export const authOptions: NextAuthOptions = {
   },
   session: {
     strategy: "jwt",
-    maxAge: 3 * 24 * 60 * 60, // 3 days
   },
 };
 

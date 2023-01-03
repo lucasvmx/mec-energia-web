@@ -1,16 +1,16 @@
-export type SignInPayload = {
+export type SignInResponsePayload = {
   token: string;
-  user: UserSignPayload;
+  user: UserSignInResponsePayload;
 };
 
-export type UserSignPayload = {
+export type UserSignInResponsePayload = {
   email: string;
   name: string;
   type: string;
   university: number;
 };
 
-export type SignDto = {
+export type SignInRequestPayload = {
   username: string;
   password: string;
 };
