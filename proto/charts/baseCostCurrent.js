@@ -1,24 +1,22 @@
 Chart.defaults.font.family = 'Lexend';
 Chart.defaults.color = '#000';
-var ctx = document.getElementById("custoBaseComparativo");
+var ctx = document.getElementById("baseCostCurrent");
 var myChart = new Chart(ctx, {
     type: 'bar',
     data: {
         labels: [['Jan', '2022'], ['Fev', '2022'], ['Mar', '2022'], ['Abr', '2022'], ['Mai', '2022'], ['Jun', '2022'], ['Jul', '2022'], ['Ago', '2022'], ['Set', '2022'], ['Out', '2022'], ['Nov', '2022'], ['Dez', '2022'],],
         datasets: [
             {
-                label: 'Valor Dem. + Cons. atual',
-                data: [69752.33, 78480.95, 92580.35, null, 93015.08, 80428.31, 62896.03, 73503.07, 107831.62, 104863.07, 116390.71, 96271.07],
-                backgroundColor: '#FB736C', //colorSecondary
+                label: 'Valor de Demanda',
+                data: [25224.00, 25224.00, 27068.51, null, 25224.00, 25224.00, 25224.00, 25224.00, 30413.21, 31962.59, 35299.73, 30413.21],
+                backgroundColor: '#0A5C67',  //colorPrimary
                 pointStyle: 'rect',
-                stack: 'Atual',
             },
             {
-                label: 'Valor Dem. + Cons. estimado',
-                data: [71885.96, 77871.87, 80615.97, null, 82629.15, 74301.37, 64757.12, 69971.75, 92285.47, 91423.45, 107447.38, 83667.60],
-                backgroundColor: '#0A5C67',  //colorPrimary
-                pointStyle: 'circle',
-                stack: 'Proposto',
+                label: 'Valor de Consumo',
+                data: [44528.33, 53256.95, 65511.84, null, 67791.08, 55204.31, 37672.03, 48279.07, 77418.41, 72900.48, 81090.99, 65857.87],
+                backgroundColor: '#FB736C', //colorSecondary
+                pointStyle: 'triangle',
             },
         ]
     },
@@ -32,7 +30,7 @@ var myChart = new Chart(ctx, {
         plugins: {
             title: {
                 display: true,
-                text: 'Custo-base: atual x estimado',
+                text: 'Custo-base atual',
                 font: {
                     size: 16,
                 },
@@ -63,11 +61,23 @@ var myChart = new Chart(ctx, {
                             return label;
                         }
                     },
+                    footer: function (tooltipItems) {
+                        if (tooltipItems[0].parsed.y == null || tooltipItems.length <= 1){
+                            return null
+                        }
+
+                        let sum = 0;
+                        tooltipItems.forEach(function(tooltipItem) {
+                          sum += tooltipItem.parsed.y;
+                        });
+                        return 'Total: ' + new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sum);
+                    },
                 }
             }
         },
         scales: {
             x: {
+                stacked: true,
                 grid: {
                     display: false,
                 },
@@ -76,6 +86,7 @@ var myChart = new Chart(ctx, {
                 },
             },
             y: {
+                stacked: true,
                 title: {
                     display: true,
                     text: 'R$',

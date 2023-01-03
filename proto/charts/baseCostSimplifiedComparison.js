@@ -1,34 +1,24 @@
 Chart.defaults.font.family = 'Lexend';
 Chart.defaults.color = '#000';
-var ctx = document.getElementById("valorProposto");
+var ctx = document.getElementById("baseCostSimplifiedComparison");
 var myChart = new Chart(ctx, {
     type: 'bar',
     data: {
         labels: [['Jan', '2022'], ['Fev', '2022'], ['Mar', '2022'], ['Abr', '2022'], ['Mai', '2022'], ['Jun', '2022'], ['Jul', '2022'], ['Ago', '2022'], ['Set', '2022'], ['Out', '2022'], ['Nov', '2022'], ['Dez', '2022'],],
         datasets: [
             {
-                label: 'Valor Dem. + Cons. atuais',
+                label: 'Valor Dem. + Cons. atual',
                 data: [69752.33, 78480.95, 92580.35, null, 93015.08, 80428.31, 62896.03, 73503.07, 107831.62, 104863.07, 116390.71, 96271.07],
-                backgroundColor: '#CC443D',
-                pointStyle: 'circle',
-                stack: 'Atual',
-                barPercentage: 0.5,
-            },
-            {
-                label: 'Valor Dem. proposta',
-                data: [40413.62, 40413.62, 40413.62, null, 40413.62, 40413.62, 40413.62, 40413.62, 46239.50, 46776.33, 56188.76, 41514.27],
-                backgroundColor: '#0E438C', //colorInfo
+                backgroundColor: '#FB736C', //colorSecondary
                 pointStyle: 'rect',
-                stack: 'Proposto',
-                barPercentage: 1.1,
+                stack: 'Atual',
             },
             {
-                label: 'Valor Cons. proposto',
-                data: [31472.34, 37458.25, 40202.34, null, 42215.53, 33887.75, 24343.50, 29558.13, 46045.97, 44647.12, 51258.62, 42153.33],
-                backgroundColor: '#F2B63D',
-                pointStyle: 'triangle',
+                label: 'Valor Dem. + Cons. estimado',
+                data: [71885.96, 77871.87, 80615.97, null, 82629.15, 74301.37, 64757.12, 69971.75, 92285.47, 91423.45, 107447.38, 83667.60],
+                backgroundColor: '#0A5C67',  //colorPrimary
+                pointStyle: 'circle',
                 stack: 'Proposto',
-                barPercentage: 1.1,
             },
         ]
     },
@@ -73,23 +63,11 @@ var myChart = new Chart(ctx, {
                             return label;
                         }
                     },
-                    footer: function (tooltipItems) {
-                        if (tooltipItems[0].parsed.y == null || tooltipItems.length <= 1){
-                            return null
-                        }
-
-                        let sum = 0;
-                        tooltipItems.forEach(function(tooltipItem) {
-                          sum += tooltipItem.parsed.y;
-                        });
-                        return 'Total: ' + new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sum);
-                    },
                 }
             }
         },
         scales: {
             x: {
-                stacked: true,
                 grid: {
                     display: false,
                 },
@@ -98,7 +76,6 @@ var myChart = new Chart(ctx, {
                 },
             },
             y: {
-                stacked: true,
                 title: {
                     display: true,
                     text: 'R$',
