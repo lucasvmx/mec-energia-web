@@ -42,7 +42,7 @@ var myChart = new Chart(ctx, {
         plugins: {
             title: {
                 display: true,
-                text: 'Custo-base: atual x estimado',
+                text: 'Custo-base: atual x proposto',
                 font: {
                     size: 16,
                 },
