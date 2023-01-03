@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Badge, Box, Button, Divider, Typography } from '@mui/material'
 import { DistributorConsumerUnits, DistributorPropsTariffs } from '../../types/distributor'
 import { useRouter } from 'next/router';
@@ -11,8 +11,6 @@ import { mockedDistributor } from '../../mocks/mockedDistributor';
 import { mockedDistributorComsumerUnit } from '../../mocks/mockedDistributor';
 import { selectCurrentTariff, setIsTariffCreateFormOpen, setIsTariffEdiFormOpen } from '../../store/appSlice';
 import { useDispatch, useSelector } from 'react-redux';
-//import { Tariff } from '@/types/tariffs';
-
 
 export const DistributorInfo = () => {
   const router = useRouter();
@@ -25,7 +23,7 @@ export const DistributorInfo = () => {
   const dispatch = useDispatch()
   const currentTariff = useSelector(selectCurrentTariff)
 
-  const createTitleTariffs = () => {
+  const createTitleTariffs = useCallback(() => {
     if (currentDist?.tariffs.length === 0) setTitleTariffs('');
     else if (currentDist?.tariffs.length === 1) {
       if (currentTariff) {
@@ -37,7 +35,7 @@ export const DistributorInfo = () => {
       if (!isOverdue) setTitleTariffs('Tarifas')
       else setTitleTariffs('Tarifas com atualização pendente')
     }
-  }
+  }, [currentDist?.tariffs.length, currentTariff, isOverdue])
 
   useEffect(() => {
     const { id } = router.query
@@ -53,11 +51,11 @@ export const DistributorInfo = () => {
 
     createTitleTariffs()
 
-  }, [router.query])
+  }, [createTitleTariffs, currentTariff?.overdue, router.query])
 
   useEffect(() => {
     createTitleTariffs()
-  }, [currentDist])
+  }, [createTitleTariffs, currentDist])
 
   useEffect(() => {
     const { id } = router.query

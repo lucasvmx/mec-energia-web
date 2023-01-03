@@ -24,6 +24,10 @@ export interface AppState {
     isEditFormOpen: boolean;
     currentTariff: Tariff;
   };
+  electricityBill:{
+    isCreateFormOpen:boolean,
+    isEditFormOpen:boolean,
+  };
 }
 
 type Store = ReturnType<typeof makeStore>;

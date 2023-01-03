@@ -73,7 +73,7 @@ const ConsumerUnitRenewContractForm = () => {
     setValue("contracted", contracted);
     setValue("peakContracted", peakContracted);
     setValue("outOfPeakContracted", outOfPeakContracted);
-  }, [tariffType]);
+  }, [setValue, tariffType]);
 
   const isValidDate = (date: RenewConsumerUnitContractForm["startDate"]) => {
     if (!date || !isValid(date)) {

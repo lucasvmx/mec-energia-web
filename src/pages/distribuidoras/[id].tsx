@@ -52,7 +52,7 @@ const DistributorPage: NextPage = () => {
   useEffect(() => {
     const { id } = router.query
     setCurrentDistributor(mockedDistributor[Number(id) - 1])
-  }, [router.asPath])
+  }, [router.asPath, router.query])
 
   useEffect(() => {
     if (slidevalue === 100) setIsErrorColor(true)

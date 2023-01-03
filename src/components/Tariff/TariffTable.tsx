@@ -1,6 +1,6 @@
 import { Badge, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from '@mui/material'
 import InfoIcon from '@mui/icons-material/Info';
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
 import { selectCurrentTariff } from '@/store/appSlice';
@@ -12,7 +12,7 @@ export const TariffTable = () => {
   const [overdue, setOverdue] = useState(false)
   const currentTariff = useSelector(selectCurrentTariff)
 
-  const formatDate = () => {
+  const formatDate = useCallback(() => {
     if (currentTariff) {
       if (currentTariff.start_date === '') setStartDate('')
       else {
@@ -30,11 +30,11 @@ export const TariffTable = () => {
       setStartDate('')
       setOverdue(false)
     }
-  }
+  }, [currentTariff])
 
   useEffect(() => {
     formatDate()
-  }, [currentTariff])
+  }, [currentTariff, formatDate])
 
   return (
     <Box width={'100%'}>

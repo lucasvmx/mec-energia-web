@@ -13,8 +13,6 @@ const Dashboard: NextPage = () => {
   const user = data?.user
   const { push } = useRouter()
 
-  console.log('Estou na raiz. dados do usuario: ' + JSON.stringify(data, null, 2))
-
   useEffect(() => {
     if (status === "loading") return
 

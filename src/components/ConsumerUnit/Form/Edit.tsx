@@ -74,7 +74,7 @@ const ConsumerUnitEditForm = () => {
     setValue("contracted", contracted);
     setValue("peakContracted", peakContracted);
     setValue("outOfPeakContracted", outOfPeakContracted);
-  }, [tariffType]);
+  }, [setValue, tariffType]);
 
   const isValidDate = (date: EditConsumerUnitForm["startDate"]) => {
     if (!date || !isValid(date)) {
