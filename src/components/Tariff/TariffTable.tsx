@@ -14,16 +14,16 @@ export const TariffTable = () => {
 
   const formatDate = () => {
     if (currentTariff) {
-      if (currentTariff.start_date === '') setStartDate('')
+      if (currentTariff.startDate === '') setStartDate('')
       else {
-        setStartDate(format(new Date(currentTariff.start_date), "dd'/'MM'/'yyyy"))
+        setStartDate(format(new Date(currentTariff.startDate), "dd'/'MM'/'yyyy"))
         setOverdue(currentTariff.overdue)
       }
     } else setStartDate('')
     if (currentTariff) {
-      if (currentTariff.end_date === '') setEndDate('')
+      if (currentTariff.endDate === '') setEndDate('')
       else {
-        setEndDate(format(new Date(currentTariff.end_date), "dd'/'MM'/'yyyy"))
+        setEndDate(format(new Date(currentTariff.endDate), "dd'/'MM'/'yyyy"))
         setOverdue(currentTariff.overdue)
       }
     } else {
@@ -114,21 +114,21 @@ export const TariffTable = () => {
                 <TableCell align='center'> Ponta</TableCell>
                 <TableCell>
                   <Box display='flex' justifyContent='space-between' width='80%' m='0 auto'>
-                    <Box>{currentTariff.blue.peak_tusd_in_reais_per_kw}</Box>
-                    <Box>{currentTariff.blue.peak_tusd_in_reais_per_mwh}</Box>
+                    <Box>{currentTariff.blue.peakTusdInReaisPerKw}</Box>
+                    <Box>{currentTariff.blue.peakTusdInReaisPerMwh}</Box>
                   </Box>
                 </TableCell>
-                <TableCell align='center'>{currentTariff.blue.peak_te_in_reais_per_mwh}</TableCell>
+                <TableCell align='center'>{currentTariff.blue.peakTeInReaisPerMwh}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell align='center'> Fora Ponta</TableCell>
                 <TableCell>
                   <Box display='flex' justifyContent='space-between' width='80%' m='0 auto'>
-                    <Box>{currentTariff.blue.off_peak_tusd_in_reais_per_kw}</Box>
-                    <Box>{currentTariff.blue.off_peak_tusd_in_reais_per_mwh}</Box>
+                    <Box>{currentTariff.blue.offPeakTusdInReaisPerKw}</Box>
+                    <Box>{currentTariff.blue.offPeakTusdInReaisPerMwh}</Box>
                   </Box>
                 </TableCell>
-                <TableCell align='center'>{currentTariff.blue.off_peak_te_in_reais_per_mwh}</TableCell>
+                <TableCell align='center'>{currentTariff.blue.offPeakTeInReaisPerMwh}</TableCell>
               </TableRow>
             </Fragment>
             <Fragment>
@@ -139,7 +139,7 @@ export const TariffTable = () => {
                 <TableCell align='center'> NA</TableCell>
                 <TableCell>
                   <Box display='flex' justifyContent='space-between' width='80%' m='0 auto'>
-                    <Box>{currentTariff.green.na_tusd_in_reais_per_kw}</Box>
+                    <Box>{currentTariff.green.naTusdInReaisPerKw}</Box>
                     <Box> - </Box>
                   </Box>
                 </TableCell>
@@ -150,20 +150,20 @@ export const TariffTable = () => {
                 <TableCell>
                   <Box display='flex' justifyContent='space-between' width='80%' m='0 auto'>
                     <Box> - </Box>
-                    <Box>{currentTariff.green.peak_tusd_in_reais_per_mwh}</Box>
+                    <Box>{currentTariff.green.peakTusdInReaisPerMwh}</Box>
                   </Box>
                 </TableCell>
-                <TableCell align='center'>{currentTariff.green.peak_te_in_reais_per_mwh}</TableCell>
+                <TableCell align='center'>{currentTariff.green.peakTeInReaisPerMwh}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell align='center'> Fora Ponta</TableCell>
                 <TableCell>
                   <Box display='flex' justifyContent='space-between' width='80%' m='0 auto'>
                     <Box> - </Box>
-                    <Box> {currentTariff.green.off_peak_tusd_in_reais_per_mwh} </Box>
+                    <Box> {currentTariff.green.offPeakTusdInReaisPerMwh} </Box>
                   </Box>
                 </TableCell>
-                <TableCell align='center'>{currentTariff.green.off_peak_te_in_reais_per_mwh}</TableCell>
+                <TableCell align='center'>{currentTariff.green.offPeakTeInReaisPerMwh}</TableCell>
               </TableRow>
             </Fragment>
           </TableBody>

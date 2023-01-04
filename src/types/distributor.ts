@@ -4,8 +4,8 @@ export interface DistributorPropsTariffs {
   id: number;
   name: string;
   cnpj?:string;
-  is_active: boolean;
-  consumer_units:number;
+  isActive: boolean;
+  consumerUnits:number;
   tariffs: Array<Tariff>;
 }
 
@@ -27,7 +27,7 @@ export interface EditDistributorForm {
 
 export interface ConsumerUnitSubgroup{
   subgroup: string;
-  consumer_units: Array<ConsumerUnit>
+  consumerUnits: Array<ConsumerUnit>
 }
 export interface ConsumerUnit{
   name:string;

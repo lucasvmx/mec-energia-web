@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import {
   Badge,
@@ -16,9 +16,9 @@ import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 const DistributorCard = ({
   id,
   name: title,
-  is_active = true,
+  isActive: is_active = true,
   tariffs,
-  consumer_units
+  consumerUnits: consumer_units
 }: DistributorPropsTariffs) => {
   const router = useRouter();
   const DistributorUrl = `/distribuidoras/${id}`;
@@ -29,22 +29,23 @@ const DistributorCard = ({
     const isOverdue = tariffs?.find(tariff => tariff.overdue === true)
     if (isOverdue !== undefined) setOverdue(true)
     else setOverdue(false);
-  }, [])
+  }, [tariffs])
 
   const handleCardClick = () => {
     router.push(DistributorUrl);
   };
 
-  useEffect(() => {
-    handleTextBottomCard();
-  }, [])
-  const handleTextBottomCard = () => {
+  const handleTextBottomCard = useCallback(() => {
     if (!is_active) setTextBottomCard("Desativada")
     else if (tariffs?.find(tariff => tariff.overdue === true)) setTextBottomCard("Tarifas pendentes")
     else if (consumer_units === 0) setTextBottomCard("Nenhuma unidade consumidora")
     else if (consumer_units === 1) setTextBottomCard("1 unidade consumidora")
     else if (consumer_units) setTextBottomCard(`${consumer_units} unidades consumidoras`)
-  }
+  }, [consumer_units, is_active, tariffs])
+
+  useEffect(() => {
+    handleTextBottomCard();
+  }, [handleTextBottomCard])
 
   return (
     <>
