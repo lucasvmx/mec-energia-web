@@ -16,7 +16,7 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         try {
-          const data = await fetch("http://localhost:8080/api/token/", {
+          const data = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/token/`, {
             method: "POST",
             body: JSON.stringify(credentials),
             headers: {
@@ -60,7 +60,7 @@ export const authOptions: NextAuthOptions = {
     },
   },
   session: {
-    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60
   },
 };
 
