@@ -6,7 +6,16 @@ var myChart = new Chart(ctx, {
     data: {
         labels: [['Jan', '2022'], ['Fev', '2022'], ['Mar', '2022'], ['Abr', '2022'], ['Mai', '2022'], ['Jun', '2022'], ['Jul', '2022'], ['Ago', '2022'], ['Set', '2022'], ['Out', '2022'], ['Nov', '2022'], ['Dez', '2022'],],
         datasets: [
-
+            {
+                label: 'Proposta',
+                data: [400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 400],
+                backgroundColor: '#F2B63D',
+                borderColor: '#F2B63D',
+                borderWidth: 4,
+                pointStyle: 'rect',
+                pointRadius: 4,
+                pointHoverRadius: 7
+            },
             {
                 label: 'Med. Fora Ponta',
                 data: [328.86, 335.16, 419.50, null, 375.48, 349.02, 244.44, 284.76, 454.86, 471.24, 506.52, 454.86],
@@ -24,15 +33,6 @@ var myChart = new Chart(ctx, {
                 pointStyle: 'triangle',
                 pointRadius: 4,
                 pointHoverRadius: 11
-            },
-            {
-                label: 'Proposta',
-                data: [400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 400],
-                backgroundColor: '#F2B63D',
-                borderColor: '#F2B63D',
-                pointStyle: 'rect',
-                pointRadius: 4,
-                pointHoverRadius: 7
             },
             {
                 label: 'Indisponível',

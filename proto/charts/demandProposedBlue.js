@@ -6,7 +6,26 @@ var myChart = new Chart(ctx, {
     data: {
         labels: [['Jan', '2022'], ['Fev', '2022'], ['Mar', '2022'], ['Abr', '2022'], ['Mai', '2022'], ['Jun', '2022'], ['Jul', '2022'], ['Ago', '2022'], ['Set', '2022'], ['Out', '2022'], ['Nov', '2022'], ['Dez', '2022'],],
         datasets: [
-
+            {
+                label: 'Proposta Fora Ponta',
+                data: [400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 400],
+                backgroundColor: '#D98A0B', //colorWarning
+                borderColor: '#D98A0B', //colorWarning
+                borderWidth: 4,
+                pointStyle: 'rect',
+                pointRadius: 4,
+                pointHoverRadius: 7
+            },
+            {
+                label: 'Proposta Ponta',
+                data: [220, 220, 220, 220, 220, 220, 220, 220, 220, 220, 220, 220,],
+                backgroundColor: '#F2B63D',
+                borderColor: '#F2B63D',
+                borderWidth: 4,
+                pointStyle: 'rectRot',
+                pointRadius: 4,
+                pointHoverRadius: 7
+            },
             {
                 label: 'Med. Fora Ponta',
                 data: [328.86, 335.16, 419.50, null, 375.48, 349.02, 244.44, 284.76, 454.86, 471.24, 506.52, 454.86],
@@ -17,17 +36,6 @@ var myChart = new Chart(ctx, {
                 pointHoverRadius: 9
             },
             {
-                label: 'Proposta Fora Ponta',
-                data: [400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 400],
-                backgroundColor: '#D98A0B', //colorWarning
-                borderColor: '#D98A0B', //colorWarning
-                borderWidth: 4,
-                pointStyle: 'rect',
-                pointRadius: 4,
-                pointHoverRadius: 7
-
-            },
-            {
                 label: 'Med. Ponta',
                 data: [152.46, 141.12, 294.89, null, 260.82, 217.98, 153.72, 207.90, 313.74, 309.96, 332.64, 296.10],
                 backgroundColor: '#296DCC',
@@ -35,18 +43,6 @@ var myChart = new Chart(ctx, {
                 pointStyle: 'triangle',
                 pointRadius: 4,
                 pointHoverRadius: 11
-
-            },
-
-            {
-                label: 'Proposta Ponta',
-                data: [220, 220, 220, 220, 220, 220, 220, 220, 220, 220, 220, 220,],
-                backgroundColor: '#F2B63D',
-                borderColor: '#F2B63D',
-                borderWidth: 4,
-                pointStyle: 'rectRot',
-                pointRadius: 4,
-                pointHoverRadius: 7
 
             },
             {
