@@ -8,13 +8,23 @@ var myChart = new Chart(ctx, {
         datasets: [
 
             {
-                label: 'Consumo',
+                label: 'Fora Ponta',
                 data: [328.86, 335.16, 419.50, null, 375.48, 349.02, 244.44, 284.76, 454.86, 471.24, 506.52, 454.86],
                 backgroundColor: '#0A5C67', //colorPrimary
                 borderColor: '#0A5C67', //colorPrimary
                 pointStyle: 'circle',
                 pointRadius: 5,
                 pointHoverRadius: 9
+            },
+            {
+                label: 'Ponta',
+                data: [152.46, 141.12, 294.89, null, 260.82, 217.98, 153.72, 207.90, 313.74, 309.96, 332.64, 296.10],
+                backgroundColor: '#0F8999',
+                borderColor: '#0F8999',
+                pointStyle: 'triangle',
+                pointRadius: 7,
+                pointHoverRadius: 11
+
             },
             {
                 label: 'Indisponível',
