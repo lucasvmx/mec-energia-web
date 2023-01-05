@@ -1,13 +1,10 @@
+import { Session } from "next-auth";
+
 export type SignInResponsePayload = {
   token: string;
-  user: UserSignInResponsePayload;
-};
 
-export type UserSignInResponsePayload = {
-  email: string;
-  name: string;
-  type: string;
-  university: number;
+  // Check src/types/next-auth.d.ts
+  user: Session["user"];
 };
 
 export type SignInRequestPayload = {
