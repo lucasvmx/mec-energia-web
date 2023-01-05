@@ -22,6 +22,8 @@ const Dashboard: NextPage = () => {
     }
   }, [push, status, user])
 
+  if (!user) return <><p>Redirecionando ...</p></>
+
   return (
     <>
       <Head>
