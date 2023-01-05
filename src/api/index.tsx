@@ -1,15 +1,29 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { getSession } from "next-auth/react";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
-// Define a service using a base URL and expected endpoints
+const baseQuery = fetchBaseQuery({
+  baseUrl,
+  prepareHeaders: async (headers) => {
+    const session = await getSession();
+
+    if (session) {
+      headers.set("Authorization", `Token ${session.user.token}`);
+    }
+
+    return headers;
+  },
+});
+
 export const mecEnergiaApi = createApi({
   reducerPath: "mecEnergiaApi",
-  baseQuery: fetchBaseQuery({ baseUrl }),
-  endpoints: () => ({
+  baseQuery,
+  endpoints: (builder) => ({
+    example: builder.query<void, void>({
+      query: () => "distributors",
+    }),
   }),
 });
 
-// Export hooks for usage in functional components, which are
-// auto-generated based on the defined endpoints
-//export const { } = mecEnergiaApi;
+export const { useExampleQuery } = mecEnergiaApi;

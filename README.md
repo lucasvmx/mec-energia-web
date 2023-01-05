@@ -42,6 +42,12 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Production
 
+Set environment variables. If just testing, you can use the `.env.development` file.
+
+```bash
+cp .env.development .env.production.local
+```
+
 ### Docker
 
 Multistage builds are highly recommended in production. Combined with the Next Output Standalone feature, only node_modules files required for production are copied into the final Docker image.

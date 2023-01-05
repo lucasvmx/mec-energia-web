@@ -1,9 +1,10 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-import { SignInResponsePayload } from "@/types/auth";
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { SignInResponsePayload } from "@/types/auth";
 
-export const authOptions: NextAuthOptions = {
+const signInUrl = `${process.env.API_URL}/token/`;
+
+const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
     CredentialsProvider({
@@ -14,53 +15,52 @@ export const authOptions: NextAuthOptions = {
         username: { label: "Username", type: "text" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
-        try {
-          const data = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/token/`, {
-            method: "POST",
-            body: JSON.stringify(credentials),
-            headers: {
-              "Content-Type": "application/json",
-            },
-          });
+      authorize: async (credentials) => {
+        const response = await fetch(signInUrl, {
+          method: "POST",
+          body: JSON.stringify(credentials),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
 
-          const authPayload: SignInResponsePayload = JSON.parse(
-            await data.text()
-          );
-
-          return {
-            email: authPayload.user.email,
-            name: authPayload.user.name,
-            id: "",
-            token: authPayload.token,
-          };
-        } catch (error) {
-          throw new Error(`SignIn Fails ${error}`);
+        if (!response.ok || !response) {
+          return null;
         }
+
+        const {
+          user: { email, id, name, type, universityId },
+          token,
+        }: SignInResponsePayload = await response.json();
+
+        return {
+          id,
+          name,
+          email,
+          type,
+          token,
+          universityId,
+        };
       },
     }),
   ],
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        // @ts-ignore
         token.token = user.token;
       }
+
       return token;
     },
     async session({ session, token }) {
       if (token) {
-        // @ts-ignore
         session.user.token = token.token;
       }
       return session;
     },
-    async redirect({ baseUrl }) {
-      return baseUrl;
-    },
   },
   session: {
-    maxAge: 30 * 24 * 60 * 60
+    strategy: "jwt",
   },
 };
 

@@ -1,6 +1,7 @@
 import * as React from "react";
 import Head from "next/head";
 import { AppProps } from "next/app";
+import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { CacheProvider, EmotionCache } from "@emotion/react";
@@ -11,7 +12,6 @@ import { Provider } from "react-redux";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import ptBRLocale from "date-fns/locale/pt-BR";
-import { SessionProvider } from 'next-auth/react'
 
 interface MyAppProps extends AppProps {
   emotionCache?: EmotionCache;
@@ -29,7 +29,10 @@ const MyApp = ({ Component, ...rest }: MyAppProps) => {
       <Provider store={store}>
         <CacheProvider value={emotionCache}>
           <Head>
-            <meta name="viewport" content="initial-scale=1, width=device-width" />
+            <meta
+              name="viewport"
+              content="initial-scale=1, width=device-width"
+            />
           </Head>
 
           <ThemeProvider theme={theme}>
