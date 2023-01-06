@@ -15,19 +15,19 @@ const defaultValues: CreateAndEditTariffForm = {
   start_date: '',
   end_date: '',
   blue: {
-    peak_tusd_in_reais_per_kw: undefined,
-    peak_tusd_in_reais_per_mwh: undefined,
-    peak_te_in_reais_per_mwh: undefined,
-    off_peak_tusd_in_reais_per_kw: undefined,
-    off_peak_tusd_in_reais_per_mwh: undefined,
-    off_peak_te_in_reais_per_mwh: undefined,
+    peakTusdInReaisPerKw: undefined,
+    peakTusdInReaisPerMwh: undefined,
+    peakTeInReaisPerMwh: undefined,
+    offPeakTusdInReaisPerKw: undefined,
+    offPeakTusdInReaisPerMwh: undefined,
+    offPeakTeInReaisPerMwh: undefined,
   },
   green: {
-    peak_tusd_in_reais_per_mwh: undefined,
-    peak_te_in_reais_per_mwh: undefined,
-    off_peak_tusd_in_reais_per_mwh: undefined,
-    off_peak_te_in_reais_per_mwh: undefined,
-    na_tusd_in_reais_per_kw: undefined,
+    peakTusdInReaisPerMwh: undefined,
+    peakTeInReaisPerMwh: undefined,
+    offPeakTusdInReaisPerMwh: undefined,
+    offPeakTeInReaisPerMwh: undefined,
+    naTusdInReaisPerKw: undefined,
   }
 }
 
@@ -204,7 +204,7 @@ const TariffCreateForm = () => {
             <Grid item xs={4}>
               <Controller
                 control={control}
-                name={"blue.peak_tusd_in_reais_per_kw"}
+                name={"blue.peakTusdInReaisPerKw"}
                 rules={{
                   required: "Preencha este campo",
                   min: {
@@ -247,7 +247,7 @@ const TariffCreateForm = () => {
             <Grid item xs={4}>
               <Controller
                 control={control}
-                name={"blue.peak_tusd_in_reais_per_mwh"}
+                name={"blue.peakTusdInReaisPerMwh"}
                 rules={{
                   required: "Preencha este campo",
                   min: {
@@ -287,7 +287,7 @@ const TariffCreateForm = () => {
             <Grid item xs={4}>
               <Controller
                 control={control}
-                name={"blue.peak_te_in_reais_per_mwh"}
+                name={"blue.peakTeInReaisPerMwh"}
                 rules={{
                   required: "Preencha este campo",
                   min: {
@@ -331,7 +331,7 @@ const TariffCreateForm = () => {
             <Grid item xs={4}>
               <Controller
                 control={control}
-                name={"blue.off_peak_tusd_in_reais_per_kw"}
+                name={"blue.offPeakTusdInReaisPerKw"}
                 rules={{
                   required: "Preencha este campo",
                   min: {
@@ -371,7 +371,7 @@ const TariffCreateForm = () => {
             <Grid item xs={4}>
               <Controller
                 control={control}
-                name={"blue.off_peak_tusd_in_reais_per_mwh"}
+                name={"blue.offPeakTusdInReaisPerMwh"}
                 rules={{
                   required: "Preencha este campo",
                   min: {
@@ -411,7 +411,7 @@ const TariffCreateForm = () => {
             <Grid item xs={4}>
               <Controller
                 control={control}
-                name={"blue.off_peak_te_in_reais_per_mwh"}
+                name={"blue.offPeakTeInReaisPerMwh"}
                 rules={{
                   required: "Preencha este campo",
                   min: {
@@ -465,7 +465,7 @@ const TariffCreateForm = () => {
             <Grid item xs={4}>
               <Controller
                 control={control}
-                name={"green.na_tusd_in_reais_per_kw"}
+                name={"green.naTusdInReaisPerKw"}
                 rules={{
                   required: "Preencha este campo",
                   min: {
@@ -510,7 +510,7 @@ const TariffCreateForm = () => {
             <Grid item xs={4}>
               <Controller
                 control={control}
-                name={"green.peak_tusd_in_reais_per_mwh"}
+                name={"green.peakTusdInReaisPerMwh"}
                 rules={{
                   required: "Preencha este campo",
                   min: {
@@ -550,7 +550,7 @@ const TariffCreateForm = () => {
             <Grid item xs={4}>
               <Controller
                 control={control}
-                name={"green.peak_te_in_reais_per_mwh"}
+                name={"green.peakTeInReaisPerMwh"}
                 rules={{
                   required: "Preencha este campo",
                   min: {
@@ -594,7 +594,7 @@ const TariffCreateForm = () => {
             <Grid item xs={4}>
               <Controller
                 control={control}
-                name={"green.off_peak_tusd_in_reais_per_mwh"}
+                name={"green.offPeakTusdInReaisPerMwh"}
                 rules={{
                   required: "Preencha este campo",
                   min: {
@@ -634,7 +634,7 @@ const TariffCreateForm = () => {
             <Grid item xs={4}>
               <Controller
                 control={control}
-                name={"green.off_peak_te_in_reais_per_mwh"}
+                name={"green.offPeakTeInReaisPerMwh"}
                 rules={{
                   required: "Preencha este campo",
                   min: {

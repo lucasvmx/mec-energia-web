@@ -44,8 +44,8 @@ export const DistributorInfo = () => {
 
     const overdue = currentTariff?.overdue
     if (overdue !== undefined) setisOverdue(overdue)
-    const hasConsumerUnit = mockedDistributor[Number(id) - 1]?.consumer_units > 0 ? true : false;
-    const needAddTariff = mockedDistributor[Number(id) - 1]?.tariffs.find(tariff => tariff.start_date === '' && tariff.end_date === '' && hasConsumerUnit);
+    const hasConsumerUnit = mockedDistributor[Number(id) - 1]?.consumerUnits > 0 ? true : false;
+    const needAddTariff = mockedDistributor[Number(id) - 1]?.tariffs.find(tariff => tariff.startDate === '' && tariff.endDate === '' && hasConsumerUnit);
     if (needAddTariff === undefined) setIsPendingTariffAddition(false)
     else setIsPendingTariffAddition(true)
 
@@ -73,7 +73,7 @@ export const DistributorInfo = () => {
 
   return (
     <Box display={'flex'} justifyContent="space-between" width={'100%'} mt={3}>
-      <Box flex={7} mr={5} display={currentDist?.consumer_units === 0 || !currentDist?.is_active ? 'none' : ''}>
+      <Box flex={7} mr={5} display={currentDist?.consumerUnits === 0 || !currentDist?.isActive ? 'none' : ''}>
         <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
           <Typography variant='h5'>{titleTariffs}</Typography>
           {!isPendingTariffAddition &&
@@ -101,7 +101,7 @@ export const DistributorInfo = () => {
         <Typography variant='h5'>
           Unidades Consumidoras
           <Divider />
-          {currentDist?.consumer_units === 0 ? (
+          {currentDist?.consumerUnits === 0 ? (
             <Box>
               <Box ml={3} mt={2} mb={3}>
                 <Typography>Nenhuma</Typography>
@@ -116,7 +116,7 @@ export const DistributorInfo = () => {
             })
           }
 
-          {!currentDist?.is_active &&
+          {!currentDist?.isActive &&
             <Box sx={{ color: 'text.secondary' }} >
               <Typography>
                 Apenas distribuidoras ativas exibem informações de tarifa.

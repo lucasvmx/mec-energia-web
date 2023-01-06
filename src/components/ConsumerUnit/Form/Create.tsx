@@ -35,8 +35,9 @@ import FormDrawer from "../../Form/Drawer";
 import { CreateConsumerUnitForm } from "../../../types/consumerUnit";
 import FormWarningDialog from "./WarningDialog";
 import { isAfter, isFuture, isValid } from "date-fns";
-import { useGetSubgroupsQuery } from "@/api";
+import { useGetDistributorsQuery, useGetSubgroupsQuery } from "@/api";
 import { Subgroup } from "@/types/subgroups";
+import { useSession } from "next-auth/react";
 
 const defaultValues: CreateConsumerUnitForm = {
   title: "",
@@ -51,11 +52,14 @@ const defaultValues: CreateConsumerUnitForm = {
 };
 
 const ConsumerUnitCreateForm = () => {
+  const { data: session } = useSession()
   const dispatch = useDispatch();
   const isCreateFormOpen = useSelector(selectIsConsumerUnitCreateFormOpen);
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
   const { data: subgroupsList } = useGetSubgroupsQuery()
+  const { data: distributorList } = useGetDistributorsQuery(session?.user?.university_id || 0)
   const form = useForm({ mode: "all", defaultValues });
+  console.log("Distribuidoras", distributorList)
 
   const {
     control,
@@ -78,7 +82,7 @@ const ConsumerUnitCreateForm = () => {
 
   const isValidDate = (date: CreateConsumerUnitForm["startDate"]) => {
     if (!date || !isValid(date)) {
-      return "Data inválida";
+      return "Insira uma data válida no formato dd/mm/aaaa";
     }
 
     if (isFuture(date)) {
@@ -276,7 +280,7 @@ const ConsumerUnitCreateForm = () => {
                 control={control}
                 name="startDate"
                 rules={{
-                  required: "Preencha este campo",
+                  required: "Insira uma data válida no formato dd/mm/aaaa",
                   validate: isValidDate,
                 }}
                 render={({

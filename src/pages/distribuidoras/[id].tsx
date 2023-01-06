@@ -123,7 +123,7 @@ const DistributorPage: NextPage = () => {
                 <IconButton onClick={handleEditDistributorClick} color="inherit">
                   <EditIcon fontSize="large" />
                 </IconButton>
-                {currentDistributor?.consumer_units === 0 &&
+                {currentDistributor?.consumerUnits === 0 &&
                   <IconButton color="inherit" onClick={handleClickDeleteOpen}>
                     <DeleteIcon fontSize="large" />
                   </IconButton>
@@ -133,7 +133,7 @@ const DistributorPage: NextPage = () => {
             </Box>
             <Box pr={3}>
               {
-                currentDistributor?.is_active &&
+                currentDistributor?.isActive &&
                 <IconButton
                   color="inherit"
                   onClick={handleClickOpen}>
@@ -141,7 +141,7 @@ const DistributorPage: NextPage = () => {
                 </IconButton>
               }
               {
-                !currentDistributor?.is_active &&
+                !currentDistributor?.isActive &&
                 <Box mt={2} sx={{ color: 'text.disabled' }} display="flex" justifyContent="center" alignItems="center">
                   <FlashOffIcon />
                   <Typography variant="h5" fontWeight={'medium'}>

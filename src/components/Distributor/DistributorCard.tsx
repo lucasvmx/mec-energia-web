@@ -16,9 +16,9 @@ import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 const DistributorCard = ({
   id,
   name: title,
-  is_active = true,
+  isActive: is_active = true,
   tariffs,
-  consumer_units
+  consumerUnits: consumer_units
 }: DistributorPropsTariffs) => {
   const router = useRouter();
   const DistributorUrl = `/distribuidoras/${id}`;
