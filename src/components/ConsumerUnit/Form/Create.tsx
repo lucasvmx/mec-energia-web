@@ -21,6 +21,7 @@ import {
   RadioGroup,
   Select,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
@@ -34,6 +35,8 @@ import FormDrawer from "../../Form/Drawer";
 import { CreateConsumerUnitForm } from "../../../types/consumerUnit";
 import FormWarningDialog from "./WarningDialog";
 import { isAfter, isFuture, isValid } from "date-fns";
+import { useGetSubgroupsQuery } from "@/api";
+import { Subgroup } from "@/types/subgroups";
 
 const defaultValues: CreateConsumerUnitForm = {
   title: "",
@@ -51,7 +54,7 @@ const ConsumerUnitCreateForm = () => {
   const dispatch = useDispatch();
   const isCreateFormOpen = useSelector(selectIsConsumerUnitCreateFormOpen);
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
-
+  const { data: subgroupsList } = useGetSubgroupsQuery()
   const form = useForm({ mode: "all", defaultValues });
 
   const {
@@ -89,6 +92,24 @@ const ConsumerUnitCreateForm = () => {
     return true;
   };
 
+  const handleSugroups = (supplied: CreateConsumerUnitForm['supplied']) => {
+    const subgroups = subgroupsList?.subgroups;
+    const isValidValue = subgroups?.some((subgroup: Subgroup) => supplied >= subgroup.min && supplied <= subgroup.max)
+    if (!isValidValue) {
+      return "Insira um valor conforme os intervalos ao lado"
+    }
+    return true
+  }
+
+  const handleCaractereLength = (value: CreateConsumerUnitForm['code'] | CreateConsumerUnitForm['title']) => {
+    if (value.length < 3) return "Insira ao menos 3 caracteres"
+    return true
+  }
+
+  const handleValueGreaterThenZero = (value: CreateConsumerUnitForm['peakContracted'] | CreateConsumerUnitForm['outOfPeakContracted']) => {
+    if (value <= 0) return 'Insira um valor maior que 0'
+  }
+
   const handleCloseDialog = () => {
     setShouldShowCancelDialog(false);
   };
@@ -112,6 +133,25 @@ const ConsumerUnitCreateForm = () => {
     console.log(data);
   };
 
+  const getSubgroupsText = () => {
+    return <Box p={1}>
+      <p>- {subgroupsList?.subgroups[0].max.toLocaleString('pt-BR')} kV ou inferior</p>
+      <p>
+        - De {subgroupsList?.subgroups[1].min.toLocaleString('pt-BR')} kV a {subgroupsList?.subgroups[1].max.toLocaleString('pt-BR')} kV
+      </p>
+      <p>
+        - De {subgroupsList?.subgroups[2].min.toLocaleString('pt-BR')} kV a {subgroupsList?.subgroups[2].max.toLocaleString('pt-BR')} kV
+      </p>
+      <p>
+        - {subgroupsList?.subgroups[3].min.toLocaleString('pt-BR')} kV
+      </p>
+      <p>
+        - De {subgroupsList?.subgroups[4].min.toLocaleString('pt-BR')} kV a {subgroupsList?.subgroups[4].max.toLocaleString('pt-BR')} kV
+      </p>
+    </Box>
+
+  }
+
   return (
     <FormDrawer open={isCreateFormOpen} handleCloseDrawer={handleCancelEdition}>
       <FormProvider {...form}>
@@ -131,7 +171,10 @@ const ConsumerUnitCreateForm = () => {
               <Controller
                 control={control}
                 name="title"
-                rules={{ required: "Preencha este campo" }}
+                rules={{
+                  required: "Preencha este campo",
+                  validate: handleCaractereLength
+                }}
                 render={({
                   field: { onChange, onBlur, value, ref },
                   fieldState: { error },
@@ -155,7 +198,10 @@ const ConsumerUnitCreateForm = () => {
               <Controller
                 control={control}
                 name="code"
-                rules={{ required: "Preencha este campo" }}
+                rules={{
+                  required: "Preencha este campo",
+                  validate: handleCaractereLength
+                }}
                 render={({
                   field: { onChange, onBlur, value, ref },
                   fieldState: { error },
@@ -255,42 +301,53 @@ const ConsumerUnitCreateForm = () => {
               />
             </Grid>
 
-            <Grid item xs={8} sm={6}>
-              <Controller
-                control={control}
-                name={"supplied"}
-                rules={{ required: "Preencha este campo" }}
-                render={({
-                  field: { onChange, onBlur, value },
-                  fieldState: { error },
-                }) => (
-                  <NumericFormat
-                    value={value}
-                    customInput={TextField}
-                    label="Tensão de fornecimento *"
-                    helperText={error?.message ?? " "}
-                    error={!!error}
-                    fullWidth
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">kV</InputAdornment>
-                      ),
-                    }}
-                    type="text"
-                    allowNegative={false}
-                    isAllowed={({ floatValue }) =>
-                      !floatValue || floatValue <= 9999.99
-                    }
-                    decimalScale={2}
-                    decimalSeparator=","
-                    thousandSeparator={" "}
-                    onValueChange={(values) => onChange(values.floatValue)}
-                    onBlur={onBlur}
-                  />
-                )}
-              />
-            </Grid>
+            <Tooltip
+              title={getSubgroupsText()}
+              arrow
+              placement="right"
+              sx={{ color: 'red' }}
+            >
+              <Grid item xs={8} sm={6}>
+                <Controller
+                  control={control}
+                  name={"supplied"}
+                  rules={{
+                    required: "Preencha este campo",
+                    validate: handleSugroups
+                  }}
+                  render={({
+                    field: { onChange, onBlur, value },
+                    fieldState: { error },
+                  }) => (
 
+                    <NumericFormat
+                      value={value}
+                      customInput={TextField}
+                      label="Tensão de fornecimento *"
+                      helperText={error?.message ?? " "}
+                      error={!!error}
+                      fullWidth
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">kV</InputAdornment>
+                        ),
+                      }}
+                      type="text"
+                      allowNegative={false}
+                      isAllowed={({ floatValue }) =>
+                        !floatValue || floatValue <= 9999.99
+                      }
+                      decimalScale={2}
+                      decimalSeparator=","
+                      thousandSeparator={" "}
+                      onValueChange={(values) => onChange(values.floatValue)}
+                      onBlur={onBlur}
+                    />
+
+                  )}
+                />
+              </Grid>
+            </Tooltip>
             <Grid item xs={12}>
               <Controller
                 control={control}
@@ -359,12 +416,15 @@ const ConsumerUnitCreateForm = () => {
                 />
               </Grid>
             ) : (
-              <>
-                <Grid item xs={7}>
+              <Box>
+                <Grid item xs={8}>
                   <Controller
                     control={control}
                     name="peakContracted"
-                    rules={{ required: "Preencha este campo" }}
+                    rules={{
+                      required: "Preencha este campo",
+                      validate: handleValueGreaterThenZero
+                    }}
                     render={({
                       field: { onChange, onBlur, value },
                       fieldState: { error },
@@ -396,11 +456,14 @@ const ConsumerUnitCreateForm = () => {
                   />
                 </Grid>
 
-                <Grid item xs={7}>
+                <Grid item xs={8}>
                   <Controller
                     control={control}
                     name="outOfPeakContracted"
-                    rules={{ required: "Preencha este campo" }}
+                    rules={{
+                      required: "Preencha este campo",
+                      validate: handleValueGreaterThenZero
+                    }}
                     render={({
                       field: { onChange, onBlur, value },
                       fieldState: { error },
@@ -431,7 +494,7 @@ const ConsumerUnitCreateForm = () => {
                     )}
                   />
                 </Grid>
-              </>
+              </Box>
             )}
 
             <Grid item xs={12}>
@@ -452,7 +515,7 @@ const ConsumerUnitCreateForm = () => {
           />
         </Box>
       </FormProvider>
-    </FormDrawer>
+    </FormDrawer >
   );
 };
 

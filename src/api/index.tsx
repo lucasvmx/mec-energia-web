@@ -1,3 +1,4 @@
+import { GetSubgroupsResponsePayload } from "@/types/subgroups";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { getSession } from "next-auth/react";
 
@@ -23,7 +24,10 @@ export const mecEnergiaApi = createApi({
     example: builder.query<void, void>({
       query: () => "distributors",
     }),
+    getSubgroups: builder.query<GetSubgroupsResponsePayload, void>({
+      query: () => "/contracts/list-subgroups/"
+    })
   }),
 });
 
-export const { useExampleQuery } = mecEnergiaApi;
+export const { useExampleQuery, useGetSubgroupsQuery } = mecEnergiaApi;
