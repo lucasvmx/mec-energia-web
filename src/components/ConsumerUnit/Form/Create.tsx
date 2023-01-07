@@ -32,23 +32,23 @@ import {
   setIsConsumerUnitCreateFormOpen,
 } from "../../../store/appSlice";
 import FormDrawer from "../../Form/Drawer";
-import { CreateConsumerUnitForm } from "../../../types/consumerUnit";
+import { CreateConsumerUnitForm, CreateConsumerUnitRequestPayload } from "../../../types/consumerUnit";
 import FormWarningDialog from "./WarningDialog";
 import { isAfter, isFuture, isValid } from "date-fns";
-import { useGetDistributorsQuery, useGetSubgroupsQuery } from "@/api";
+import { useCreateConsumerUnitMutation, useGetDistributorsQuery, useGetSubgroupsQuery } from "@/api";
 import { Subgroup } from "@/types/subgroups";
 import { useSession } from "next-auth/react";
 
 const defaultValues: CreateConsumerUnitForm = {
   title: "",
   code: "",
-  supplier: "",
+  distributor: "",
   startDate: null,
-  supplied: "",
-  tariffType: "green",
+  supplyVoltage: "",
+  tariffFlag: "G",
   contracted: "",
-  peakContracted: "",
-  outOfPeakContracted: "",
+  peakContractedDemandInKw: "",
+  offPeakContractedDemandInKw: "",
 };
 
 const ConsumerUnitCreateForm = () => {
@@ -58,8 +58,8 @@ const ConsumerUnitCreateForm = () => {
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
   const { data: subgroupsList } = useGetSubgroupsQuery()
   const { data: distributorList } = useGetDistributorsQuery(session?.user?.university_id || 0)
+  const [createConsumerUnit] = useCreateConsumerUnitMutation()
   const form = useForm({ mode: "all", defaultValues });
-  console.log("Distribuidoras", distributorList)
 
   const {
     control,
@@ -70,15 +70,15 @@ const ConsumerUnitCreateForm = () => {
     formState: { isDirty },
   } = form;
 
-  const tariffType = watch("tariffType");
+  const tariffFlag = watch("tariffFlag");
 
   useEffect(() => {
-    const { contracted, peakContracted, outOfPeakContracted } = defaultValues;
+    const { contracted, peakContractedDemandInKw, offPeakContractedDemandInKw } = defaultValues;
 
     setValue("contracted", contracted);
-    setValue("peakContracted", peakContracted);
-    setValue("outOfPeakContracted", outOfPeakContracted);
-  }, [setValue, tariffType]);
+    setValue("peakContractedDemandInKw", peakContractedDemandInKw);
+    setValue("offPeakContractedDemandInKw", offPeakContractedDemandInKw);
+  }, [setValue, tariffFlag]);
 
   const isValidDate = (date: CreateConsumerUnitForm["startDate"]) => {
     if (!date || !isValid(date)) {
@@ -96,7 +96,7 @@ const ConsumerUnitCreateForm = () => {
     return true;
   };
 
-  const handleSugroups = (supplied: CreateConsumerUnitForm['supplied']) => {
+  const handleSugroups = (supplied: CreateConsumerUnitForm['supplyVoltage']) => {
     const subgroups = subgroupsList?.subgroups;
     const isValidValue = subgroups?.some((subgroup: Subgroup) => supplied >= subgroup.min && supplied <= subgroup.max)
     if (!isValidValue) {
@@ -110,7 +110,7 @@ const ConsumerUnitCreateForm = () => {
     return true
   }
 
-  const handleValueGreaterThenZero = (value: CreateConsumerUnitForm['peakContracted'] | CreateConsumerUnitForm['outOfPeakContracted']) => {
+  const handleValueGreaterThenZero = (value: CreateConsumerUnitForm['peakContractedDemandInKw'] | CreateConsumerUnitForm['offPeakContractedDemandInKw']) => {
     if (value <= 0) return 'Insira um valor maior que 0'
   }
 
@@ -134,7 +134,29 @@ const ConsumerUnitCreateForm = () => {
   };
 
   const onSubmitHandler: SubmitHandler<CreateConsumerUnitForm> = (data) => {
-    console.log(data);
+    if (data.tariffFlag === 'G') {
+      data.offPeakContractedDemandInKw = data.contracted;
+      data.peakContractedDemandInKw = data.contracted;
+    }
+    const body: CreateConsumerUnitRequestPayload = {
+      consumerUnit: {
+        name: data.title,
+        code: data.code,
+        isActive: true,
+        university: session?.user.university_id || 0
+      },
+      contract: {
+        startDate: `${data.startDate?.getFullYear()}-${data.startDate?.getMonth()}-${data.startDate?.getDate()}` as unknown as Date,
+        tariffFlag: data.tariffFlag,
+        peakContractedDemandInKw: data.peakContractedDemandInKw as number,
+        offPeakContractedDemandInKw: data.offPeakContractedDemandInKw as number,
+        supplyVoltage: data.supplyVoltage as number,
+        distributor: data.distributor
+      }
+    }
+    createConsumerUnit(body)
+    reset();
+    dispatch(setIsConsumerUnitCreateFormOpen(false));
   };
 
   const getSubgroupsText = () => {
@@ -232,7 +254,7 @@ const ConsumerUnitCreateForm = () => {
             <Grid item xs={12}>
               <Controller
                 control={control}
-                name="supplier"
+                name="distributor"
                 rules={{ required: "Preencha este campo" }}
                 render={({
                   field: { onChange, onBlur, value, ref },
@@ -262,11 +284,12 @@ const ConsumerUnitCreateForm = () => {
                       onChange={onChange}
                       onBlur={onBlur}
                     >
-                      <MenuItem value="a">
-                        Distribuidora com um nome longo pra chegar ultrapassar o
-                        limite do container
-                      </MenuItem>
-                      <MenuItem value="b">Distribuidora B</MenuItem>
+                      {distributorList?.map(distributor => {
+                        return (
+                          <MenuItem key={distributor.id} value={distributor.id}>{distributor.name}</MenuItem>
+                        )
+                      })}
+                      <MenuItem><Button>Criar nova distribudora</Button></MenuItem>
                     </Select>
 
                     <FormHelperText>{error?.message ?? " "}</FormHelperText>
@@ -314,7 +337,7 @@ const ConsumerUnitCreateForm = () => {
               <Grid item xs={8} sm={6}>
                 <Controller
                   control={control}
-                  name={"supplied"}
+                  name={"supplyVoltage"}
                   rules={{
                     required: "Preencha este campo",
                     validate: handleSugroups
@@ -355,7 +378,7 @@ const ConsumerUnitCreateForm = () => {
             <Grid item xs={12}>
               <Controller
                 control={control}
-                name="tariffType"
+                name="tariffFlag"
                 rules={{ required: "Preencha este campo" }}
                 render={({
                   field: { onChange, value },
@@ -366,12 +389,12 @@ const ConsumerUnitCreateForm = () => {
 
                     <RadioGroup value={value} row onChange={onChange}>
                       <FormControlLabel
-                        value="green"
+                        value="G"
                         control={<Radio />}
                         label="Verde"
                       />
                       <FormControlLabel
-                        value="blue"
+                        value="B"
                         control={<Radio />}
                         label="Azul"
                       />
@@ -383,12 +406,15 @@ const ConsumerUnitCreateForm = () => {
               />
             </Grid>
 
-            {tariffType === "green" ? (
+            {tariffFlag === "G" ? (
               <Grid item xs={7}>
                 <Controller
                   control={control}
                   name="contracted"
-                  rules={{ required: "Preencha este campo" }}
+                  rules={{
+                    required: "Preencha este campo",
+                    validate: handleValueGreaterThenZero
+                  }}
                   render={({
                     field: { onChange, onBlur, value },
                     fieldState: { error },
@@ -424,7 +450,7 @@ const ConsumerUnitCreateForm = () => {
                 <Grid item xs={8}>
                   <Controller
                     control={control}
-                    name="peakContracted"
+                    name="peakContractedDemandInKw"
                     rules={{
                       required: "Preencha este campo",
                       validate: handleValueGreaterThenZero
@@ -463,7 +489,7 @@ const ConsumerUnitCreateForm = () => {
                 <Grid item xs={8}>
                   <Controller
                     control={control}
-                    name="outOfPeakContracted"
+                    name="offPeakContractedDemandInKw"
                     rules={{
                       required: "Preencha este campo",
                       validate: handleValueGreaterThenZero

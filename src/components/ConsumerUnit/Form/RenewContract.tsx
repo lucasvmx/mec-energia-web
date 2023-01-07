@@ -41,7 +41,7 @@ const defaultValues: RenewConsumerUnitContractForm = {
   supplier: "",
   startDate: null,
   supplied: "",
-  tariffType: "green",
+  tariffType: "G",
   contracted: "",
   peakContracted: "",
   outOfPeakContracted: "",
@@ -280,7 +280,7 @@ const ConsumerUnitRenewContractForm = () => {
               />
             </Grid>
 
-            {tariffType === "green" ? (
+            {tariffType === "G" ? (
               <Grid item xs={7}>
                 <Controller
                   control={control}

@@ -1,3 +1,4 @@
+import { CreateConsumerUnitRequestPayload } from "@/types/consumerUnit";
 import { DistributorPropsTariffs } from "@/types/distributor";
 import { GetSubgroupsResponsePayload } from "@/types/subgroups";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
@@ -30,8 +31,15 @@ export const mecEnergiaApi = createApi({
     }),
     getDistributors: builder.query<Array<DistributorPropsTariffs>, number>({
       query: (universityId) => `distributors/?university_id=${universityId}`
+    }),
+    createConsumerUnit: builder.mutation<string, CreateConsumerUnitRequestPayload>({
+      query: (body) => ({
+        url: "consumer-units/create_consumer_unit_and_contract/",
+        method: "POST",
+        body
+      })
     })
   }),
 });
 
-export const { useExampleQuery, useGetSubgroupsQuery, useGetDistributorsQuery } = mecEnergiaApi;
+export const { useExampleQuery, useGetSubgroupsQuery, useGetDistributorsQuery, useCreateConsumerUnitMutation } = mecEnergiaApi;

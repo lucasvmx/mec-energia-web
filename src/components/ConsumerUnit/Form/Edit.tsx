@@ -44,7 +44,7 @@ const defaultValues: EditConsumerUnitForm = {
   supplier: "",
   startDate: null,
   supplied: "",
-  tariffType: "green",
+  tariffType: "G",
   contracted: "",
   peakContracted: "",
   outOfPeakContracted: "",
@@ -355,7 +355,7 @@ const ConsumerUnitEditForm = () => {
                 )}
               />
             </Grid>
-            {tariffType === "green" ? (
+            {tariffType === "G" ? (
               <Grid item xs={7}>
                 <Controller
                   control={control}

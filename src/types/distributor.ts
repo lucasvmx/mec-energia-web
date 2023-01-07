@@ -35,3 +35,10 @@ export interface ConsumerUnit{
   id:number;
 }
 export interface DistributorProps extends DistributorPropsTariffs , DistributorConsumerUnits{}
+
+export interface CreateDistributorRequestPayload {
+    university: number,
+    name: string,
+    cnpj: string,
+    isActive: boolean 
+}

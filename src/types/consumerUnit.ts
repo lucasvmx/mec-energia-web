@@ -1,15 +1,15 @@
-import { TariffType } from "./supplier";
+import { TariffFlag } from "./supplier";
 
 export interface CreateConsumerUnitForm {
   title: string;
   code: string;
-  supplier: string;
+  distributor: string;
   startDate: Date | null;
-  supplied: number | "";
-  tariffType: TariffType;
+  supplyVoltage: number | "";
+  tariffFlag: TariffFlag;
   contracted: number | "";
-  peakContracted: number | "";
-  outOfPeakContracted: number | "";
+  peakContractedDemandInKw: number | "";
+  offPeakContractedDemandInKw: number | "";
 }
 
 export interface EditConsumerUnitForm {
@@ -19,7 +19,7 @@ export interface EditConsumerUnitForm {
   supplier: string;
   startDate: Date | null;
   supplied: number | "";
-  tariffType: TariffType;
+  tariffType: TariffFlag;
   contracted: number | "";
   peakContracted: number | "";
   outOfPeakContracted: number | "";
@@ -29,7 +29,7 @@ export interface RenewConsumerUnitContractForm {
   supplier: string;
   startDate: Date | null;
   supplied: number | "";
-  tariffType: TariffType;
+  tariffType: TariffFlag;
   contracted: number | "";
   peakContracted: number | "";
   outOfPeakContracted: number | "";
@@ -45,3 +45,24 @@ export type ConsumerUnit = {
 };
 
 export type ConsumerUnitsPayload = ConsumerUnit[];
+
+export interface ConsumerUnitRequestPayload {
+  name: string;
+  code: string;
+  isActive: boolean;
+  university: number;
+}
+
+export interface ContractRequestPayload {
+  startDate: Date;
+  tariffFlag: string;
+  peakContractedDemandInKw: number;
+  offPeakContractedDemandInKw: number;
+  supplyVoltage: number;
+  distributor: string;
+}
+
+export interface CreateConsumerUnitRequestPayload {
+  consumerUnit: ConsumerUnitRequestPayload;
+  contract: ContractRequestPayload;
+}

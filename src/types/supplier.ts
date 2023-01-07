@@ -1,5 +1,5 @@
 // TODO Rename to "distributors.ts"
-export type TariffType = "green" | "blue";
+export type TariffFlag = "G" | "B";
 
 export type Distributor = {
   id: number;
