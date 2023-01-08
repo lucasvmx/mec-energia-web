@@ -481,6 +481,7 @@ const ConsumerUnitEditForm = () => {
             open={shouldOpenDiscardDialog}
             onClose={handleCloseDialog}
             onDiscard={handleDiscardForm}
+            entity={'unidade consumidora'}
           />
         </Box>
       </FormProvider>

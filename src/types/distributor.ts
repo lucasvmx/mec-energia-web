@@ -42,3 +42,12 @@ export interface CreateDistributorRequestPayload {
     cnpj: string,
     isActive: boolean 
 }
+
+export interface CreateDistributorResponsePayload {
+  id: number,
+  university: number,
+  tariffs: Array<Tariff>,
+  name: string,
+  cnpj: string,
+  isActive: boolean
+}

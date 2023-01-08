@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Controller,
@@ -38,6 +38,10 @@ import { isAfter, isFuture, isValid } from "date-fns";
 import { useCreateConsumerUnitMutation, useGetDistributorsQuery, useGetSubgroupsQuery } from "@/api";
 import { Subgroup } from "@/types/subgroups";
 import { useSession } from "next-auth/react";
+import DistributorCreateFormDialog from "@/components/Distributor/Form/CreateForm";
+import SucessNotification from "@/components/Notification/SucessNotification";
+import FailNotification from "@/components/Notification/FailNotification";
+import { DistributorPropsTariffs } from "@/types/distributor";
 
 const defaultValues: CreateConsumerUnitForm = {
   title: "",
@@ -56,9 +60,12 @@ const ConsumerUnitCreateForm = () => {
   const dispatch = useDispatch();
   const isCreateFormOpen = useSelector(selectIsConsumerUnitCreateFormOpen);
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
+  const [shouldShowCancelDistributoFormDialog, setShouldShowCancelDistributoFormDialog] = useState(false);
+  const [openSucessNotification, setOpenSucessNotification] = useState(false)
+  const [openFailNotification, setOpenFailNotification] = useState(false)
   const { data: subgroupsList } = useGetSubgroupsQuery()
   const { data: distributorList } = useGetDistributorsQuery(session?.user?.university_id || 0)
-  const [createConsumerUnit] = useCreateConsumerUnitMutation()
+  const [createConsumerUnit, { status, isError, isSuccess }] = useCreateConsumerUnitMutation()
   const form = useForm({ mode: "all", defaultValues });
 
   const {
@@ -133,7 +140,7 @@ const ConsumerUnitCreateForm = () => {
     dispatch(setIsConsumerUnitCreateFormOpen(false));
   };
 
-  const onSubmitHandler: SubmitHandler<CreateConsumerUnitForm> = (data) => {
+  const onSubmitHandler: SubmitHandler<CreateConsumerUnitForm> = useCallback(async (data) => {
     if (data.tariffFlag === 'G') {
       data.offPeakContractedDemandInKw = data.contracted;
       data.peakContractedDemandInKw = data.contracted;
@@ -154,10 +161,21 @@ const ConsumerUnitCreateForm = () => {
         distributor: data.distributor
       }
     }
-    createConsumerUnit(body)
-    reset();
-    dispatch(setIsConsumerUnitCreateFormOpen(false));
-  };
+    await createConsumerUnit(body)
+  }, [createConsumerUnit, session?.user.university_id]);
+
+  const handleNotification = useCallback(() => {
+    if (isSuccess) {
+      setOpenSucessNotification(true);
+      reset();
+      setTimeout(() => dispatch(setIsConsumerUnitCreateFormOpen(false)), 6000)
+    }
+    else if (isError) setOpenFailNotification(true);
+  }, [dispatch, isError, isSuccess, reset])
+
+  useEffect(() => {
+    handleNotification()
+  }, [handleNotification, isSuccess, isError, status])
 
   const getSubgroupsText = () => {
     return <Box p={1}>
@@ -177,6 +195,18 @@ const ConsumerUnitCreateForm = () => {
     </Box>
 
   }
+
+  const handleCloseDistributorFomrDialog = () => {
+    setShouldShowCancelDistributoFormDialog(false)
+  }
+
+  const handleCloseNotification = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenFailNotification(false)
+    setOpenSucessNotification(false);
+  };
 
   return (
     <FormDrawer open={isCreateFormOpen} handleCloseDrawer={handleCancelEdition}>
@@ -283,12 +313,17 @@ const ConsumerUnitCreateForm = () => {
                       onChange={onChange}
                       onBlur={onBlur}
                     >
-                      {distributorList?.map(distributor => {
+                      {distributorList?.map((distributor: DistributorPropsTariffs) => {
                         return (
                           <MenuItem key={distributor.id} value={distributor.id}>{distributor.name}</MenuItem>
                         )
                       })}
-                      <MenuItem><Button>Adicionar</Button></MenuItem>
+                      <MenuItem>
+                        <Button
+                          onClick={() => setShouldShowCancelDistributoFormDialog(true)}>
+                          Adicionar
+                        </Button>
+                      </MenuItem>
                     </Select>
 
                     <FormHelperText>{error?.message ?? " "}</FormHelperText>
@@ -554,11 +589,29 @@ const ConsumerUnitCreateForm = () => {
 
           <FormWarningDialog
             open={shouldShowCancelDialog}
+            entity={'unidade consumidora'}
             onClose={handleCloseDialog}
             onDiscard={handleDiscardForm}
           />
+
+          <DistributorCreateFormDialog
+            open={shouldShowCancelDistributoFormDialog}
+            onClose={handleCloseDistributorFomrDialog}
+          />
+          <SucessNotification
+            open={openSucessNotification}
+            message={"Unidade Consumidora adicionada com sucesso!"}
+            handleClose={handleCloseNotification}
+          />
+
+          <FailNotification
+            open={openFailNotification}
+            message={"Erro ao adicionar unidade consumidora. Verifique se essa unidade já existe!"}
+            handleClose={handleCloseNotification}
+          />
         </Box>
       </FormProvider>
+
     </FormDrawer >
   );
 };

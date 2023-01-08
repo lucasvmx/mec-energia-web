@@ -1,5 +1,5 @@
 import { CreateConsumerUnitRequestPayload } from "@/types/consumerUnit";
-import { DistributorPropsTariffs } from "@/types/distributor";
+import { CreateDistributorRequestPayload, CreateDistributorResponsePayload, DistributorPropsTariffs } from "@/types/distributor";
 import { GetSubgroupsResponsePayload } from "@/types/subgroups";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { getSession } from "next-auth/react";
@@ -22,15 +22,26 @@ const baseQuery = fetchBaseQuery({
 export const mecEnergiaApi = createApi({
   reducerPath: "mecEnergiaApi",
   baseQuery,
+  tagTypes: ['Distributors', 'ConsumerUnit', 'Subgroups'],
   endpoints: (builder) => ({
     example: builder.query<void, void>({
       query: () => "distributors",
     }),
     getSubgroups: builder.query<GetSubgroupsResponsePayload, void>({
-      query: () => "/contracts/list-subgroups/"
+      query: () => "/contracts/list-subgroups/",
+      providesTags: ['Subgroups']
     }),
     getDistributors: builder.query<Array<DistributorPropsTariffs>, number>({
-      query: (universityId) => `distributors/?university_id=${universityId}`
+      query: (universityId) => `distributors/?university_id=${universityId}`,
+      providesTags: ["Distributors"]
+    }),
+    createDistributor: builder.mutation<CreateDistributorResponsePayload, CreateDistributorRequestPayload>({
+      query: (body) => ({
+        url: "distributors/",
+        method: "POST",
+        body
+      }),
+      invalidatesTags: ["Distributors"]
     }),
     createConsumerUnit: builder.mutation<string, CreateConsumerUnitRequestPayload>({
       query: (body) => ({
@@ -42,4 +53,10 @@ export const mecEnergiaApi = createApi({
   }),
 });
 
-export const { useExampleQuery, useGetSubgroupsQuery, useGetDistributorsQuery, useCreateConsumerUnitMutation } = mecEnergiaApi;
+export const {
+  useExampleQuery,
+  useGetSubgroupsQuery,
+  useGetDistributorsQuery,
+  useCreateDistributorMutation,
+  useCreateConsumerUnitMutation,
+} = mecEnergiaApi;
