@@ -1,5 +1,5 @@
 import { CreateConsumerUnitRequestPayload } from "@/types/consumerUnit";
-import { GetContractsResponsePayload } from "@/types/contract";
+import { GetContractsResponsePayload, RenewContractRequestPayload, RenewContractResponsePayload } from "@/types/contract";
 import { CreateDistributorRequestPayload, CreateDistributorResponsePayload, DistributorPropsTariffs } from "@/types/distributor";
 import { GetSubgroupsResponsePayload } from "@/types/subgroups";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
@@ -57,7 +57,16 @@ export const mecEnergiaApi = createApi({
         result
           ? [{ type: 'CurrentContract', arg }, 'CurrentContract']
           : ['CurrentContract']
-    })
+    }),
+    renewContract: builder.mutation<RenewContractResponsePayload, RenewContractRequestPayload>({
+      query: (body) => ({
+        url: "contracts/",
+        method: "POST",
+        body
+      }),
+      invalidatesTags: ["CurrentContract"]
+    }),
+
   }),
 });
 
@@ -68,4 +77,5 @@ export const {
   useCreateDistributorMutation,
   useCreateConsumerUnitMutation,
   useGetContractQuery,
+  useRenewContractMutation,
 } = mecEnergiaApi;

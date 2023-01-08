@@ -175,8 +175,6 @@ const ConsumerUnitCreateForm = () => {
     await createConsumerUnit(body)
   }, [createConsumerUnit, session?.user.university_id]);
 
-
-
   const getSubgroupsText = () => {
     return <Box p={1}>
       <p>- {subgroupsList?.subgroups[0].max.toLocaleString('pt-BR')} kV ou inferior</p>
