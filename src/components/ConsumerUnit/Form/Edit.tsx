@@ -25,6 +25,7 @@ import {
   Select,
   Switch,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
@@ -36,25 +37,36 @@ import {
 import FormDrawer from "@/components/Form/Drawer";
 import { EditConsumerUnitForm } from "@/types/consumerUnit";
 import FormWarningDialog from "@/components/ConsumerUnit/Form/WarningDialog";
+import { useGetContractQuery, useGetDistributorsQuery, useGetSubgroupsQuery } from "@/api";
+import { useSession } from "next-auth/react";
+import { DistributorPropsTariffs } from "@/types/distributor";
 
 const defaultValues: EditConsumerUnitForm = {
   isActive: true,
   title: "",
   code: "",
-  supplier: "",
+  distributor: "",
   startDate: null,
-  supplied: "",
-  tariffType: "G",
+  supplyVoltage: "",
+  tariffFlag: "G",
   contracted: "",
   peakContracted: "",
   outOfPeakContracted: "",
 };
 
-const ConsumerUnitEditForm = () => {
+const ConsumerUnitEditForm = (currentConsumerUnitId: number) => {
+
+  const { data: session } = useSession()
+  const { data: subgroupsList } = useGetSubgroupsQuery()
+  const { data: distributorList } = useGetDistributorsQuery(session?.user?.university_id || 0)
+  const { data: contract } = useGetContractQuery(1)
+  console.log("currentConsumerUnitId", currentConsumerUnitId)
+
   const dispatch = useDispatch();
   const isEditFormOpen = useSelector(selectIsConsumerUnitEditFormOpen);
   const [shouldOpenDiscardDialog, setShouldOpenDiscardDialog] = useState(false);
 
+  console.log("Contratos", contract)
   const form = useForm({ mode: "all", defaultValues });
 
   const {
@@ -66,15 +78,27 @@ const ConsumerUnitEditForm = () => {
     formState: { isDirty },
   } = form;
 
-  const tariffType = watch("tariffType");
+  const tariffFlag = watch("tariffFlag");
 
   useEffect(() => {
-    const { contracted, peakContracted, outOfPeakContracted } = defaultValues;
+    const {
+      title,
+      code,
+      contracted,
+    } = defaultValues;
 
+    const currentContract = contract?.find(con => con.endDate === null)
+    setValue("isActive", true) //TODO COrrir com o valor vindo da api
+    setValue("title", title);
+    setValue("code", code);
+    setValue("distributor", currentContract?.distributor as number)
+    setValue("startDate", currentContract?.startDate as Date)
     setValue("contracted", contracted);
-    setValue("peakContracted", peakContracted);
-    setValue("outOfPeakContracted", outOfPeakContracted);
-  }, [setValue, tariffType]);
+    setValue("supplyVoltage", Number(currentContract?.supplyVoltage))
+    setValue("tariffFlag", currentContract?.tariffFlag || 'G')
+    setValue("peakContracted", currentContract?.peakContractedDemandInKw as number);
+    setValue("outOfPeakContracted", currentContract?.offPeakContractedDemandInKw as number);
+  }, [contract, setValue, tariffFlag]);
 
   const isValidDate = (date: EditConsumerUnitForm["startDate"]) => {
     if (!date || !isValid(date)) {
@@ -114,6 +138,27 @@ const ConsumerUnitEditForm = () => {
   const onSubmitHandler: SubmitHandler<EditConsumerUnitForm> = (data) => {
     console.log(data);
   };
+
+  const getSubgroupsText = () => {
+    return <Box p={1}>
+      <p>- {subgroupsList?.subgroups[0].max.toLocaleString('pt-BR')} kV ou inferior</p>
+      <p>
+        - De {subgroupsList?.subgroups[1].min.toLocaleString('pt-BR')} kV a {subgroupsList?.subgroups[1].max.toLocaleString('pt-BR')} kV
+      </p>
+      <p>
+        - De {subgroupsList?.subgroups[2].min.toLocaleString('pt-BR')} kV a {subgroupsList?.subgroups[2].max.toLocaleString('pt-BR')} kV
+      </p>
+      <p>
+        - {subgroupsList?.subgroups[3].min.toLocaleString('pt-BR')} kV
+      </p>
+      <p>
+        - De {subgroupsList?.subgroups[4].min.toLocaleString('pt-BR')} kV a {subgroupsList?.subgroups[4].max.toLocaleString('pt-BR')} kV
+      </p>
+    </Box>
+
+  }
+
+  //Notificações
 
   return (
     <FormDrawer open={isEditFormOpen} handleCloseDrawer={handleCancelEdition}>
@@ -220,7 +265,7 @@ const ConsumerUnitEditForm = () => {
             <Grid item xs={12}>
               <Controller
                 control={control}
-                name="supplier"
+                name="distributor"
                 rules={{ required: "Preencha este campo" }}
                 render={({
                   field: { onChange, onBlur, value, ref },
@@ -249,11 +294,17 @@ const ConsumerUnitEditForm = () => {
                       onChange={onChange}
                       onBlur={onBlur}
                     >
-                      <MenuItem value="a">
-                        Distribuidora com um nome longo pra chegar ultrapassar o
-                        limite do container
-                      </MenuItem>
-                      <MenuItem value="b">Distribuidora B</MenuItem>
+                      {distributorList?.map((distributor: DistributorPropsTariffs) => {
+                        return (
+                          <MenuItem key={distributor.id} value={distributor.id}>{distributor.name}</MenuItem>
+                        )
+                      })}
+                      {/* <MenuItem>
+                        <Button
+                          onClick={() => setShouldShowCancelDistributoFormDialog(true)}>
+                          Adicionar
+                        </Button>
+                      </MenuItem> */}
                     </Select>
 
                     <FormHelperText>{error?.message ?? " "}</FormHelperText>
@@ -290,45 +341,52 @@ const ConsumerUnitEditForm = () => {
                 )}
               />
             </Grid>
-            <Grid item xs={8} sm={6}>
-              <Controller
-                control={control}
-                name={"supplied"}
-                rules={{ required: "Preencha este campo" }}
-                render={({
-                  field: { onChange, onBlur, value },
-                  fieldState: { error },
-                }) => (
-                  <NumericFormat
-                    value={value}
-                    customInput={TextField}
-                    label="Tensão de fornecimento *"
-                    helperText={error?.message ?? " "}
-                    error={!!error}
-                    fullWidth
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">kV</InputAdornment>
-                      ),
-                    }}
-                    type="text"
-                    allowNegative={false}
-                    isAllowed={({ floatValue }) =>
-                      !floatValue || floatValue <= 9999.99
-                    }
-                    decimalScale={2}
-                    decimalSeparator=","
-                    thousandSeparator={" "}
-                    onValueChange={(values) => onChange(values.floatValue)}
-                    onBlur={onBlur}
-                  />
-                )}
-              />
-            </Grid>
+            <Tooltip
+              title={getSubgroupsText()}
+              arrow
+              placement="right"
+              sx={{ color: 'red' }}
+            >
+              <Grid item xs={8} sm={6}>
+                <Controller
+                  control={control}
+                  name={"supplyVoltage"}
+                  rules={{ required: "Preencha este campo" }}
+                  render={({
+                    field: { onChange, onBlur, value },
+                    fieldState: { error },
+                  }) => (
+                    <NumericFormat
+                      value={value}
+                      customInput={TextField}
+                      label="Tensão de fornecimento *"
+                      helperText={error?.message ?? " "}
+                      error={!!error}
+                      fullWidth
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">kV</InputAdornment>
+                        ),
+                      }}
+                      type="text"
+                      allowNegative={false}
+                      isAllowed={({ floatValue }) =>
+                        !floatValue || floatValue <= 9999.99
+                      }
+                      decimalScale={2}
+                      decimalSeparator=","
+                      thousandSeparator={" "}
+                      onValueChange={(values) => onChange(values.floatValue)}
+                      onBlur={onBlur}
+                    />
+                  )}
+                />
+              </Grid>
+            </Tooltip>
             <Grid item xs={12}>
               <Controller
                 control={control}
-                name="tariffType"
+                name="tariffFlag"
                 rules={{ required: "Preencha este campo" }}
                 render={({
                   field: { onChange, value },
@@ -355,7 +413,7 @@ const ConsumerUnitEditForm = () => {
                 )}
               />
             </Grid>
-            {tariffType === "G" ? (
+            {tariffFlag === "G" ? (
               <Grid item xs={7}>
                 <Controller
                   control={control}

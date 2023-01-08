@@ -16,10 +16,10 @@ export interface EditConsumerUnitForm {
   isActive: boolean;
   title: string;
   code: string;
-  supplier: string;
+  distributor: number | "";
   startDate: Date | null;
-  supplied: number | "";
-  tariffType: TariffFlag;
+  supplyVoltage: number | "";
+  tariffFlag: TariffFlag;
   contracted: number | "";
   peakContracted: number | "";
   outOfPeakContracted: number | "";

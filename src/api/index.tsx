@@ -1,4 +1,5 @@
 import { CreateConsumerUnitRequestPayload } from "@/types/consumerUnit";
+import { GetContractsResponsePayload } from "@/types/contract";
 import { CreateDistributorRequestPayload, CreateDistributorResponsePayload, DistributorPropsTariffs } from "@/types/distributor";
 import { GetSubgroupsResponsePayload } from "@/types/subgroups";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
@@ -22,7 +23,7 @@ const baseQuery = fetchBaseQuery({
 export const mecEnergiaApi = createApi({
   reducerPath: "mecEnergiaApi",
   baseQuery,
-  tagTypes: ['Distributors', 'ConsumerUnit', 'Subgroups'],
+  tagTypes: ['Distributors', 'ConsumerUnit', 'Subgroups', 'CurrentContract'],
   endpoints: (builder) => ({
     example: builder.query<void, void>({
       query: () => "distributors",
@@ -49,6 +50,13 @@ export const mecEnergiaApi = createApi({
         method: "POST",
         body
       })
+    }),
+    getContract: builder.query<GetContractsResponsePayload, number>({
+      query: (consumerunitId) => `contracts/?consumer_unit_id=${consumerunitId}`, //TODO adicionar o id da UC
+      providesTags: (result, error, arg) =>
+        result
+          ? [{ type: 'CurrentContract', arg }, 'CurrentContract']
+          : ['CurrentContract']
     })
   }),
 });
@@ -59,4 +67,5 @@ export const {
   useGetDistributorsQuery,
   useCreateDistributorMutation,
   useCreateConsumerUnitMutation,
+  useGetContractQuery,
 } = mecEnergiaApi;
