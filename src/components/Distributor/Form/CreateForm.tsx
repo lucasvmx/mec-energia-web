@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { CreateDistributorForm, CreateDistributorRequestPayload } from '../../../types/distributor';
 import { PatternFormat } from 'react-number-format';
 
@@ -9,6 +9,8 @@ import { Box, Button, Dialog, DialogTitle, Grid, TextField, Typography } from '@
 import FormWarningDialog from '../../ConsumerUnit/Form/WarningDialog';
 import { useCreateDistributorMutation } from '@/api';
 import { useSession } from 'next-auth/react';
+import SucessNotification from '@/components/Notification/SucessNotification';
+import FailNotification from '@/components/Notification/FailNotification';
 
 
 const defaultValues: CreateDistributorForm = {
@@ -25,10 +27,20 @@ type DistributorCreateFormDialogProps = {
 const DistributorCreateFormDialog = (props: DistributorCreateFormDialogProps) => {
 
   const { open, onClose } = props
-  const [createDistributor, { isError, error }] = useCreateDistributorMutation()
+
+  //SESSÃO
   const { data: session } = useSession()
   const user = session?.user
+
+  // REQUISIÇÕES
+  const [createDistributor, { isError, isSuccess }] = useCreateDistributorMutation()
+
+  // ESTADOS
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
+  const [openSucessNotification, setOpenSucessNotification] = useState(false)
+  const [openFailNotification, setOpenFailNotification] = useState(false)
+
+  //FORMULÁRIO
   const form = useForm({ defaultValues });
   const {
     control,
@@ -36,7 +48,6 @@ const DistributorCreateFormDialog = (props: DistributorCreateFormDialogProps) =>
     handleSubmit,
     formState: { isDirty },
   } = form;
-
 
   const handleCancelEdition = () => {
     if (isDirty) {
@@ -46,11 +57,11 @@ const DistributorCreateFormDialog = (props: DistributorCreateFormDialogProps) =>
     handleDiscardForm();
   };
 
-  const handleDiscardForm = () => {
+  const handleDiscardForm = useCallback(() => {
     handleCloseDialog();
     reset();
     onClose()
-  };
+  }, [onClose, reset]);
 
   const handleCloseDialog = () => {
     setShouldShowCancelDialog(false);
@@ -65,14 +76,30 @@ const DistributorCreateFormDialog = (props: DistributorCreateFormDialogProps) =>
       isActive: true,
       university: user?.university_id || 0
     }
+    await createDistributor(body)
+  };
 
-    await createDistributor(body) // TODO - Tratar erros de requisição e adição de notificação
-    if (isError) {
-      console.log("Esse é o erro", error)
-      return
+
+  //Notificações
+  const handleNotification = useCallback(() => {
+    if (isSuccess) {
+      setOpenSucessNotification(true);
+      reset();
+      setTimeout(handleDiscardForm, 5500)
     }
-    onClose()
-    console.log(data);
+    else if (isError) setOpenFailNotification(true);
+  }, [handleDiscardForm, isError, isSuccess, reset])
+
+  useEffect(() => {
+    handleNotification()
+  }, [handleNotification, isSuccess, isError])
+
+  const handleCloseNotification = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenFailNotification(false)
+    setOpenSucessNotification(false);
   };
 
   return (
@@ -169,6 +196,18 @@ const DistributorCreateFormDialog = (props: DistributorCreateFormDialogProps) =>
 
           </Box>
         </FormProvider>
+
+        <SucessNotification
+          open={openSucessNotification}
+          message={"Distribuidora adicionada com sucesso!"}
+          handleClose={handleCloseNotification}
+        />
+
+        <FailNotification
+          open={openFailNotification}
+          message={"Erro ao adicionar distribuidora. Verifique se essa distribuidora já existe!"}
+          handleClose={handleCloseNotification}
+        />
       </Box >
     </Dialog >
   )

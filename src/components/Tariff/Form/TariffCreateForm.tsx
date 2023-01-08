@@ -684,6 +684,7 @@ const TariffCreateForm = () => {
           </Grid>
           <FormWarningDialog
             open={shouldShowCancelDialog}
+            entity={"distribuidora"}
             onClose={handleCloseDialog}
             onDiscard={handleDiscardForm}
           />

@@ -56,18 +56,26 @@ const defaultValues: CreateConsumerUnitForm = {
 };
 
 const ConsumerUnitCreateForm = () => {
+  //Sessão
   const { data: session } = useSession()
+
+  //Redux
   const dispatch = useDispatch();
   const isCreateFormOpen = useSelector(selectIsConsumerUnitCreateFormOpen);
+
+  //Requisições Redux Query
+  const { data: subgroupsList } = useGetSubgroupsQuery()
+  const { data: distributorList } = useGetDistributorsQuery(session?.user?.university_id || 0)
+  const [createConsumerUnit, { status, isError, isSuccess }] = useCreateConsumerUnitMutation()
+
+  //Estados
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
   const [shouldShowCancelDistributoFormDialog, setShouldShowCancelDistributoFormDialog] = useState(false);
   const [openSucessNotification, setOpenSucessNotification] = useState(false)
   const [openFailNotification, setOpenFailNotification] = useState(false)
-  const { data: subgroupsList } = useGetSubgroupsQuery()
-  const { data: distributorList } = useGetDistributorsQuery(session?.user?.university_id || 0)
-  const [createConsumerUnit, { status, isError, isSuccess }] = useCreateConsumerUnitMutation()
-  const form = useForm({ mode: "all", defaultValues });
 
+  //Formulário
+  const form = useForm({ mode: "all", defaultValues });
   const {
     control,
     reset,
@@ -76,9 +84,7 @@ const ConsumerUnitCreateForm = () => {
     setValue,
     formState: { isDirty },
   } = form;
-
   const tariffFlag = watch("tariffFlag");
-
   useEffect(() => {
     const { contracted, peakContractedDemandInKw, offPeakContractedDemandInKw } = defaultValues;
 
@@ -87,6 +93,8 @@ const ConsumerUnitCreateForm = () => {
     setValue("offPeakContractedDemandInKw", offPeakContractedDemandInKw);
   }, [setValue, tariffFlag]);
 
+
+  // Validações de Formulário
   const isValidDate = (date: CreateConsumerUnitForm["startDate"]) => {
     if (!date || !isValid(date)) {
       return "Insira uma data válida no formato dd/mm/aaaa";
@@ -121,10 +129,11 @@ const ConsumerUnitCreateForm = () => {
     if (value <= 0) return 'Insira um valor maior que 0'
   }
 
+
+  // Modal
   const handleCloseDialog = () => {
     setShouldShowCancelDialog(false);
   };
-
   const handleCancelEdition = () => {
     if (isDirty) {
       setShouldShowCancelDialog(true);
@@ -133,13 +142,13 @@ const ConsumerUnitCreateForm = () => {
 
     handleDiscardForm();
   };
-
   const handleDiscardForm = () => {
     handleCloseDialog();
     reset();
     dispatch(setIsConsumerUnitCreateFormOpen(false));
   };
 
+  // Submissão de Formulário
   const onSubmitHandler: SubmitHandler<CreateConsumerUnitForm> = useCallback(async (data) => {
     if (data.tariffFlag === 'G') {
       data.offPeakContractedDemandInKw = data.contracted;
@@ -164,18 +173,7 @@ const ConsumerUnitCreateForm = () => {
     await createConsumerUnit(body)
   }, [createConsumerUnit, session?.user.university_id]);
 
-  const handleNotification = useCallback(() => {
-    if (isSuccess) {
-      setOpenSucessNotification(true);
-      reset();
-      setTimeout(() => dispatch(setIsConsumerUnitCreateFormOpen(false)), 6000)
-    }
-    else if (isError) setOpenFailNotification(true);
-  }, [dispatch, isError, isSuccess, reset])
 
-  useEffect(() => {
-    handleNotification()
-  }, [handleNotification, isSuccess, isError, status])
 
   const getSubgroupsText = () => {
     return <Box p={1}>
@@ -195,6 +193,21 @@ const ConsumerUnitCreateForm = () => {
     </Box>
 
   }
+
+  // Notificações
+
+  const handleNotification = useCallback(() => {
+    if (isSuccess) {
+      setOpenSucessNotification(true);
+      reset();
+      setTimeout(() => dispatch(setIsConsumerUnitCreateFormOpen(false)), 6000)
+    }
+    else if (isError) setOpenFailNotification(true);
+  }, [dispatch, isError, isSuccess, reset])
+
+  useEffect(() => {
+    handleNotification()
+  }, [handleNotification, isSuccess, isError, status])
 
   const handleCloseDistributorFomrDialog = () => {
     setShouldShowCancelDistributoFormDialog(false)
