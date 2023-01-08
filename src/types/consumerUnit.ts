@@ -21,8 +21,8 @@ export interface EditConsumerUnitForm {
   supplyVoltage: number | "";
   tariffFlag: TariffFlag;
   contracted: number | "";
-  peakContracted: number | "";
-  outOfPeakContracted: number | "";
+  peakContractedDemandInKw: number | "";
+  offPeakContractedDemandInKw: number | "";
 }
 
 export interface RenewConsumerUnitContractForm {

@@ -70,7 +70,7 @@ const ConsumerUnitCreateForm = () => {
 
   //Estados
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
-  const [shouldShowCancelDistributoFormDialog, setShouldShowCancelDistributoFormDialog] = useState(false);
+  const [shouldShowDistributoFormDialog, setShouldShowDistributoFormDialog] = useState(false);
   const [openSucessNotification, setOpenSucessNotification] = useState(false)
   const [openFailNotification, setOpenFailNotification] = useState(false)
 
@@ -84,7 +84,9 @@ const ConsumerUnitCreateForm = () => {
     setValue,
     formState: { isDirty },
   } = form;
+
   const tariffFlag = watch("tariffFlag");
+
   useEffect(() => {
     const { contracted, peakContractedDemandInKw, offPeakContractedDemandInKw } = defaultValues;
 
@@ -111,7 +113,7 @@ const ConsumerUnitCreateForm = () => {
     return true;
   };
 
-  const handleSugroups = (supplied: CreateConsumerUnitForm['supplyVoltage']) => {
+  const isInSomeSugroups = (supplied: CreateConsumerUnitForm['supplyVoltage']) => {
     const subgroups = subgroupsList?.subgroups;
     const isValidValue = subgroups?.some((subgroup: Subgroup) => supplied >= subgroup.min && supplied <= subgroup.max)
     if (!isValidValue) {
@@ -120,12 +122,12 @@ const ConsumerUnitCreateForm = () => {
     return true
   }
 
-  const handleCaractereLength = (value: CreateConsumerUnitForm['code'] | CreateConsumerUnitForm['title']) => {
+  const hasEnoughCaracteresLength = (value: CreateConsumerUnitForm['code'] | CreateConsumerUnitForm['title']) => {
     if (value.length < 3) return "Insira ao menos 3 caracteres"
     return true
   }
 
-  const handleValueGreaterThenZero = (value: CreateConsumerUnitForm['peakContractedDemandInKw'] | CreateConsumerUnitForm['offPeakContractedDemandInKw']) => {
+  const isValueGreaterThenZero = (value: CreateConsumerUnitForm['peakContractedDemandInKw'] | CreateConsumerUnitForm['offPeakContractedDemandInKw']) => {
     if (value <= 0) return 'Insira um valor maior que 0'
   }
 
@@ -210,7 +212,7 @@ const ConsumerUnitCreateForm = () => {
   }, [handleNotification, isSuccess, isError, status])
 
   const handleCloseDistributorFomrDialog = () => {
-    setShouldShowCancelDistributoFormDialog(false)
+    setShouldShowDistributoFormDialog(false)
   }
 
   const handleCloseNotification = (event?: React.SyntheticEvent | Event, reason?: string) => {
@@ -242,7 +244,7 @@ const ConsumerUnitCreateForm = () => {
                 name="title"
                 rules={{
                   required: "Preencha este campo",
-                  validate: handleCaractereLength
+                  validate: hasEnoughCaracteresLength
                 }}
                 render={({
                   field: { onChange, onBlur, value, ref },
@@ -272,7 +274,7 @@ const ConsumerUnitCreateForm = () => {
                 name="code"
                 rules={{
                   required: "Preencha este campo",
-                  validate: handleCaractereLength
+                  validate: hasEnoughCaracteresLength
                 }}
                 render={({
                   field: { onChange, onBlur, value, ref },
@@ -333,7 +335,7 @@ const ConsumerUnitCreateForm = () => {
                       })}
                       <MenuItem>
                         <Button
-                          onClick={() => setShouldShowCancelDistributoFormDialog(true)}>
+                          onClick={() => setShouldShowDistributoFormDialog(true)}>
                           Adicionar
                         </Button>
                       </MenuItem>
@@ -391,7 +393,7 @@ const ConsumerUnitCreateForm = () => {
                   name={"supplyVoltage"}
                   rules={{
                     required: "Preencha este campo",
-                    validate: handleSugroups
+                    validate: isInSomeSugroups
                   }}
                   render={({
                     field: { onChange, onBlur, value },
@@ -475,7 +477,7 @@ const ConsumerUnitCreateForm = () => {
                   name="contracted"
                   rules={{
                     required: "Preencha este campo",
-                    validate: handleValueGreaterThenZero
+                    validate: isValueGreaterThenZero
                   }}
                   render={({
                     field: { onChange, onBlur, value },
@@ -515,7 +517,7 @@ const ConsumerUnitCreateForm = () => {
                     name="peakContractedDemandInKw"
                     rules={{
                       required: "Preencha este campo",
-                      validate: handleValueGreaterThenZero
+                      validate: isValueGreaterThenZero
                     }}
                     render={({
                       field: { onChange, onBlur, value },
@@ -554,7 +556,7 @@ const ConsumerUnitCreateForm = () => {
                     name="offPeakContractedDemandInKw"
                     rules={{
                       required: "Preencha este campo",
-                      validate: handleValueGreaterThenZero
+                      validate: isValueGreaterThenZero
                     }}
                     render={({
                       field: { onChange, onBlur, value },
@@ -608,9 +610,10 @@ const ConsumerUnitCreateForm = () => {
           />
 
           <DistributorCreateFormDialog
-            open={shouldShowCancelDistributoFormDialog}
+            open={shouldShowDistributoFormDialog}
             onClose={handleCloseDistributorFomrDialog}
           />
+
           <SucessNotification
             open={openSucessNotification}
             message={"Unidade Consumidora adicionada com sucesso!"}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Controller,
@@ -40,18 +40,22 @@ import FormWarningDialog from "@/components/ConsumerUnit/Form/WarningDialog";
 import { useGetContractQuery, useGetDistributorsQuery, useGetSubgroupsQuery } from "@/api";
 import { useSession } from "next-auth/react";
 import { DistributorPropsTariffs } from "@/types/distributor";
+import DistributorCreateFormDialog from "@/components/Distributor/Form/CreateForm";
+import SucessNotification from "@/components/Notification/SucessNotification";
+import FailNotification from "@/components/Notification/FailNotification";
+import { Subgroup } from "@/types/subgroups";
 
 const defaultValues: EditConsumerUnitForm = {
   isActive: true,
-  title: "",
+  title: "askjdf",
   code: "",
   distributor: "",
   startDate: null,
   supplyVoltage: "",
   tariffFlag: "G",
   contracted: "",
-  peakContracted: "",
-  outOfPeakContracted: "",
+  peakContractedDemandInKw: "",
+  offPeakContractedDemandInKw: "",
 };
 
 const ConsumerUnitEditForm = (currentConsumerUnitId: number) => {
@@ -59,12 +63,15 @@ const ConsumerUnitEditForm = (currentConsumerUnitId: number) => {
   const { data: session } = useSession()
   const { data: subgroupsList } = useGetSubgroupsQuery()
   const { data: distributorList } = useGetDistributorsQuery(session?.user?.university_id || 0)
-  const { data: contract } = useGetContractQuery(1)
+  const { data: contract } = useGetContractQuery(1) // TODO - Adicionar o id
   console.log("currentConsumerUnitId", currentConsumerUnitId)
 
   const dispatch = useDispatch();
   const isEditFormOpen = useSelector(selectIsConsumerUnitEditFormOpen);
-  const [shouldOpenDiscardDialog, setShouldOpenDiscardDialog] = useState(false);
+  const [shouldShowDistributoFormDialog, setShouldShowDistributoFormDialog] = useState(false);
+  const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
+  const [openSucessNotification, setOpenSucessNotification] = useState(false)
+  const [openFailNotification, setOpenFailNotification] = useState(false)
 
   console.log("Contratos", contract)
   const form = useForm({ mode: "all", defaultValues });
@@ -80,25 +87,29 @@ const ConsumerUnitEditForm = (currentConsumerUnitId: number) => {
 
   const tariffFlag = watch("tariffFlag");
 
+  console.log("tipo de tarifaca", tariffFlag)
+
   useEffect(() => {
     const {
-      title,
       code,
       contracted,
     } = defaultValues;
 
     const currentContract = contract?.find(con => con.endDate === null)
+    setValue("title", currentContract?.url || '')
     setValue("isActive", true) //TODO COrrir com o valor vindo da api
-    setValue("title", title);
     setValue("code", code);
     setValue("distributor", currentContract?.distributor as number)
     setValue("startDate", currentContract?.startDate as Date)
     setValue("contracted", contracted);
-    setValue("supplyVoltage", Number(currentContract?.supplyVoltage))
-    setValue("tariffFlag", currentContract?.tariffFlag || 'G')
-    setValue("peakContracted", currentContract?.peakContractedDemandInKw as number);
-    setValue("outOfPeakContracted", currentContract?.offPeakContractedDemandInKw as number);
-  }, [contract, setValue, tariffFlag]);
+    setValue("supplyVoltage", currentContract?.supplyVoltage as number)
+    setValue("contracted", currentContract?.peakContractedDemandInKw as number)
+    setValue("peakContractedDemandInKw", currentContract?.peakContractedDemandInKw as number);
+    setValue("offPeakContractedDemandInKw", currentContract?.offPeakContractedDemandInKw as number);
+  });
+
+
+  // Validações
 
   const isValidDate = (date: EditConsumerUnitForm["startDate"]) => {
     if (!date || !isValid(date)) {
@@ -116,13 +127,33 @@ const ConsumerUnitEditForm = (currentConsumerUnitId: number) => {
     return true;
   };
 
+  const isInSomeSugroups = (supplied: EditConsumerUnitForm['supplyVoltage']) => {
+    const subgroups = subgroupsList?.subgroups;
+    const isValidValue = subgroups?.some((subgroup: Subgroup) => supplied >= subgroup.min && supplied <= subgroup.max)
+    if (!isValidValue) {
+      return "Insira um valor conforme os intervalos ao lado"
+    }
+    return true
+  }
+
+  const hasEnoughCaracteresLength = (value: EditConsumerUnitForm['code'] | EditConsumerUnitForm['title']) => {
+    if (value.length < 3) return "Insira ao menos 3 caracteres"
+    return true
+  }
+
+  const isValueGreaterThenZero = (value: EditConsumerUnitForm['peakContractedDemandInKw'] | EditConsumerUnitForm['offPeakContractedDemandInKw']) => {
+    if (value <= 0) return 'Insira um valor maior que 0'
+  }
+
+
+
   const handleCloseDialog = () => {
-    setShouldOpenDiscardDialog(false);
+    setShouldShowCancelDialog(false);
   };
 
   const handleCancelEdition = () => {
     if (isDirty) {
-      setShouldOpenDiscardDialog(true);
+      setShouldShowCancelDialog(true);
       return;
     }
 
@@ -160,6 +191,32 @@ const ConsumerUnitEditForm = (currentConsumerUnitId: number) => {
 
   //Notificações
 
+  const handleNotification = useCallback(() => { // TODO - Ajustar as notificaçoes
+    /*     if (isSuccess) {
+          setOpenSucessNotification(true);
+          reset();
+          setTimeout(() => dispatch(setIsConsumerUnitEditFormOpen(false)), 6000)
+        }
+        else if (isError) setOpenFailNotification(true); */
+    console.log("Resolbver")
+  }, [])
+
+  useEffect(() => {
+    handleNotification()
+  }, [handleNotification])
+
+  const handleCloseDistributorFomrDialog = () => {
+    setShouldShowDistributoFormDialog(false)
+  }
+
+  const handleCloseNotification = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenFailNotification(false)
+    setOpenSucessNotification(false);
+  };
+
   return (
     <FormDrawer open={isEditFormOpen} handleCloseDrawer={handleCancelEdition}>
       <FormProvider {...form}>
@@ -185,7 +242,6 @@ const ConsumerUnitEditForm = (currentConsumerUnitId: number) => {
                         control={
                           <Switch
                             value={value}
-                            defaultChecked
                             onChange={onChange}
                           />
                         }
@@ -208,7 +264,10 @@ const ConsumerUnitEditForm = (currentConsumerUnitId: number) => {
               <Controller
                 control={control}
                 name="title"
-                rules={{ required: "Preencha este campo" }}
+                rules={{
+                  required: "Preencha este campo",
+                  validate: hasEnoughCaracteresLength
+                }}
                 render={({
                   field: { onChange, onBlur, value, ref },
                   fieldState: { error },
@@ -227,11 +286,27 @@ const ConsumerUnitEditForm = (currentConsumerUnitId: number) => {
                 )}
               />
             </Grid>
+
+            <Grid item xs={12}>
+              <Typography variant="h5">Contrato</Typography>
+            </Grid>
+
+            <Grid item xs={12} pb={1}>
+              <Alert severity="warning">
+                Modifique o contrato apenas em caso de erro de digitação. Para
+                alterações legais ou novo contrato, use a opção{" "}
+                <strong>Renovar</strong> na tela anterior.
+              </Alert>
+            </Grid>
+
             <Grid item xs={12}>
               <Controller
                 control={control}
                 name="code"
-                rules={{ required: "Preencha este campo" }}
+                rules={{
+                  required: "Preencha este campo",
+                  validate: hasEnoughCaracteresLength
+                }}
                 render={({
                   field: { onChange, onBlur, value, ref },
                   fieldState: { error },
@@ -249,17 +324,6 @@ const ConsumerUnitEditForm = (currentConsumerUnitId: number) => {
                   />
                 )}
               />
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="h5">Contrato</Typography>
-            </Grid>
-
-            <Grid item xs={12} pb={1}>
-              <Alert severity="warning">
-                Modifique o contrato apenas em caso de erro de digitação. Para
-                alterações legais ou novo contrato, use a opção{" "}
-                <strong>Renovar</strong> na tela anterior.
-              </Alert>
             </Grid>
 
             <Grid item xs={12}>
@@ -299,12 +363,12 @@ const ConsumerUnitEditForm = (currentConsumerUnitId: number) => {
                           <MenuItem key={distributor.id} value={distributor.id}>{distributor.name}</MenuItem>
                         )
                       })}
-                      {/* <MenuItem>
+                      <MenuItem>
                         <Button
-                          onClick={() => setShouldShowCancelDistributoFormDialog(true)}>
+                          onClick={() => setShouldShowDistributoFormDialog(true)}>
                           Adicionar
                         </Button>
-                      </MenuItem> */}
+                      </MenuItem>
                     </Select>
 
                     <FormHelperText>{error?.message ?? " "}</FormHelperText>
@@ -351,7 +415,10 @@ const ConsumerUnitEditForm = (currentConsumerUnitId: number) => {
                 <Controller
                   control={control}
                   name={"supplyVoltage"}
-                  rules={{ required: "Preencha este campo" }}
+                  rules={{
+                    required: "Preencha este campo",
+                    validate: isInSomeSugroups
+                  }}
                   render={({
                     field: { onChange, onBlur, value },
                     fieldState: { error },
@@ -389,7 +456,7 @@ const ConsumerUnitEditForm = (currentConsumerUnitId: number) => {
                 name="tariffFlag"
                 rules={{ required: "Preencha este campo" }}
                 render={({
-                  field: { onChange, value },
+                  field: { value, onChange },
                   fieldState: { error },
                 }) => (
                   <FormControl error={!!error}>
@@ -397,12 +464,12 @@ const ConsumerUnitEditForm = (currentConsumerUnitId: number) => {
 
                     <RadioGroup value={value} row onChange={onChange}>
                       <FormControlLabel
-                        value="green"
+                        value="G"
                         control={<Radio />}
                         label="Verde"
                       />
                       <FormControlLabel
-                        value="blue"
+                        value="B"
                         control={<Radio />}
                         label="Azul"
                       />
@@ -418,7 +485,10 @@ const ConsumerUnitEditForm = (currentConsumerUnitId: number) => {
                 <Controller
                   control={control}
                   name="contracted"
-                  rules={{ required: "Preencha este campo" }}
+                  rules={{
+                    required: "Preencha este campo",
+                    validate: isValueGreaterThenZero
+                  }}
                   render={({
                     field: { onChange, onBlur, value },
                     fieldState: { error },
@@ -454,8 +524,11 @@ const ConsumerUnitEditForm = (currentConsumerUnitId: number) => {
                 <Grid item xs={7}>
                   <Controller
                     control={control}
-                    name="peakContracted"
-                    rules={{ required: "Preencha este campo" }}
+                    name="peakContractedDemandInKw"
+                    rules={{
+                      required: "Preencha este campo",
+                      validate: isValueGreaterThenZero
+                    }}
                     render={({
                       field: { onChange, onBlur, value },
                       fieldState: { error },
@@ -490,8 +563,11 @@ const ConsumerUnitEditForm = (currentConsumerUnitId: number) => {
                 <Grid item xs={7}>
                   <Controller
                     control={control}
-                    name="outOfPeakContracted"
-                    rules={{ required: "Preencha este campo" }}
+                    name="offPeakContractedDemandInKw"
+                    rules={{
+                      required: "Preencha este campo",
+                      validate: isValueGreaterThenZero
+                    }}
                     render={({
                       field: { onChange, onBlur, value },
                       fieldState: { error },
@@ -536,10 +612,27 @@ const ConsumerUnitEditForm = (currentConsumerUnitId: number) => {
           </Grid>
 
           <FormWarningDialog
-            open={shouldOpenDiscardDialog}
+            open={shouldShowCancelDialog}
             onClose={handleCloseDialog}
             onDiscard={handleDiscardForm}
             entity={'unidade consumidora'}
+          />
+
+          <DistributorCreateFormDialog
+            open={shouldShowDistributoFormDialog}
+            onClose={handleCloseDistributorFomrDialog}
+          />
+
+          <SucessNotification
+            open={openSucessNotification}
+            message={"Unidade Consumidora adicionada com sucesso!"}
+            handleClose={handleCloseNotification}
+          />
+
+          <FailNotification
+            open={openFailNotification}
+            message={"Erro ao adicionar unidade consumidora. Verifique se essa unidade já existe!"}
+            handleClose={handleCloseNotification}
           />
         </Box>
       </FormProvider>
