@@ -314,10 +314,10 @@ const ConsumerUnitEditForm = (currentConsumerUnitId: number) => {
                   <TextField
                     ref={ref}
                     value={value}
-                    label="Código *"
+                    label="Número da Unidade *"
                     placeholder="Número da Unidade Consumidora conforme a fatura"
                     error={Boolean(error)}
-                    helperText={error?.message ?? " "}
+                    helperText={error?.message ?? "Nº ou código da Unidade Consumidora conforme a fatura"}
                     fullWidth
                     onChange={onChange}
                     onBlur={onBlur}
@@ -396,6 +396,10 @@ const ConsumerUnitEditForm = (currentConsumerUnitId: number) => {
                     renderInput={(params) => (
                       <TextField
                         {...params}
+                        inputProps={{
+                          ...params.inputProps,
+                          placeholder: "dd/mm/aaaa"
+                        }}
                         helperText={error?.message ?? " "}
                         error={!!error}
                       />
@@ -426,8 +430,8 @@ const ConsumerUnitEditForm = (currentConsumerUnitId: number) => {
                     <NumericFormat
                       value={value}
                       customInput={TextField}
-                      label="Tensão de fornecimento *"
-                      helperText={error?.message ?? " "}
+                      label="Tensão constratada *"
+                      helperText={error?.message ?? "Se preciso, converta a tensão de V para kV dividindo o valor por 1.000."}
                       error={!!error}
                       fullWidth
                       InputProps={{
@@ -462,17 +466,23 @@ const ConsumerUnitEditForm = (currentConsumerUnitId: number) => {
                   <FormControl error={!!error}>
                     <FormLabel>Modalidade tarifária *</FormLabel>
 
-                    <RadioGroup value={value} row onChange={onChange}>
-                      <FormControlLabel
-                        value="G"
-                        control={<Radio />}
-                        label="Verde"
-                      />
-                      <FormControlLabel
-                        value="B"
-                        control={<Radio />}
-                        label="Azul"
-                      />
+                    <RadioGroup value={value} onChange={onChange}>
+                      <Box display={"flex"} justifyContent='flex-start' alignItems='center'>
+                        <FormControlLabel
+                          value="G"
+                          control={<Radio />}
+                          label="Verde"
+                        />
+                        <FormHelperText>(Demanda única)</FormHelperText>
+                      </Box>
+                      <Box display={"flex"} justifyContent='flex-start' alignItems='center'>
+                        <FormControlLabel
+                          value="B"
+                          control={<Radio />}
+                          label="Azul"
+                        />
+                        <FormHelperText>(Demanda de ponta e fora ponta)</FormHelperText>
+                      </Box>
                     </RadioGroup>
 
                     <FormHelperText>{error?.message ?? " "}</FormHelperText>

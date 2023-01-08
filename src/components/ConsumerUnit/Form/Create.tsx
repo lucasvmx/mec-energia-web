@@ -283,7 +283,7 @@ const ConsumerUnitCreateForm = () => {
                   <TextField
                     ref={ref}
                     value={value}
-                    label="Código *"
+                    label="Número da Unidade *"
                     placeholder="Número da Unidade Consumidora conforme a fatura"
                     error={Boolean(error)}
                     helperText={error?.message ?? "Nº ou código da Unidade Consumidora conforme a fatura"}
@@ -403,7 +403,7 @@ const ConsumerUnitCreateForm = () => {
                     <NumericFormat
                       value={value}
                       customInput={TextField}
-                      label="Tensão de fornecimento *"
+                      label="Tensão constratada *"
                       helperText={error?.message ?? "Se preciso, converta a tensão de V para kV dividindo o valor por 1.000."}
                       error={!!error}
                       fullWidth
