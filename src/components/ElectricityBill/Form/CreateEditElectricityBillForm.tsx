@@ -11,7 +11,7 @@ import {
   TextField,
   Typography
 } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import {
@@ -25,34 +25,54 @@ import LiveHelpIcon from '@mui/icons-material/LiveHelp';
 import { DatePicker } from '@mui/x-date-pickers'
 import { NumericFormat } from "react-number-format";
 import FormWarningDialog from '../../ConsumerUnit/Form/WarningDialog'
-import { CreateAndEditElectricityBillForm } from '@/types/electricityBill'
+import { CreateAndEditElectricityBillForm, PostElectricityBillRequestPayload } from '@/types/electricityBill'
 import InsightsIcon from '@mui/icons-material/Insights';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
+import { usePostInvoiceMutation } from '@/api'
+import SucessNotification from '@/components/Notification/SucessNotification'
+import FailNotification from '@/components/Notification/FailNotification'
 
 const defaultValues: CreateAndEditElectricityBillForm = {
   date: new Date(),
   invoiceInReais: undefined,
   isAtypical: false,
-  peakMeasuredDemandInKw: undefined,
-  peakConsumptionInKwh: undefined,
-  offPeakConsumptionInKwh: undefined,
+  peakMeasuredDemandInKw: "",
+  peakConsumptionInKwh: "",
+  offPeakConsumptionInKwh: "",
 }
 
-const CreateEditElectricityBillForm = () => {
+type CreateEditElectricityBillFormProps = {
+  month: number;
+  year: number;
+}
+
+const CreateEditElectricityBillForm = ({ month, year }: CreateEditElectricityBillFormProps) => {
   const dispatch = useDispatch();
   const isCreateElectricityBillFormOpen = useSelector(selectIsElectricityBillCreateFormOpen);
   const isEditElectricityBillFormOpen = useSelector(selectIsElectricityBillEditFormOpen)
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
+  const [postInvoice, { isError, isSuccess }] = usePostInvoiceMutation()
+
+  const [openSucessNotification, setOpenSucessNotification] = useState(false)
+  const [openFailNotification, setOpenFailNotification] = useState(false)
+
   const form = useForm({ defaultValues })
   const {
     control,
     reset,
     handleSubmit,
+    setValue,
     formState: { isDirty, errors },
   } = form;
 
+  useEffect(() => {
+    const date = new Date(`${year}-${month}`)
+    setValue("date", date)
+  })
+
   const handleCancelEdition = () => {
     if (isDirty) {
+
       setShouldShowCancelDialog(true);
       return;
     }
@@ -70,9 +90,58 @@ const CreateEditElectricityBillForm = () => {
     setShouldShowCancelDialog(false);
   }
 
-  const onSubmitHandler: SubmitHandler<CreateAndEditElectricityBillForm> = (data) => {
+  const onSubmitHandler: SubmitHandler<CreateAndEditElectricityBillForm> = async (data) => {
     console.log(data);
+    const {
+      date,
+      isAtypical,
+      invoiceInReais,
+      offPeakConsumptionInKwh,
+      offPeakMeasuredDemandInKw,
+      peakConsumptionInKwh,
+      peakMeasuredDemandInKw } = data;
+
+    const formatedDate = `${date.getFullYear()}-${date.getMonth()}-01`
+    console.log("Data formatadas", formatedDate)
+
+    const body: PostElectricityBillRequestPayload = {
+      consumerUnit: 1, //TODO ADICIONAR A INFORMAÇÃO DE FORMA DINÂMICA
+      contract: 1, // TODO - PRA ESSE TAMBEM
+      date: formatedDate,
+      isAtypical,
+      invoiceInReais: invoiceInReais as number,
+      offPeakConsumptionInKwh: offPeakConsumptionInKwh as number,
+      peakConsumptionInKwh: peakConsumptionInKwh as number,
+      peakMeasuredDemandInKw: peakMeasuredDemandInKw as number,
+      offPeakMeasuredDemandInKw: offPeakMeasuredDemandInKw as number,
+    }
+    await postInvoice(body)
   }
+
+  const handleNotification = useCallback(() => {
+    if (isSuccess) {
+      setOpenSucessNotification(true);
+      reset();
+      setTimeout(() => {
+
+        dispatch(setIsElectricityBillCreateFormOpen(false))
+        dispatch(setIsElectricityBillEdiFormOpen(false))
+      }, 6000)
+    }
+    else if (isError) setOpenFailNotification(true);
+  }, [dispatch, isError, isSuccess, reset])
+
+  useEffect(() => {
+    handleNotification()
+  }, [handleNotification, isSuccess, isError])
+
+  const handleCloseNotification = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenFailNotification(false)
+    setOpenSucessNotification(false);
+  };
 
   return (
     <FormDrawer open={isCreateElectricityBillFormOpen || isEditElectricityBillFormOpen} handleCloseDrawer={
@@ -107,7 +176,7 @@ const CreateEditElectricityBillForm = () => {
             <Grid item xs={8}>
               <Typography variant='h5'>Fatura</Typography>
             </Grid>
-            <Grid item xs={8}>
+            <Grid item xs={12}>
               <Controller
                 control={control}
                 name="date"
@@ -140,7 +209,9 @@ const CreateEditElectricityBillForm = () => {
                   />
                 )}
               />
+            </Grid>
 
+            <Grid item xs={4}>
               <Controller
                 control={control}
                 name={"invoiceInReais"}
@@ -157,6 +228,7 @@ const CreateEditElectricityBillForm = () => {
                 }) => (
                   <NumericFormat
                     value={value}
+                    width='20%'
                     customInput={TextField}
                     label="Valor total"
                     helperText={error?.message ?? "Campo opcional"}
@@ -183,38 +255,39 @@ const CreateEditElectricityBillForm = () => {
               />
             </Grid>
 
-            <Grid item xs={8}>
+            <Grid container mt={2}>
+              <Grid item xs={8}>
+                <Controller
+                  name="isAtypical"
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <FormGroup>
+                      <Box >
+                        <Box display='flex' justifyContent='flex-start' alignItems='center'>
+                          <InsightsIcon color='primary' />
+                          <FormControlLabel
+                            value="start"
+                            label="Incluir na análise"
+                            labelPlacement="start"
+                            control={
+                              <Switch
+                                value={!value}
+                                defaultChecked
+                                onChange={onChange}
+                              />
+                            }
+                          />
+                        </Box>
 
-              <Controller
-                name="isAtypical"
-                control={control}
-                render={({ field: { onChange, value } }) => (
-                  <FormGroup>
-                    <Box >
-                      <Box display='flex' justifyContent='flex-start' alignItems='center'>
-                        <InsightsIcon color='primary' />
-                        <FormControlLabel
-                          value="start"
-                          label="Incluir na análise"
-                          labelPlacement="start"
-                          control={
-                            <Switch
-                              value={!value}
-                              defaultChecked
-                              onChange={onChange}
-                            />
-                          }
-                        />
+                        <FormHelperText>
+                          <p>Inclua todas as faturas, exceto casos radicalemente excepcionais como greves ou a pandemia</p>
+                        </FormHelperText>
                       </Box>
+                    </FormGroup>
+                  )}
+                />
 
-                      <FormHelperText>
-                        <p>Inclua todas as faturas, exceto casos radicalemente excepcionais como greves ou a pandemia</p>
-                      </FormHelperText>
-                    </Box>
-                  </FormGroup>
-                )}
-              />
-
+              </Grid>
             </Grid>
 
             <Grid item xs={8} mb={2}>
@@ -407,6 +480,18 @@ const CreateEditElectricityBillForm = () => {
         </Box>
 
       </FormProvider>
+
+      <SucessNotification
+        open={openSucessNotification}
+        message={"Fatura adicionada com sucesso!"}
+        handleClose={handleCloseNotification}
+      />
+
+      <FailNotification
+        open={openFailNotification}
+        message={"Erro ao adicionar Fatura"}
+        handleClose={handleCloseNotification}
+      />
 
     </FormDrawer>
   )

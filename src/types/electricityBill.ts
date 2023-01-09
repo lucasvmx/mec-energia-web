@@ -1,22 +1,23 @@
 export interface CreateAndEditElectricityBillForm {
   date:                       Date;
-  invoiceInReais?:            number;
+  invoiceInReais?:            number | "";
   isAtypical:                 boolean;
-  peakMeasuredDemandInKw?:    number;
-  offPeakMeasuredDemandInKw?: number;
-  peakConsumptionInKwh?:      number;
-  offPeakConsumptionInKwh?:   number;
+  peakMeasuredDemandInKw?:    number | "";
+  offPeakMeasuredDemandInKw?: number | "";
+  peakConsumptionInKwh?:      number | "";
+  offPeakConsumptionInKwh?:   number | "";
 }
 
 export interface PostElectricityBillRequestPayload {
-  date:                     Date;
+  date:                     string;
   invoiceInReais?:          number;
   isAtypical:               boolean;
   peakMeasuredDemandInKw?:  number;
+  offPeakMeasuredDemandInKw	:number;
   peakConsumptionInKwh?:    number;
   offPeakConsumptionInKwh?: number;
-  contract:                 string;
-  consumerUnit:             string;
+  contract:                 number;
+  consumerUnit:             number;
 }
 
 export interface PostElectricityBillResponsePayload {

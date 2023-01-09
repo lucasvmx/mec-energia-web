@@ -73,7 +73,6 @@ const ConsumerUnitEditForm = (currentConsumerUnitId: number) => {
   const [openSucessNotification, setOpenSucessNotification] = useState(false)
   const [openFailNotification, setOpenFailNotification] = useState(false)
 
-  console.log("Contratos", contract)
   const form = useForm({ mode: "all", defaultValues });
 
   const {

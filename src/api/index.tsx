@@ -1,6 +1,7 @@
 import { CreateConsumerUnitRequestPayload } from "@/types/consumerUnit";
 import { GetContractsResponsePayload, RenewContractRequestPayload, RenewContractResponsePayload } from "@/types/contract";
 import { CreateDistributorRequestPayload, CreateDistributorResponsePayload, DistributorPropsTariffs } from "@/types/distributor";
+import { PostElectricityBillRequestPayload, PostElectricityBillResponsePayload } from "@/types/electricityBill";
 import { GetSubgroupsResponsePayload } from "@/types/subgroups";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { getSession } from "next-auth/react";
@@ -23,7 +24,7 @@ const baseQuery = fetchBaseQuery({
 export const mecEnergiaApi = createApi({
   reducerPath: "mecEnergiaApi",
   baseQuery,
-  tagTypes: ['Distributors', 'ConsumerUnit', 'Subgroups', 'CurrentContract'],
+  tagTypes: ['Distributors', 'ConsumerUnit', 'Subgroups', 'CurrentContract', "Invoices"],
   endpoints: (builder) => ({
     example: builder.query<void, void>({
       query: () => "distributors",
@@ -52,7 +53,7 @@ export const mecEnergiaApi = createApi({
       })
     }),
     getContract: builder.query<GetContractsResponsePayload, number>({
-      query: (consumerunitId) => `contracts/?consumer_unit_id=${consumerunitId}`, //TODO adicionar o id da UC
+      query: (consumerunitId) => `contracts/get-current-contract-of-consumer-unit/?consumer_unit_id=${consumerunitId}`,
       providesTags: (result, error, arg) =>
         result
           ? [{ type: 'CurrentContract', arg }, 'CurrentContract']
@@ -66,9 +67,16 @@ export const mecEnergiaApi = createApi({
       }),
       invalidatesTags: ["CurrentContract"]
     }),
-
-  }),
-});
+    postInvoice: builder.mutation<PostElectricityBillResponsePayload, PostElectricityBillRequestPayload>({
+      query: (body) => ({
+        url: "/energy-bills/",
+        method: "POST",
+        body
+      }),
+      invalidatesTags: ["Invoices"]
+    }),
+  })
+})
 
 export const {
   useExampleQuery,
@@ -78,4 +86,5 @@ export const {
   useCreateConsumerUnitMutation,
   useGetContractQuery,
   useRenewContractMutation,
+  usePostInvoiceMutation
 } = mecEnergiaApi;

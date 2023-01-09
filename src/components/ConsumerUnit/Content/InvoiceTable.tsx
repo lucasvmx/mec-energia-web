@@ -19,7 +19,8 @@ import CreateEditElectricityBillForm from '@/components/ElectricityBill/Form/Cre
 
 interface TableValues {
   id: number,
-  month: string,
+  month: number,
+  year: number,
   isAtypical: React.ReactNode,
   consumption_peak: number,
   consumption_off_peak: number,
@@ -31,14 +32,23 @@ interface TableValues {
 }
 
 export const InvoiceTable = () => {
+
+  // Estilos
   const buttonStyle = { borderRadius: 50, textTransform: 'none', marginLeft: 1 }
   const InvoiceButtonStyle = { textTransform: 'none' }
+
+  //Estados
   const [invoicesYearActive, setInvoicesYearActive] = useState(0);
   const [isPendingActive, setIsPendingActive] = useState(false);
   const [pendingInvoices, setPendingInvoices] = useState<Array<TableValues>>()
+  const [chosenMonth, setChosenMonth] = useState<number>(0)
+  const [chosenYear, setChosenYear] = useState<number>(0)
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [tableValues, setTableValues] = useState<Array<TableValues>>()
   const dispatch = useDispatch()
+
+  //Constantes
   const curretDate = {
     month: new Date().getMonth() + 1,
     year: new Date().getFullYear(),
@@ -50,12 +60,12 @@ export const InvoiceTable = () => {
     invoices.slice().reverse().forEach(invoicesYear => {
       invoicesYear.invoices.forEach(invoice => {
         if (invoice.isPending) {
-          const month = getMonthName(invoice.month)
           pending = [
             ...pending,
             {
               id: id++,
-              month: `${month} - ${invoicesYear.year}`,
+              month: invoice.month,
+              year: invoicesYear.year,
               consumption_peak: 0,
               isAtypical: false,
               consumption_off_peak: 0,
@@ -79,10 +89,10 @@ export const InvoiceTable = () => {
     const rows = activeInvoicesYear?.invoices.map((invoice) => {
       const date = new Date();
       date.setMonth(invoice.month - 1)
-      const month = getMonthName(invoice.month)
       return {
         id: invoice.month,
-        month: month,
+        month: invoice.month,
+        year: activeInvoicesYear.year,
         consumption_peak: invoice.consumption_peak || 0,
         isAtypical: invoice.isAtypical || false,
         consumption_off_peak: invoice.consumption_off_peak || 0,
@@ -98,10 +108,10 @@ export const InvoiceTable = () => {
         (invoice: Invoice) => invoice.month === curretDate.month
       )
       if (!hasCurrentMonth) {
-        const month = getMonthName(curretDate.month)
         rows?.push({
           id: Number.MAX_SAFE_INTEGER,
-          month: month,
+          month: curretDate.month,
+          year,
           consumption_peak: 0,
           isAtypical: false,
           consumption_off_peak: 0,
@@ -150,9 +160,11 @@ export const InvoiceTable = () => {
     console.log("@handleRemove-ID", id)
   }
 
-  const handleCreateDistributorClick = () => {
+  const handleCreateDistributorClick = useCallback((month: number, year: number) => {
+    setChosenMonth(month)
+    setChosenYear(year)
     dispatch(setIsElectricityBillCreateFormOpen(true));
-  };
+  }, [dispatch]);
 
   const handlePendingClick = () => {
     setTableValues(pendingInvoices)
@@ -162,11 +174,16 @@ export const InvoiceTable = () => {
 
   const columns: GridColDef[] = [
     {
+      field: 'year',
+      type: 'number',
+      hide: true,
+    },
+    {
       field: 'month',
       headerName: 'Mês',
       hideable: true,
       flex: 2,
-      type: 'string',
+      type: 'number',
       align: 'left',
       headerAlign: 'center',
       headerClassName: 'header',
@@ -184,8 +201,12 @@ export const InvoiceTable = () => {
             variant='contained'
             color={'secondary'}
             sx={InvoiceButtonStyle}
-            onClick={handleCreateDistributorClick}>
-            <Typography sx={{ fontWeight: 'bold' }}>Lançar {params.row.month}</Typography>
+            onClick={() => handleCreateDistributorClick(params.row.month, params.row.year)}>
+            {isPendingActive
+              ? <Typography sx={{ fontWeight: 'bold' }}>{`Lançar ${getMonthName(params.row.month)} - ${params.row.year}`}</Typography>
+              : <Typography sx={{ fontWeight: 'bold' }}>Lançar {getMonthName(params.row.month)}</Typography>
+
+            }
           </Button>
         )
         if (params.row.currentMonthPending) return (
@@ -193,8 +214,8 @@ export const InvoiceTable = () => {
             variant='contained'
             color={'primary'}
             sx={InvoiceButtonStyle}
-            onClick={handleCreateDistributorClick}>
-            <Typography sx={{ fontWeight: 'bold' }}>Lançar {params.row.month}</Typography>
+            onClick={() => handleCreateDistributorClick(params.row.month, params.row.year)}>
+            <Typography sx={{ fontWeight: 'bold' }}>Lançar {getMonthName(params.row.month)}</Typography>
           </Button>
         )
       }
@@ -431,7 +452,7 @@ export const InvoiceTable = () => {
 
 
       </Box>
-      <CreateEditElectricityBillForm />
+      <CreateEditElectricityBillForm month={chosenMonth as number || 0} year={chosenYear as number || 0} />
     </Box >
   )
 }
