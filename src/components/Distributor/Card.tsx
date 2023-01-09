@@ -31,7 +31,7 @@ const DistributorCard = ({
 
   return (
     <Card
-      title={title}
+      name={title}
       variant={variant}
       {...(hasPendencies && {
         action: <Typography>Tarifas pendentes</Typography>,

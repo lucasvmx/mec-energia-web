@@ -12,8 +12,12 @@ const Header = ({ children }: { children?: ReactNode }) => {
   const { Icon, title, href } = routes[pathname];
 
   return (
-    <AppBar position="static" elevation={0} color="default">
-      <Toolbar>
+    <AppBar
+      position="sticky"
+      elevation={0}
+      sx={{ backgroundColor: "background.default" }}
+    >
+      <Toolbar sx={{ px: 2 }} disableGutters>
         <Box flexGrow={1}>
           <Typography variant="h6">
             <NextLink href={href} passHref legacyBehavior>

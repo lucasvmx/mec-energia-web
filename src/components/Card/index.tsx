@@ -1,17 +1,16 @@
-import { CardProps } from "@/types/app";
-
 import { Badge, Box, IconButton, Typography, useTheme } from "@mui/material";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import StarOutlineRoundedIcon from "@mui/icons-material/StarOutlineRounded";
 
+import { CardProps } from "@/types/app";
 import CardWrapper from "@/components/Card/Wrapper";
 
 const Card = ({
-  title,
+  name,
   selected,
   dense,
   variant,
-  favorite,
+  isFavorite,
   // TODO BackgroundIcon,
   action,
   ActionIcon,
@@ -22,7 +21,7 @@ const Card = ({
   const isActive = variant !== "disabled";
   const isDisabled = variant === "disabled";
   const isWarning = variant === "warning";
-  const canFavorite = favorite !== undefined;
+  const canFavorite = isFavorite !== undefined;
   const shouldShowFavoriteIconButton = canFavorite && isActive;
 
   const shouldShowActionIconButton = ActionIcon && !dense && isActive;
@@ -49,7 +48,7 @@ const Card = ({
                 mt: -1.5,
               }}
             >
-              {favorite ? <StarRoundedIcon /> : <StarOutlineRoundedIcon />}
+              {isFavorite ? <StarRoundedIcon /> : <StarOutlineRoundedIcon />}
             </IconButton>
           )}
         </Box>
@@ -57,7 +56,7 @@ const Card = ({
         <Box display="flex" flexDirection="column" justifyContent="end">
           <Box mb={1.5}>
             <Typography fontWeight={400} fontSize="20px" lineHeight="24px">
-              {title}
+              {name}
             </Typography>
           </Box>
 

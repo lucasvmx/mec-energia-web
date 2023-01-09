@@ -1,7 +1,16 @@
-import { Tariff } from "@/types/tariffs";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { AppState, DashboardFilter, RootState } from "@/types/app";
+import {
+  AppState,
+  ConsumerUnitFilter,
+  ConsumerUnitInvoiceFilter,
+  ConsumerUnitTab,
+  DashboardFilter,
+  RootState,
+  STORE_HYDRATE,
+} from "@/types/app";
+import { InvoiceDataGridRow } from "@/types/consumerUnit";
+import { Tariff } from "@/types/tariffs";
 
 const initialState: AppState = {
   isDrawerOpen: true,
@@ -9,9 +18,16 @@ const initialState: AppState = {
     activeFilter: "all",
   },
   consumerUnit: {
+    activeId: null,
     isCreateFormOpen: false,
     isEditFormOpen: false,
     isRenewContractFormOpen: false,
+    activeFilter: "all",
+    openedTab: ConsumerUnitTab.INVOICE,
+    invoice: {
+      activeFilter: "pending",
+      dataGridRows: [],
+    },
   },
   distributor: {
     isCreateFormOpen: false,
@@ -48,14 +64,46 @@ export const appSlice = createSlice({
   name: "app",
   initialState,
   reducers: {
+    // App
     setIsDrawerOpen: (state, action: PayloadAction<boolean>) => {
       state.isDrawerOpen = action.payload;
     },
+
+    // Dashboard
     setDashboardActiveFilter: (
       state,
       action: PayloadAction<DashboardFilter>
     ) => {
       state.dashboard.activeFilter = action.payload;
+    },
+
+    // Consumer unit
+    setActiveConsumerUnitId: (state, action: PayloadAction<number>) => {
+      state.consumerUnit.activeId = action.payload;
+    },
+    setConsumerUnitActiveFilter: (
+      state,
+      action: PayloadAction<ConsumerUnitFilter>
+    ) => {
+      state.consumerUnit.activeFilter = action.payload;
+    },
+    setConsumerUnitInvoiceActiveFilter: (
+      state,
+      action: PayloadAction<ConsumerUnitInvoiceFilter>
+    ) => {
+      state.consumerUnit.invoice.activeFilter = action.payload;
+    },
+    setConsumerUnitInvoiceDataGridRows: (
+      state,
+      action: PayloadAction<InvoiceDataGridRow[]>
+    ) => {
+      state.consumerUnit.invoice.dataGridRows = action.payload;
+    },
+    setConsumerUnitOpenedTab: (
+      state,
+      action: PayloadAction<ConsumerUnitTab>
+    ) => {
+      state.consumerUnit.openedTab = action.payload;
     },
     setIsConsumerUnitCreateFormOpen: (
       state,
@@ -94,16 +142,32 @@ export const appSlice = createSlice({
       state.tariff.currentTariff = action.payload;
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(STORE_HYDRATE, (state, action) => {
+      return {
+        ...state,
+        ...action.payload.app,
+      };
+    });
+  },
 });
 
 export default appSlice.reducer;
 
 export const {
   setIsDrawerOpen,
+
   setDashboardActiveFilter,
+
+  setActiveConsumerUnitId,
+  setConsumerUnitActiveFilter,
+  setConsumerUnitInvoiceActiveFilter,
+  setConsumerUnitInvoiceDataGridRows,
+  setConsumerUnitOpenedTab,
   setIsConsumerUnitCreateFormOpen,
   setIsConsumerUnitEditFormOpen,
   setIsConsumerUnitRenewContractFormOpen,
+
   setIsDistributorCreateFormOpen,
   setIsDistributorEditFormOpen,
   setIsTariffCreateFormOpen,
@@ -111,12 +175,35 @@ export const {
   setCurrenTariff,
 } = appSlice.actions;
 
+// App
 export const selectIsDrawerOpen = (state: RootState) => {
   return state.app.isDrawerOpen;
 };
 
+// Dashboard
 export const selectDashboardActiveFilter = (state: RootState) => {
   return state.app.dashboard.activeFilter;
+};
+
+// Consumer unit
+export const selectActiveConsumerUnitId = (state: RootState) => {
+  return state.app.consumerUnit.activeId;
+};
+
+export const selectConsumerUnitActiveFilter = (state: RootState) => {
+  return state.app.consumerUnit.activeFilter;
+};
+
+export const selectConsumerUnitInvoiceActiveFilter = (state: RootState) => {
+  return state.app.consumerUnit.invoice.activeFilter;
+};
+
+export const selectConsumerUnitInvoiceDataGridRows = (state: RootState) => {
+  return state.app.consumerUnit.invoice.dataGridRows;
+};
+
+export const selectConsumerUnitOpenedTab = (state: RootState) => {
+  return state.app.consumerUnit.openedTab;
 };
 
 export const selectIsConsumerUnitCreateFormOpen = (state: RootState) => {

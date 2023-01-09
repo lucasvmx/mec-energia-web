@@ -1,4 +1,5 @@
 import { createTheme } from "@mui/material";
+import "@mui/x-data-grid/themeAugmentation";
 import { ptBR as corePtBR } from "@mui/material/locale";
 import { ptBR } from "@mui/x-date-pickers";
 
@@ -12,11 +13,13 @@ declare module "@mui/material/styles" {
   }
 }
 
+const primaryMain = "#0A5C67";
+
 const theme = createTheme(
   {
     palette: {
       primary: {
-        main: "#0A5C67",
+        main: primaryMain,
       },
       secondary: {
         main: "#FB736C",
@@ -47,6 +50,44 @@ const theme = createTheme(
         styleOverrides: {
           root: {
             textTransform: "none",
+          },
+        },
+      },
+      MuiTab: {
+        styleOverrides: {
+          root: {
+            textTransform: "none",
+          },
+        },
+      },
+
+      MuiDataGrid: {
+        styleOverrides: {
+          root: {
+            "& .MuiDataGrid-columnHeader--filledGroup": {
+              backgroundColor: "rgba(10, 92, 103, 0.08)",
+              color: "rgba(0, 0, 0, 0.87)",
+            },
+            "& .MuiDataGrid-columnHeader--emptyGroup": {
+              backgroundColor: "unset",
+            },
+
+            border: "unset",
+          },
+          row: {
+            ":nth-of-type(odd)": {
+              backgroundColor: "white",
+            },
+          },
+          columnHeader: {
+            color: "white",
+            backgroundColor: primaryMain,
+            ":focus": {
+              outline: "none",
+            },
+            button: {
+              color: "white",
+            },
           },
         },
       },

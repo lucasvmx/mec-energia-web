@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { getSession } from "next-auth/react";
+import { ConsumerUnit, ConsumerUnitsPayload } from "@/types/consumerUnit";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -20,10 +21,21 @@ export const mecEnergiaApi = createApi({
   reducerPath: "mecEnergiaApi",
   baseQuery,
   endpoints: (builder) => ({
-    example: builder.query<void, void>({
-      query: () => "distributors",
+    fetchConsumerUnits: builder.query<ConsumerUnitsPayload, number>({
+      query: (universityId) => `consumer-units?university_id=${universityId}`,
+    }),
+    getConsumerUnit: builder.query<ConsumerUnit, number>({
+      query: (consumerUnitId) => `consumer-units/${consumerUnitId}`,
+    }),
+    fetchInvoices: builder.query<void, number>({
+      query: (consumerUnitId) =>
+        `energy-bills?consumer_unit_id=${consumerUnitId}`,
     }),
   }),
 });
 
-export const { useExampleQuery } = mecEnergiaApi;
+export const {
+  useFetchConsumerUnitsQuery,
+  useGetConsumerUnitQuery,
+  useFetchInvoicesQuery,
+} = mecEnergiaApi;
