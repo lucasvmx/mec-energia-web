@@ -506,7 +506,7 @@ const ConsumerUnitEditForm = (currentConsumerUnitId: number) => {
                     <NumericFormat
                       value={value}
                       customInput={TextField}
-                      label="Demanda contratada *"
+                      label="Demanda *"
                       fullWidth
                       InputProps={{
                         endAdornment: (
@@ -546,7 +546,7 @@ const ConsumerUnitEditForm = (currentConsumerUnitId: number) => {
                       <NumericFormat
                         value={value}
                         customInput={TextField}
-                        label="Demanda contratada — Ponta *"
+                        label="Dem. Ponta *"
                         fullWidth
                         InputProps={{
                           endAdornment: (
@@ -585,7 +585,7 @@ const ConsumerUnitEditForm = (currentConsumerUnitId: number) => {
                       <NumericFormat
                         value={value}
                         customInput={TextField}
-                        label="Demanda contratada — Fora Ponta *"
+                        label="Dem. Fora Ponta *"
                         fullWidth
                         InputProps={{
                           endAdornment: (

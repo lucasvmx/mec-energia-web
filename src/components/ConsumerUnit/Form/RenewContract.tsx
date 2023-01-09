@@ -458,7 +458,7 @@ const ConsumerUnitRenewContractForm = (consumerUnitId: number) => {
                     <NumericFormat
                       value={value}
                       customInput={TextField}
-                      label="Demanda contratada *"
+                      label="Demanda *"
                       fullWidth
                       InputProps={{
                         endAdornment: (
@@ -498,7 +498,7 @@ const ConsumerUnitRenewContractForm = (consumerUnitId: number) => {
                       <NumericFormat
                         value={value}
                         customInput={TextField}
-                        label="Demanda contratada — Ponta *"
+                        label="Dem. Ponta *"
                         fullWidth
                         InputProps={{
                           endAdornment: (
@@ -537,7 +537,7 @@ const ConsumerUnitRenewContractForm = (consumerUnitId: number) => {
                       <NumericFormat
                         value={value}
                         customInput={TextField}
-                        label="Demanda contratada — Fora Ponta *"
+                        label="Dem. Fora Ponta *"
                         fullWidth
                         InputProps={{
                           endAdornment: (
@@ -552,7 +552,7 @@ const ConsumerUnitRenewContractForm = (consumerUnitId: number) => {
                         decimalScale={2}
                         decimalSeparator=","
                         thousandSeparator={" "}
-                        error={Boolean(error)}
+                        error={!!error}
                         helperText={error?.message ?? " "}
                         onValueChange={(values) => onChange(values.floatValue)}
                         onBlur={onBlur}
