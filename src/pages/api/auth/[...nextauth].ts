@@ -31,7 +31,7 @@ const authOptions: NextAuthOptions = {
         const signInPayload:SignInResponsePayload = await response.json()
         
         const {
-          user: { email, id, name, type, university_id },
+          user: { email, id, name, type, universityId },
           token,
         } = signInPayload;
 
@@ -41,7 +41,7 @@ const authOptions: NextAuthOptions = {
           email,
           type,
           token,
-          university_id,
+          universityId,
         };
       },
     }),
@@ -50,7 +50,7 @@ const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.token = user.token;
-        token.university_id = user.university_id;
+        token.universityId = user.universityId;
         token.type = user.type;
         token.id = user.id as number;
       }
@@ -60,7 +60,7 @@ const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       if (token) {
         session.user.token = token.token;
-        session.user.university_id = token.university_id;
+        session.user.universityId = token.universityId;
         session.user.type = token.type;
         session.user.id = token.id;
       }

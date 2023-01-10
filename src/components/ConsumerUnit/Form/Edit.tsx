@@ -62,7 +62,7 @@ const ConsumerUnitEditForm = (currentConsumerUnitId: number) => {
 
   const { data: session } = useSession()
   const { data: subgroupsList } = useGetSubgroupsQuery()
-  const { data: distributorList } = useGetDistributorsQuery(session?.user?.university_id || 0)
+  const { data: distributorList } = useGetDistributorsQuery(session?.user?.universityId || 0)
   const { data: contract } = useGetContractQuery(1) // TODO - Adicionar o id
   console.log("currentConsumerUnitId", currentConsumerUnitId)
 
@@ -86,25 +86,24 @@ const ConsumerUnitEditForm = (currentConsumerUnitId: number) => {
 
   const tariffFlag = watch("tariffFlag");
 
-  console.log("tipo de tarifaca", tariffFlag)
 
+  console.log("Contrato atual", contract)
   useEffect(() => {
     const {
       code,
       contracted,
     } = defaultValues;
 
-    const currentContract = contract?.find(con => con.endDate === null)
-    setValue("title", currentContract?.url || '')
-    setValue("isActive", true) //TODO COrrir com o valor vindo da api
+    setValue("title", '')
+    setValue("isActive", true)
     setValue("code", code);
-    setValue("distributor", currentContract?.distributor as number)
-    setValue("startDate", currentContract?.startDate as Date)
+    setValue("distributor", contract?.distributor as number)
+    setValue("startDate", contract?.startDate as Date)
     setValue("contracted", contracted);
-    setValue("supplyVoltage", currentContract?.supplyVoltage as number)
-    setValue("contracted", currentContract?.peakContractedDemandInKw as number)
-    setValue("peakContractedDemandInKw", currentContract?.peakContractedDemandInKw as number);
-    setValue("offPeakContractedDemandInKw", currentContract?.offPeakContractedDemandInKw as number);
+    setValue("supplyVoltage", contract?.supplyVoltage as number)
+    setValue("contracted", contract?.peakContractedDemandInKw as number)
+    setValue("peakContractedDemandInKw", contract?.peakContractedDemandInKw as number);
+    setValue("offPeakContractedDemandInKw", contract?.offPeakContractedDemandInKw as number);
   });
 
 
@@ -143,8 +142,6 @@ const ConsumerUnitEditForm = (currentConsumerUnitId: number) => {
   const isValueGreaterThenZero = (value: EditConsumerUnitForm['peakContractedDemandInKw'] | EditConsumerUnitForm['offPeakContractedDemandInKw']) => {
     if (value <= 0) return 'Insira um valor maior que 0'
   }
-
-
 
   const handleCloseDialog = () => {
     setShouldShowCancelDialog(false);

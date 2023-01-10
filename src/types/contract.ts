@@ -1,6 +1,6 @@
 import { TariffFlag } from "./supplier";
 
-export type Contract = {
+export type GetContractsResponsePayload = {
   url:                         string;
   id:                          number;
   consumerUnit:                number;
@@ -48,5 +48,3 @@ export interface RenewContractResponsePayload {
   peakContractedDemandInKw:    number;
   offPeakContractedDemandInKw: number;
 }
-
-export type GetContractsResponsePayload = Array<Contract>

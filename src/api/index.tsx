@@ -52,6 +52,13 @@ export const mecEnergiaApi = createApi({
         body
       })
     }),
+    editConsumerUnit: builder.mutation<string, CreateConsumerUnitRequestPayload>({
+      query: (body) => ({
+        url: "consumer-units/create_consumer_unit_and_contract/",
+        method: "POST",
+        body
+      })
+    }),
     getContract: builder.query<GetContractsResponsePayload, number>({
       query: (consumerunitId) => `contracts/get-current-contract-of-consumer-unit/?consumer_unit_id=${consumerunitId}`,
       providesTags: (result, error, arg) =>
