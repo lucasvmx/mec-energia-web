@@ -1,9 +1,24 @@
+import { ComponentType, ReactNode } from "react";
+import { createAction } from "@reduxjs/toolkit";
+import { HYDRATE } from "next-redux-wrapper";
 import { makeStore } from "@/store";
 import { BadgeProps, SvgIconProps } from "@mui/material";
-import { ComponentType, ReactNode } from "react";
+import { InvoiceDataGridRow } from "./consumerUnit";
 import { Tariff } from "./tariffs";
 
+export const STORE_HYDRATE = createAction<RootState>(HYDRATE);
+
 export type DashboardFilter = "all" | "active" | "pending";
+
+export type ConsumerUnitFilter = "all" | "pending";
+
+export enum ConsumerUnitTab {
+  INVOICE,
+  ANALYSIS,
+  CONTRACT,
+}
+
+export type ConsumerUnitInvoiceFilter = "pending" | string;
 
 export interface AppState {
   isDrawerOpen: boolean;
@@ -11,9 +26,16 @@ export interface AppState {
     activeFilter: DashboardFilter;
   };
   consumerUnit: {
+    activeId: number | null;
     isCreateFormOpen: boolean;
     isEditFormOpen: boolean;
     isRenewContractFormOpen: boolean;
+    activeFilter: ConsumerUnitFilter;
+    openedTab: ConsumerUnitTab;
+    invoice: {
+      activeFilter: ConsumerUnitInvoiceFilter;
+      dataGridRows: InvoiceDataGridRow[];
+    };
   };
   distributor: {
     isCreateFormOpen: boolean;
@@ -50,8 +72,8 @@ export type CardWrapperProps = {
 };
 
 export interface CardProps extends CardWrapperProps {
-  title: string;
-  favorite?: boolean;
+  name: string;
+  isFavorite?: boolean;
   BackgroundIcon?: ComponentType<SvgIconProps>;
   action?: ReactNode;
   ActionIcon?: ComponentType<SvgIconProps>;

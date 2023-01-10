@@ -2,28 +2,46 @@ import { useMemo } from "react";
 import { useRouter } from "next/router";
 import { format } from "date-fns";
 import ptBR from "date-fns/locale/pt-BR";
-import { CardProps } from "@/types/app";
-import { ConsumerUnit } from "@/types/consumerUnit";
 import { Button, Typography } from "@mui/material";
 import InsightsRoundedIcon from "@mui/icons-material/InsightsRounded";
 import ReceiptLongRoundedIcon from "@mui/icons-material/ReceiptLongRounded";
+import { CardProps } from "@/types/app";
+import { ConsumerUnit } from "@/types/consumerUnit";
 import Card from "@/components/Card";
 
+interface ConsumerUnitCardProps extends CardProps {
+  id: ConsumerUnit["id"];
+  isActive: ConsumerUnit["isActive"];
+  isFavorite: ConsumerUnit["isFavorite"];
+  pendingEnergyBillsNumber: ConsumerUnit["pendingEnergyBillsNumber"];
+  isCurrentEnergyBillFilled: ConsumerUnit["isCurrentEnergyBillFilled"];
+}
+
 interface ConsumerUnitCardActionProps {
-  postedCurrentInvoice: ConsumerUnit["postedCurrentInvoice"];
+  dense: CardProps["dense"];
+  pendingEnergyBillsNumber: ConsumerUnit["pendingEnergyBillsNumber"];
+  isCurrentEnergyBillFilled: ConsumerUnit["isCurrentEnergyBillFilled"];
   variant: CardProps["variant"];
 }
 
 const ConsumerUnitCardAction = ({
-  postedCurrentInvoice,
+  dense,
+  pendingEnergyBillsNumber,
+  isCurrentEnergyBillFilled,
   variant,
 }: ConsumerUnitCardActionProps) => {
   const isWarning = variant === "warning";
+  const totalPendenciesCount =
+    pendingEnergyBillsNumber + (isCurrentEnergyBillFilled ? 0 : 1);
+  const pendenciesMessage =
+    totalPendenciesCount > 0
+      ? `${totalPendenciesCount} faturas pendentes`
+      : "Em dia";
 
-  if (postedCurrentInvoice) {
+  if (isCurrentEnergyBillFilled || dense) {
     return (
       <Typography color={isWarning ? "text.primary" : "text.secondary"}>
-        Em dia
+        {pendenciesMessage}
       </Typography>
     );
   }
@@ -49,26 +67,28 @@ const ConsumerUnitCardAction = ({
 };
 
 const ConsumerUnitCard = ({
-  disabled,
-  favorite,
+  isActive,
+  isFavorite,
   id,
-  pendenciesCount,
-  postedCurrentInvoice,
-  title,
-}: ConsumerUnit) => {
+  pendingEnergyBillsNumber,
+  isCurrentEnergyBillFilled,
+  name,
+  dense,
+  selected,
+}: ConsumerUnitCardProps) => {
   const router = useRouter();
 
   const variant = useMemo(() => {
-    if (disabled) {
+    if (!isActive) {
       return "disabled";
     }
 
-    if (pendenciesCount > 0) {
+    if (pendingEnergyBillsNumber > 0) {
       return "warning";
     }
 
     return "default";
-  }, [disabled, pendenciesCount]);
+  }, [isActive, pendingEnergyBillsNumber]);
 
   const handleConsumerUnitClick = () => {
     router.push(`/uc/${id}`);
@@ -76,19 +96,23 @@ const ConsumerUnitCard = ({
 
   return (
     <Card
-      title={title}
+      name={name}
       variant={variant}
-      favorite={favorite}
+      isFavorite={isFavorite}
       action={
         <ConsumerUnitCardAction
-          postedCurrentInvoice={postedCurrentInvoice}
+          dense={dense}
+          pendingEnergyBillsNumber={pendingEnergyBillsNumber}
+          isCurrentEnergyBillFilled={isCurrentEnergyBillFilled}
           variant={variant}
         />
       }
       ActionIcon={
         variant === "warning" ? ReceiptLongRoundedIcon : InsightsRoundedIcon
       }
-      actionIconBadgeContent={pendenciesCount}
+      actionIconBadgeContent={pendingEnergyBillsNumber}
+      dense={dense}
+      selected={selected}
       onClick={handleConsumerUnitClick}
     />
   );

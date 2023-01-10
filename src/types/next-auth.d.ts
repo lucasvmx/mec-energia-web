@@ -6,7 +6,7 @@ declare module "next-auth" {
     name: string;
     email: string;
     type: string;
-    universityId: number | null;
+    universityId?: number;
     token: string;
   }
 
@@ -18,8 +18,7 @@ declare module "next-auth" {
 declare module "next-auth/jwt" {
   interface JWT {
     token: string;
-    id:number;
     type: string;
-    universityId: number | null;
+    universityId?: number;
   }
 }

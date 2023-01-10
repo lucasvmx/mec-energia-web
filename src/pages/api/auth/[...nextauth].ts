@@ -1,6 +1,5 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { SignInResponsePayload } from "@/types/auth";
 
 const signInUrl = `${process.env.API_URL}/token/`;
 
@@ -28,12 +27,10 @@ const authOptions: NextAuthOptions = {
           return null;
         }
 
-        const signInPayload:SignInResponsePayload = await response.json()
-        
         const {
-          user: { email, id, name, type, universityId },
+          user: { email, id, name, type, university_id },
           token,
-        } = signInPayload;
+        } = await response.json();
 
         return {
           id,
@@ -41,7 +38,7 @@ const authOptions: NextAuthOptions = {
           email,
           type,
           token,
-          universityId,
+          universityId: university_id,
         };
       },
     }),
@@ -52,7 +49,6 @@ const authOptions: NextAuthOptions = {
         token.token = user.token;
         token.universityId = user.universityId;
         token.type = user.type;
-        token.id = user.id as number;
       }
 
       return token;
@@ -62,8 +58,8 @@ const authOptions: NextAuthOptions = {
         session.user.token = token.token;
         session.user.universityId = token.universityId;
         session.user.type = token.type;
-        session.user.id = token.id;
       }
+
       return session;
     },
   },
