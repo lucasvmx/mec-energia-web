@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Box,
   Button,
@@ -16,15 +16,36 @@ import {
   Typography,
 } from "@mui/material";
 import {
+  selectActiveConsumerUnitId,
   setIsConsumerUnitEditFormOpen,
   setIsConsumerUnitRenewContractFormOpen,
 } from "@/store/appSlice";
+import { useGetContractQuery } from "@/api";
+import { skipToken } from "@reduxjs/toolkit/dist/query";
+import { getFormattedDate } from "@/utils/date";
+import { getTariffFlagName } from "@/utils/tariff";
 
 const ConsumerUnitContractContent = () => {
   const dispatch = useDispatch();
+  const consumerUnitId = useSelector(selectActiveConsumerUnitId);
+  const { data: contractData } = useGetContractQuery(
+    consumerUnitId ?? skipToken
+  );
 
   const [isRenewContractDialogOpen, setIsRenewContractDialogOpen] =
     useState(false);
+
+  const contract = useMemo(() => {
+    if (!contractData) {
+      return null;
+    }
+
+    return {
+      ...contractData,
+      startDate: getFormattedDate(contractData.startDate),
+      tariffFlag: getTariffFlagName(contractData.tariffFlag),
+    };
+  }, [contractData]);
 
   const handleCloseRenewContractDialog = () => {
     setIsRenewContractDialogOpen(false);
@@ -46,7 +67,7 @@ const ConsumerUnitContractContent = () => {
   return (
     <Box display="flex" justifyContent="center">
       <Card sx={{ maxWidth: "450px" }}>
-        <CardHeader title="Mocked Neoenergia" />
+        <CardHeader title={contract?.distributorName} />
 
         <CardContent>
           <Grid container spacing={4}>
@@ -55,7 +76,7 @@ const ConsumerUnitContractContent = () => {
                 Início
               </Typography>
 
-              <Typography variant="body1">09/09/2009</Typography>
+              <Typography variant="body1">{contract?.startDate}</Typography>
             </Grid>
 
             <Grid item xs={6}>
@@ -63,7 +84,7 @@ const ConsumerUnitContractContent = () => {
                 Modalidade tarifária
               </Typography>
 
-              <Typography variant="body1">Azul</Typography>
+              <Typography variant="body1">{contract?.tariffFlag}</Typography>
             </Grid>
 
             <Grid item xs={6}>
@@ -71,7 +92,9 @@ const ConsumerUnitContractContent = () => {
                 Tensão de fornecimento
               </Typography>
 
-              <Typography variant="body1">25 kV - Subgrupo A4</Typography>
+              <Typography variant="body1">
+                {contract?.supplyVoltage} kV - Subgrupo {contract?.subgroup}
+              </Typography>
             </Grid>
 
             <Grid item xs={6}>
@@ -83,7 +106,9 @@ const ConsumerUnitContractContent = () => {
                     Ponta
                   </Typography>
 
-                  <Typography variant="body1">270 kW</Typography>
+                  <Typography variant="body1">
+                    {contract?.peakContractedDemandInKw} kW
+                  </Typography>
                 </Box>
 
                 <Box ml={3}>
@@ -91,7 +116,9 @@ const ConsumerUnitContractContent = () => {
                     Fora Ponta
                   </Typography>
 
-                  <Typography variant="body1">150 kW</Typography>
+                  <Typography variant="body1">
+                    {contract?.offPeakContractedDemandInKw} kW
+                  </Typography>
                 </Box>
               </Box>
             </Grid>

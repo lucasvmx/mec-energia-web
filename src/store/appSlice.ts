@@ -144,10 +144,9 @@ export const appSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(STORE_HYDRATE, (state, action) => {
-      return {
-        ...state,
-        ...action.payload.app,
-      };
+      state.consumerUnit.activeId = action.payload.app.consumerUnit.activeId;
+
+      return state;
     });
   },
 });

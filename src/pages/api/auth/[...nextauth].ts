@@ -1,3 +1,4 @@
+import { SignInResponsePayload } from "@/types/auth";
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
@@ -28,9 +29,9 @@ const authOptions: NextAuthOptions = {
         }
 
         const {
-          user: { email, id, name, type, university_id },
+          user: { email, id, name, type, universityId },
           token,
-        } = await response.json();
+        }: SignInResponsePayload = await response.json();
 
         return {
           id,
@@ -38,7 +39,7 @@ const authOptions: NextAuthOptions = {
           email,
           type,
           token,
-          universityId: university_id,
+          universityId,
         };
       },
     }),

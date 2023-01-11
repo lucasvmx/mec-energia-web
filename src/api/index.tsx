@@ -2,6 +2,7 @@ import { Recommendation, RecommendationSettings } from "@/types/recommendation";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { getSession } from "next-auth/react";
 import { ConsumerUnit, ConsumerUnitsPayload } from "@/types/consumerUnit";
+import { Contract } from "@/types/contract";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -42,6 +43,10 @@ export const mecEnergiaApi = createApi({
       query: () => "recommendation-settings",
       keepUnusedDataFor: 120,
     }),
+    getContract: builder.query<Contract, number>({
+      query: (consumerUnitId) =>
+        `contracts/get-current-contract-of-consumer-unit?consumer_unit_id=${consumerUnitId}`,
+    }),
   }),
 });
 
@@ -51,4 +56,5 @@ export const {
   useFetchInvoicesQuery,
   useRecommendationQuery,
   useRecommendationSettingsQuery,
+  useGetContractQuery,
 } = mecEnergiaApi;

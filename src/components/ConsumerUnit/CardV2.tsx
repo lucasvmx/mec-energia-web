@@ -1,11 +1,16 @@
-import { useMemo } from "react";
+import { MouseEventHandler, useCallback, useMemo } from "react";
 import { useRouter } from "next/router";
+import { useDispatch } from "react-redux";
 import { format } from "date-fns";
 import ptBR from "date-fns/locale/pt-BR";
-import { Button, Typography } from "@mui/material";
+import { Badge, Button, Typography } from "@mui/material";
 import InsightsRoundedIcon from "@mui/icons-material/InsightsRounded";
 import ReceiptLongRoundedIcon from "@mui/icons-material/ReceiptLongRounded";
-import { CardProps } from "@/types/app";
+import {
+  setConsumerUnitInvoiceActiveFilter,
+  setConsumerUnitOpenedTab,
+} from "@/store/appSlice";
+import { CardProps, ConsumerUnitTab } from "@/types/app";
 import { ConsumerUnit } from "@/types/consumerUnit";
 import Card from "@/components/Card";
 
@@ -24,6 +29,11 @@ interface ConsumerUnitCardActionProps {
   variant: CardProps["variant"];
 }
 
+interface ConsumerUnitCardActionIcon {
+  isActive: ConsumerUnit["isActive"];
+  pendingEnergyBillsNumber: ConsumerUnit["pendingEnergyBillsNumber"];
+}
+
 const ConsumerUnitCardAction = ({
   dense,
   pendingEnergyBillsNumber,
@@ -37,6 +47,14 @@ const ConsumerUnitCardAction = ({
     totalPendenciesCount > 0
       ? `${totalPendenciesCount} faturas pendentes`
       : "Em dia";
+
+  const handleActionButtonClick = useCallback<
+    MouseEventHandler<HTMLButtonElement>
+  >(async (event) => {
+    event.stopPropagation();
+
+    console.log("Lançar fatura");
+  }, []);
 
   if (isCurrentEnergyBillFilled || dense) {
     return (
@@ -60,10 +78,30 @@ const ConsumerUnitCardAction = ({
       variant={isWarning ? "outlined" : "contained"}
       size="small"
       disableElevation
+      onClick={handleActionButtonClick}
     >
       Lançar {format(new Date(), "MMMM", { locale: ptBR })}
     </Button>
   );
+};
+
+const ConsumerUnitCardActionIcon = ({
+  isActive,
+  pendingEnergyBillsNumber,
+}: ConsumerUnitCardActionIcon) => {
+  if (!isActive) {
+    return null;
+  }
+
+  if (pendingEnergyBillsNumber > 0) {
+    return (
+      <Badge badgeContent={pendingEnergyBillsNumber} color="primary">
+        <ReceiptLongRoundedIcon sx={{ color: "black" }} />
+      </Badge>
+    );
+  }
+
+  return <InsightsRoundedIcon />;
 };
 
 const ConsumerUnitCard = ({
@@ -77,6 +115,7 @@ const ConsumerUnitCard = ({
   selected,
 }: ConsumerUnitCardProps) => {
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const variant = useMemo(() => {
     if (!isActive) {
@@ -94,11 +133,32 @@ const ConsumerUnitCard = ({
     router.push(`/uc/${id}`);
   };
 
+  const handleActionIconClick = useCallback<
+    MouseEventHandler<HTMLButtonElement>
+  >(
+    async (event) => {
+      event.stopPropagation();
+
+      if (pendingEnergyBillsNumber > 0) {
+        dispatch(setConsumerUnitOpenedTab(ConsumerUnitTab.INVOICE));
+        dispatch(setConsumerUnitInvoiceActiveFilter("pending"));
+      } else {
+        dispatch(setConsumerUnitOpenedTab(ConsumerUnitTab.ANALYSIS));
+      }
+
+      router.push(`/uc/${id}`);
+    },
+    [dispatch, id, pendingEnergyBillsNumber, router]
+  );
+
   return (
     <Card
       name={name}
       variant={variant}
       isFavorite={isFavorite}
+      dense={dense}
+      selected={selected}
+      onClick={handleConsumerUnitClick}
       action={
         <ConsumerUnitCardAction
           dense={dense}
@@ -107,13 +167,13 @@ const ConsumerUnitCard = ({
           variant={variant}
         />
       }
-      ActionIcon={
-        variant === "warning" ? ReceiptLongRoundedIcon : InsightsRoundedIcon
+      actionIcon={
+        <ConsumerUnitCardActionIcon
+          isActive={isActive}
+          pendingEnergyBillsNumber={pendingEnergyBillsNumber}
+        />
       }
-      actionIconBadgeContent={pendingEnergyBillsNumber}
-      dense={dense}
-      selected={selected}
-      onClick={handleConsumerUnitClick}
+      onActionIconClick={handleActionIconClick}
     />
   );
 };
