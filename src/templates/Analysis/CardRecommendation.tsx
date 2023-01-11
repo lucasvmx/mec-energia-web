@@ -20,13 +20,25 @@ export const CardRecommendation = ({
   recommendation,
   minimumPercentageForContractRenovation,
 }: Props) => {
+  if (hasErrors)
+    return (
+      <Card>
+        <CardContent>
+          <Typography variant="h5" sx={{ marginBottom: 1 }}>
+            Recomendação
+          </Typography>
+
+          <Typography sx={{ color: "gray" }}>Indisponível</Typography>
+        </CardContent>
+      </Card>
+    );
+
   return (
     <Card>
       <CardContent>
         <Typography variant="h5" sx={{ marginBottom: 1 }}>
           Recomendação
         </Typography>
-        {hasErrors && <p>Indisponível</p>}
 
         <Grid container direction="column" spacing={2}>
           {!!recommendation && recommendation?.shouldRenewContract ? (
@@ -82,7 +94,6 @@ export const CardRecommendation = ({
               </Grid>
               <Grid item>
                 <Typography>
-                  {/* FIXME: esse texto deve estar em uma badge rosa/vermelha */}
                   A alteração de contrato só é recomendada se a economia nominal
                   for igual ou superior a{" "}
                   {minimumPercentageForContractRenovation * 100}

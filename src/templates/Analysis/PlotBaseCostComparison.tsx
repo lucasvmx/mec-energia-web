@@ -24,7 +24,7 @@ import { BaseCostInfoModal } from "@/components/BaseCostInfoModal";
 interface Props {
   dates: string[][];
   hasErrors: boolean;
-  recommendation: Recommendation | undefined;
+  recommendation: Recommendation;
 }
 
 export const PlotBaseCostComparison = ({
@@ -50,13 +50,50 @@ export const PlotBaseCostComparison = ({
     currency: "BRL",
   });
 
+  const KnowMore = () => (
+    <>
+      {/* FIXME: tá certo colorir assim? */}
+      <Typography sx={{ color: "gray" }} variant="body2">
+        *O custo-base é sempre menor que do valor da fatura,{" "}
+        <Link
+          sx={{ textTransform: "lowercase", cursor: "pointer" }}
+          onClick={() => setIsModalOpen(true)}
+          variant="button"
+        >
+          saiba mais
+        </Link>
+      </Typography>
+
+      <BaseCostInfoModal
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
+    </>
+  );
+
+  if (hasErrors)
+    return (
+      <Card>
+        <CardContent>
+          <Typography variant="h5" sx={{ marginBottom: 1 }}>
+            Comparativo custo-base
+          </Typography>
+
+          <Typography sx={{ color: "gray" }}>Indisponível</Typography>
+
+          <KnowMore />
+        </CardContent>
+      </Card>
+    );
+
   return (
     <Card>
       <CardContent>
         <Typography variant="h5">Comparativo custo-base</Typography>
-        <Typography variant="body2">Últimos 12 meses</Typography>
 
-        {hasErrors && <Typography>Indisponível</Typography>}
+        <Typography sx={{ color: "gray" }} variant="body2">
+          Últimos 12 meses
+        </Typography>
 
         <Chart
           type="bar"
@@ -154,49 +191,39 @@ export const PlotBaseCostComparison = ({
         />
 
         <br />
-        {!!recommendation && (
-          <>
-            <Typography>
-              Total atual: R${" "}
-              {moneyFormatter.format(
-                recommendation.plotCurrentVsEstimatedCosts
-                  .totalTotalCostInReaisInCurrent
-              )}
-            </Typography>
-
-            <div>
-              <Typography>
-                Total proposto: R${" "}
-                {moneyFormatter.format(
-                  recommendation.plotCurrentVsEstimatedCosts
-                    .totalTotalCostInReaisInRecommended
-                )}
-              </Typography>
-              <Typography variant="body2">
-                ({recommendation.costsPercentageDifference * 100}% de economia
-                nominal)
-              </Typography>
-            </div>
-          </>
-        )}
-
-        <br />
-        {/* FIXME: tá certo colorir assim? */}
-        <Typography sx={{ color: "gray" }} variant="body2">
-          *O custo-base é sempre menor que do valor da fatura,{" "}
-          <Link
-            sx={{ textTransform: "lowercase", cursor: "pointer" }}
-            onClick={() => setIsModalOpen(true)}
-            variant="button"
-          >
-            saiba mais
-          </Link>
+        <Typography>
+          Total atual: R${" "}
+          {moneyFormatter.format(
+            recommendation.plotCurrentVsEstimatedCosts
+              .totalTotalCostInReaisInCurrent
+          )}
         </Typography>
 
-        <BaseCostInfoModal
-          open={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-        />
+        <div>
+          <Typography sx={{ display: "inline", marginRight: 0.5 }}>
+            Total proposto: R${" "}
+            {moneyFormatter.format(
+              recommendation.plotCurrentVsEstimatedCosts
+                .totalTotalCostInReaisInRecommended
+            )}
+          </Typography>
+
+          <Typography
+            variant="body2"
+            sx={{
+              bgcolor: "warning.main",
+              p: 0.5,
+              borderRadius: 1,
+              display: "inline",
+            }}
+          >
+            {recommendation.costsPercentageDifference * 100}% de economia
+            nominal
+          </Typography>
+        </div>
+
+        <br />
+        <KnowMore />
       </CardContent>
     </Card>
   );

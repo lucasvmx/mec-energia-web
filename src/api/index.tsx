@@ -32,9 +32,11 @@ export const mecEnergiaApi = createApi({
       query: (consumerUnitId) =>
         `energy-bills?consumer_unit_id=${consumerUnitId}`,
     }),
+    // FIXME: Seria interessante cachear a resposta desse endpoint. Se for
+    // realizada qq requisição POST para faturas ou tarifas, o cache desse
+    // endpoint deve ser invalidado. Como faz isso?
     recommendation: builder.query<Recommendation, number>({
       query: (consumerUnitId) => `recommendation/${consumerUnitId}`,
-      keepUnusedDataFor: 0.1,
     }),
     recommendationSettings: builder.query<RecommendationSettings, void>({
       query: () => "recommendation-settings",

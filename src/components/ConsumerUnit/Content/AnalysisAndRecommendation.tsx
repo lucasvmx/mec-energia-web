@@ -1,4 +1,4 @@
-import { Box, Grid } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import Alert from "@mui/material/Alert";
 import { useRecommendationQuery, useRecommendationSettingsQuery } from "@/api";
 
@@ -8,14 +8,29 @@ import { PlotBaseCostComparison } from "@/templates/Analysis/PlotBaseCostCompari
 import { PlotMeasuredConsumption } from "@/templates/Analysis/PlotMeasuredConsumption";
 import { PlotMeasuredDemand } from "@/templates/Analysis/PlotMeasuredDemand";
 import { CardRecommendation } from "@/templates/Analysis/CardRecommendation";
+import { selectActiveConsumerUnitId } from "@/store/appSlice";
+import { useSelector } from "react-redux";
+import { skipToken } from "@reduxjs/toolkit/dist/query";
 
 export const AnalysisAndRecommendation = () => {
-  const consumerUnitId = 1;
-  const { data: recommendation } = useRecommendationQuery(consumerUnitId);
-  // FIXME: essa query causa 8 renderizações do componente AnalysisAndRecommendation!!!
+  const consumerUnitId = useSelector(selectActiveConsumerUnitId);
+  const { data: recommendation, isLoading } = useRecommendationQuery(
+    consumerUnitId ?? skipToken
+  );
   const { data: recommendationSettings } = useRecommendationSettingsQuery();
 
-  const dates = recommendation?.plotConsumptionHistory.date.map((d) => {
+  if (isLoading || !recommendation || !recommendationSettings)
+    return (
+      <Box>
+        <Grid container>
+          <Grid item>
+            <Typography sx={{ color: "gray" }}>Carregando...</Typography>
+          </Grid>
+        </Grid>
+      </Box>
+    );
+
+  const dates = recommendation.plotConsumptionHistory.date.map((d) => {
     const date = new Date(d);
     const formatted = format(date, "MMM'-'yyyy");
     const [month, year] = formatted.split("-");
@@ -23,11 +38,11 @@ export const AnalysisAndRecommendation = () => {
   }) as string[][];
 
   const hasErrors = !!recommendation && recommendation.errors.length > 0;
-  const minimumPercentageForContractRenovation =
-    recommendationSettings?.MINIMUM_PERCENTAGE_DIFFERENCE_FOR_CONTRACT_RENOVATION ??
-    0;
-  const idealEnergyBillsForRecommendation =
-    recommendationSettings?.IDEAL_ENERGY_BILLS_FOR_RECOMMENDATION ?? 0;
+
+  const {
+    IDEAL_ENERGY_BILLS_FOR_RECOMMENDATION,
+    MINIMUM_PERCENTAGE_DIFFERENCE_FOR_CONTRACT_RENOVATION,
+  } = recommendationSettings;
 
   return (
     <Box>
@@ -43,8 +58,9 @@ export const AnalysisAndRecommendation = () => {
         </Grid>
       )}
 
-      {!!recommendation &&
-        recommendation.energyBillsCount < idealEnergyBillsForRecommendation && (
+      {recommendation.energyBillsCount <
+        IDEAL_ENERGY_BILLS_FOR_RECOMMENDATION &&
+        !hasErrors && (
           <>
             <Grid container>
               <Grid item>
@@ -60,9 +76,9 @@ export const AnalysisAndRecommendation = () => {
         )}
 
       <Grid
-        direction="row"
         container
         spacing={2}
+        direction="row"
         alignItems="stretch"
         justifyContent="center"
       >
@@ -71,7 +87,7 @@ export const AnalysisAndRecommendation = () => {
             recommendation={recommendation}
             hasErrors={hasErrors}
             minimumPercentageForContractRenovation={
-              minimumPercentageForContractRenovation
+              MINIMUM_PERCENTAGE_DIFFERENCE_FOR_CONTRACT_RENOVATION
             }
           />
         </Grid>

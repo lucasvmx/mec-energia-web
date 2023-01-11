@@ -19,7 +19,7 @@ import { Chart } from "react-chartjs-2";
 
 interface Props {
   dates: string[][];
-  recommendation: Recommendation | undefined;
+  recommendation: Recommendation;
 }
 
 export const PlotMeasuredDemand = ({ dates, recommendation }: Props) => {
@@ -35,15 +35,15 @@ export const PlotMeasuredDemand = ({ dates, recommendation }: Props) => {
   );
 
   const missingData =
-    recommendation?.plotConsumptionHistory.offPeakConsumptionInKwh.map((n) =>
+    recommendation.plotConsumptionHistory.offPeakConsumptionInKwh.map((n) =>
       n === null ? 600 : null
     ) as number[];
 
   const contractPeakDemands = Array(12).fill(
-    recommendation?.currentContract.peakContractedDemandInKw
+    recommendation.currentContract.peakContractedDemandInKw
   );
   const contractOffPeakDemands = Array(12).fill(
-    recommendation?.currentContract.offPeakContractedDemandInKw
+    recommendation.currentContract.offPeakContractedDemandInKw
   );
 
   return (
@@ -139,7 +139,7 @@ export const PlotMeasuredDemand = ({ dates, recommendation }: Props) => {
             datasets: [
               {
                 label: "Med. Fora Ponta",
-                data: recommendation?.plotConsumptionHistory
+                data: recommendation.plotConsumptionHistory
                   .offPeakMeasuredDemandInKw,
                 backgroundColor: "#0E438C",
                 borderColor: "#0E438C",
@@ -150,7 +150,7 @@ export const PlotMeasuredDemand = ({ dates, recommendation }: Props) => {
               },
               {
                 label: "Med. Fora Ponta",
-                data: recommendation?.plotConsumptionHistory
+                data: recommendation.plotConsumptionHistory
                   .peakMeasuredDemandInKw,
                 backgroundColor: "#296DCC",
                 borderColor: "#296DCC",
