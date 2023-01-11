@@ -38,7 +38,7 @@ import {
 import { RenewContractForm, RenewContractRequestPayload } from "@/types/contract";
 import FormDrawer from "@/components/Form/Drawer";
 import FormWarningDialog from "@/components/ConsumerUnit/Form/WarningDialog";
-import { useGetDistributorsQuery, useGetSubgroupsQuery, useRenewContractMutation } from "@/api";
+import { useGetConsumerUnitQuery, useGetDistributorsQuery, useGetSubgroupsQuery, useRenewContractMutation } from "@/api";
 import { useSession } from "next-auth/react";
 import { Subgroup } from "@/types/subgroups";
 import { DistributorPropsTariffs } from "@/types/distributor";
@@ -73,6 +73,7 @@ const ConsumerUnitRenewContractForm = () => {
   const { data: subgroupsList } = useGetSubgroupsQuery()
   const { data: distributorList } = useGetDistributorsQuery(session?.user?.universityId || skipToken)
   const [renewContract, { isError, isSuccess }] = useRenewContractMutation()
+  const { data: consumerUnit } = useGetConsumerUnitQuery(activeConsumerUnit || skipToken)
 
   //Estados
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
@@ -95,11 +96,11 @@ const ConsumerUnitRenewContractForm = () => {
 
   useEffect(() => {
     const { contracted, peakContractedDemandInKw, offPeakContractedDemandInKw } = defaultValues;
-
+    setValue('code', consumerUnit?.code as string)
     setValue("contracted", contracted);
     setValue("peakContractedDemandInKw", peakContractedDemandInKw);
     setValue("offPeakContractedDemandInKw", offPeakContractedDemandInKw);
-  }, [setValue, tariffFlag]);
+  }, [consumerUnit?.code, setValue, tariffFlag]);
 
 
   // Validações de Formulário  
@@ -167,7 +168,7 @@ const ConsumerUnitRenewContractForm = () => {
       consumerUnit: activeConsumerUnit as number,
       code: data.code,
       distributor: data.distributor as number,
-      startDate: `${data.startDate?.getFullYear()}-${data.startDate?.getMonth()}-${data.startDate?.getDate()}` as unknown as Date,
+      startDate: `${data.startDate?.getFullYear()}-${data.startDate?.getMonth() + 1}-${data.startDate?.getDate()}` as unknown as Date,
       tariffFlag: data.tariffFlag,
       peakContractedDemandInKw: data.peakContractedDemandInKw as number,
       offPeakContractedDemandInKw: data.offPeakContractedDemandInKw as number,

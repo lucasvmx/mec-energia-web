@@ -173,7 +173,7 @@ const ConsumerUnitEditForm = () => {
       },
       contract: {
         contractId: contract?.id as number,
-        startDate: `${data.startDate?.getFullYear()}-${data.startDate?.getMonth()}-${data.startDate?.getDate()}` as unknown as Date,
+        startDate: `${data.startDate?.getFullYear()}-${data.startDate?.getMonth() + 1}-${data.startDate?.getDate()}` as unknown as Date,
         tariffFlag: data.tariffFlag,
         peakContractedDemandInKw: data.peakContractedDemandInKw as number,
         offPeakContractedDemandInKw: data.offPeakContractedDemandInKw as number,
@@ -649,13 +649,13 @@ const ConsumerUnitEditForm = () => {
 
           <SucessNotification
             open={openSucessNotification}
-            message={"Unidade Consumidora adicionada com sucesso!"}
+            message={"Unidade Consumidora editada com sucesso!"}
             handleClose={handleCloseNotification}
           />
 
           <FailNotification
             open={openFailNotification}
-            message={"Erro ao adicionar unidade consumidora. Verifique se essa unidade já existe!"}
+            message={"Erro ao editar unidade consumidora. Verifique se essa unidade já existe!"}
             handleClose={handleCloseNotification}
           />
         </Box>

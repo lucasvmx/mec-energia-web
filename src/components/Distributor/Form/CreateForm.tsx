@@ -12,7 +12,6 @@ import { useSession } from 'next-auth/react';
 import SucessNotification from '@/components/Notification/SucessNotification';
 import FailNotification from '@/components/Notification/FailNotification';
 
-
 const defaultValues: CreateDistributorForm = {
   name: "",
   cnpj: "",
@@ -74,7 +73,7 @@ const DistributorCreateFormDialog = (props: DistributorCreateFormDialogProps) =>
       name: data.name,
       cnpj: data.cnpj,
       isActive: true,
-      university: user?.university_id || 0
+      university: user?.universityId as number
     }
     await createDistributor(body)
   };
