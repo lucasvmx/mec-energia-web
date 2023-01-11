@@ -14,6 +14,8 @@ import {
   PointElement,
   LineElement,
   BarElement,
+  BarController,
+  LineController,
 } from "chart.js";
 import { Chart } from "react-chartjs-2";
 
@@ -30,6 +32,8 @@ export const PlotMeasuredDemand = ({ dates, recommendation }: Props) => {
     PointElement,
     LineElement,
     BarElement,
+    BarController,
+    LineController,
     Tooltip,
     Legend
   );
