@@ -8,6 +8,7 @@ import { ConsumerUnitTab } from "@/types/app";
 
 import ConsumerUnitInvoiceContent from "@/templates/ConsumerUnit/Content/Invoice";
 import ConsumerUnitContractContent from "@/templates/ConsumerUnit/Content/Contract";
+import { AnalysisAndRecommendation } from "@/components/ConsumerUnit/Content/AnalysisAndRecommendation";
 
 interface TabPanelProps {
   children?: ReactNode;
@@ -35,6 +36,10 @@ const ConsumerUnitContent = () => {
     <>
       <TabPanel value={openedTab} index={ConsumerUnitTab.INVOICE}>
         <ConsumerUnitInvoiceContent />
+      </TabPanel>
+
+      <TabPanel value={openedTab} index={ConsumerUnitTab.ANALYSIS}>
+        <AnalysisAndRecommendation />
       </TabPanel>
 
       <TabPanel value={openedTab} index={ConsumerUnitTab.CONTRACT}>
