@@ -45,3 +45,5 @@ export interface CreateAndEditTariffForm {
     naTusdInReaisPerKw?: number;
   }
 }
+
+export type TariffFlag = "G" | "B";

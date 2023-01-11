@@ -46,8 +46,21 @@ const getMonthFromNumber = (month: number, shouldCapitalize?: boolean) => {
 const renderMonthCell = (invoiceRow: InvoiceDataGridRow) => {
   const { activeFilter, isEnergyBillPending, month, year } = invoiceRow;
 
-  if (!isEnergyBillPending) {
-    return getMonthFromNumber(month, true);
+  const buttonLabel =
+    "Lançar " +
+    getMonthFromNumber(month) +
+    `${activeFilter === "pending" ? " — " + year : ""}`;
+
+  if (isEnergyBillPending) {
+    return (
+      <Button
+        variant="contained"
+        color="secondary"
+        startIcon={<WarningRounded />}
+      >
+        {buttonLabel}
+      </Button>
+    );
   }
 
   const currentDate = new Date();
@@ -56,24 +69,11 @@ const renderMonthCell = (invoiceRow: InvoiceDataGridRow) => {
 
   const isCurrentMonthInvoice = year === currentYear && month === currentMonth;
 
-  const buttonLabel =
-    "Lançar " +
-    getMonthFromNumber(month) +
-    `${activeFilter === "pending" ? " — " + year : ""}`;
-
   if (isCurrentMonthInvoice) {
     return <Button variant="contained">{buttonLabel}</Button>;
   }
 
-  return (
-    <Button
-      variant="contained"
-      color="secondary"
-      startIcon={<WarningRounded />}
-    >
-      {buttonLabel}
-    </Button>
-  );
+  return getMonthFromNumber(month, true);
 };
 
 const columns: GridColDef<InvoiceDataGridRow>[] = [

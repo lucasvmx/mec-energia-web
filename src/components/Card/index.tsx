@@ -1,4 +1,4 @@
-import { Badge, Box, IconButton, Typography, useTheme } from "@mui/material";
+import { Box, IconButton, Typography } from "@mui/material";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import StarOutlineRoundedIcon from "@mui/icons-material/StarOutlineRounded";
 
@@ -13,18 +13,17 @@ const Card = ({
   isFavorite,
   // TODO BackgroundIcon,
   action,
-  ActionIcon,
-  actionIconBadgeContent,
+  actionIcon,
   onClick,
+  onActionIconClick,
 }: CardProps) => {
-  const theme = useTheme();
   const isActive = variant !== "disabled";
   const isDisabled = variant === "disabled";
   const isWarning = variant === "warning";
   const canFavorite = isFavorite !== undefined;
   const shouldShowFavoriteIconButton = canFavorite && isActive;
 
-  const shouldShowActionIconButton = ActionIcon && !dense && isActive;
+  const shouldShowActionIconButton = actionIcon && !dense && isActive;
 
   return (
     <CardWrapper
@@ -54,7 +53,13 @@ const Card = ({
         </Box>
 
         <Box display="flex" flexDirection="column" justifyContent="end">
-          <Box mb={1.5}>
+          <Box
+            sx={{ WebkitLineClamp: "2", WebkitBoxOrient: "vertical" }}
+            overflow="hidden"
+            textOverflow="ellipsis"
+            display="-webkit-box"
+            mb={1.5}
+          >
             <Typography fontWeight={400} fontSize="20px" lineHeight="24px">
               {name}
             </Typography>
@@ -73,14 +78,10 @@ const Card = ({
             )}
 
             {shouldShowActionIconButton && (
-              <Box alignSelf="center">
-                <Badge badgeContent={actionIconBadgeContent} color="primary">
-                  <ActionIcon
-                    sx={{
-                      color: isWarning ? "black" : theme.palette.action.active,
-                    }}
-                  />
-                </Badge>
+              <Box alignSelf="center" m={-1}>
+                <IconButton onClick={onActionIconClick}>
+                  {actionIcon}
+                </IconButton>
               </Box>
             )}
           </Box>

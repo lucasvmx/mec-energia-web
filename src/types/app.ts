@@ -2,7 +2,7 @@ import { ComponentType, ReactNode } from "react";
 import { createAction } from "@reduxjs/toolkit";
 import { HYDRATE } from "next-redux-wrapper";
 import { makeStore } from "@/store";
-import { BadgeProps, SvgIconProps } from "@mui/material";
+import { IconButtonProps, SvgIconProps } from "@mui/material";
 import { InvoiceDataGridRow } from "./consumerUnit";
 import { Tariff } from "./tariffs";
 
@@ -76,6 +76,6 @@ export interface CardProps extends CardWrapperProps {
   isFavorite?: boolean;
   BackgroundIcon?: ComponentType<SvgIconProps>;
   action?: ReactNode;
-  ActionIcon?: ComponentType<SvgIconProps>;
-  actionIconBadgeContent?: BadgeProps["badgeContent"];
+  actionIcon?: ReactNode;
+  onActionIconClick?: IconButtonProps["onClick"];
 }

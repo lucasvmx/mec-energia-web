@@ -3,6 +3,7 @@ import { GetContractsResponsePayload, RenewContractRequestPayload, RenewContract
 import { CreateDistributorRequestPayload, CreateDistributorResponsePayload, DistributorPropsTariffs } from "@/types/distributor";
 import { PostElectricityBillRequestPayload, PostElectricityBillResponsePayload } from "@/types/electricityBill";
 import { GetSubgroupsResponsePayload } from "@/types/subgroups";
+import { Recommendation, RecommendationSettings } from "@/types/recommendation";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { getSession } from "next-auth/react";
 import { ConsumerUnit, ConsumerUnitsPayload } from "@/types/consumerUnit";
@@ -92,6 +93,16 @@ export const mecEnergiaApi = createApi({
       }),
       invalidatesTags: ["Invoices"]
     }),
+    // FIXME: Seria interessante cachear a resposta desse endpoint. Se for
+    // realizada qq requisição POST para faturas ou tarifas, o cache desse
+    // endpoint deve ser invalidado. Como faz isso?
+    recommendation: builder.query<Recommendation, number>({
+      query: (consumerUnitId) => `recommendation/${consumerUnitId}`,
+    }),
+    recommendationSettings: builder.query<RecommendationSettings, void>({
+      query: () => "recommendation-settings",
+      keepUnusedDataFor: 120,
+    }),
   })
 })
 
@@ -107,4 +118,6 @@ export const {
   useFetchConsumerUnitsQuery,
   useGetConsumerUnitQuery,
   useFetchInvoicesQuery,
+  useRecommendationQuery,
+  useRecommendationSettingsQuery,
 } = mecEnergiaApi;
