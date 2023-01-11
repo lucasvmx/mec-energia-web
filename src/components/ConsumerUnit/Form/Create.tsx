@@ -44,7 +44,7 @@ import FailNotification from "@/components/Notification/FailNotification";
 import { DistributorPropsTariffs } from "@/types/distributor";
 
 const defaultValues: CreateConsumerUnitForm = {
-  title: "",
+  name: "",
   code: "",
   distributor: "",
   startDate: null,
@@ -65,7 +65,7 @@ const ConsumerUnitCreateForm = () => {
 
   //Requisições Redux Query
   const { data: subgroupsList } = useGetSubgroupsQuery()
-  const { data: distributorList } = useGetDistributorsQuery(session?.user?.university_id || 0)
+  const { data: distributorList } = useGetDistributorsQuery(session?.user?.universityId || 0)
   const [createConsumerUnit, { status, isError, isSuccess }] = useCreateConsumerUnitMutation()
 
   //Estados
@@ -122,7 +122,7 @@ const ConsumerUnitCreateForm = () => {
     return true
   }
 
-  const hasEnoughCaracteresLength = (value: CreateConsumerUnitForm['code'] | CreateConsumerUnitForm['title']) => {
+  const hasEnoughCaracteresLength = (value: CreateConsumerUnitForm['code'] | CreateConsumerUnitForm['name']) => {
     if (value.length < 3) return "Insira ao menos 3 caracteres"
     return true
   }
@@ -158,10 +158,10 @@ const ConsumerUnitCreateForm = () => {
     }
     const body: CreateConsumerUnitRequestPayload = {
       consumerUnit: {
-        name: data.title,
+        name: data.name,
         code: data.code,
         isActive: true,
-        university: session?.user.university_id || 0
+        university: session?.user.universityId || 0
       },
       contract: {
         startDate: `${data.startDate?.getFullYear()}-${data.startDate?.getMonth()}-${data.startDate?.getDate()}` as unknown as Date,
@@ -169,11 +169,11 @@ const ConsumerUnitCreateForm = () => {
         peakContractedDemandInKw: data.peakContractedDemandInKw as number,
         offPeakContractedDemandInKw: data.offPeakContractedDemandInKw as number,
         supplyVoltage: data.supplyVoltage as number,
-        distributor: data.distributor
+        distributor: data.distributor as number,
       }
     }
     await createConsumerUnit(body)
-  }, [createConsumerUnit, session?.user.university_id]);
+  }, [createConsumerUnit, session?.user.universityId]);
 
   const getSubgroupsText = () => {
     return <Box p={1}>
@@ -239,7 +239,7 @@ const ConsumerUnitCreateForm = () => {
             <Grid item xs={12}>
               <Controller
                 control={control}
-                name="title"
+                name="name"
                 rules={{
                   required: "Preencha este campo",
                   validate: hasEnoughCaracteresLength

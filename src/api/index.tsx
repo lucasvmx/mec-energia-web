@@ -1,4 +1,4 @@
-import { CreateConsumerUnitRequestPayload } from "@/types/consumerUnit";
+import { CreateConsumerUnitRequestPayload, EditConsumerUnitRequestPayload } from "@/types/consumerUnit";
 import { GetContractsResponsePayload, RenewContractRequestPayload, RenewContractResponsePayload } from "@/types/contract";
 import { CreateDistributorRequestPayload, CreateDistributorResponsePayload, DistributorPropsTariffs } from "@/types/distributor";
 import { PostElectricityBillRequestPayload, PostElectricityBillResponsePayload } from "@/types/electricityBill";
@@ -58,14 +58,16 @@ export const mecEnergiaApi = createApi({
         url: "consumer-units/create_consumer_unit_and_contract/",
         method: "POST",
         body
-      })
+      }),
+      invalidatesTags: ["ConsumerUnit", "CurrentContract"]
     }),
-    editConsumerUnit: builder.mutation<string, CreateConsumerUnitRequestPayload>({
+    editConsumerUnit: builder.mutation<string, EditConsumerUnitRequestPayload>({
       query: (body) => ({
-        url: "consumer-units/create_consumer_unit_and_contract/",
+        url: "consumer-units/edit_consumer_unit_and_contract/",
         method: "POST",
         body
-      })
+      }),
+      invalidatesTags: ["ConsumerUnit", "CurrentContract"]
     }),
     getContract: builder.query<GetContractsResponsePayload, number>({
       query: (consumerunitId) => `contracts/get-current-contract-of-consumer-unit/?consumer_unit_id=${consumerunitId}`,
@@ -97,6 +99,7 @@ export const {
   useGetSubgroupsQuery,
   useGetDistributorsQuery,
   useCreateDistributorMutation,
+  useEditConsumerUnitMutation,
   useCreateConsumerUnitMutation,
   useGetContractQuery,
   useRenewContractMutation,

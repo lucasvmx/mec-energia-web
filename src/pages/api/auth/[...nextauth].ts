@@ -28,7 +28,7 @@ const authOptions: NextAuthOptions = {
         }
 
         const {
-          user: { email, id, name, type, university_id },
+          user: { email, id, name, type, universityId },
           token,
         } = await response.json();
 
@@ -38,7 +38,7 @@ const authOptions: NextAuthOptions = {
           email,
           type,
           token,
-          universityId: university_id,
+          universityId,
         };
       },
     }),

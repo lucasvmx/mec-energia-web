@@ -33,45 +33,50 @@ import { DatePicker } from "@mui/x-date-pickers";
 import {
   selectIsConsumerUnitEditFormOpen,
   setIsConsumerUnitEditFormOpen,
+  selectActiveConsumerUnitId
 } from "@/store/appSlice";
 import FormDrawer from "@/components/Form/Drawer";
-import { EditConsumerUnitForm } from "@/types/consumerUnit";
+import { EditConsumerUnitForm, EditConsumerUnitRequestPayload } from "@/types/consumerUnit";
 import FormWarningDialog from "@/components/ConsumerUnit/Form/WarningDialog";
-import { useGetContractQuery, useGetDistributorsQuery, useGetSubgroupsQuery } from "@/api";
+import { useEditConsumerUnitMutation, useGetConsumerUnitQuery, useGetContractQuery, useGetDistributorsQuery, useGetSubgroupsQuery } from "@/api";
 import { useSession } from "next-auth/react";
 import { DistributorPropsTariffs } from "@/types/distributor";
 import DistributorCreateFormDialog from "@/components/Distributor/Form/CreateForm";
 import SucessNotification from "@/components/Notification/SucessNotification";
 import FailNotification from "@/components/Notification/FailNotification";
 import { Subgroup } from "@/types/subgroups";
+import { skipToken } from "@reduxjs/toolkit/dist/query";
+import { TariffFlag } from "@/types/supplier";
 
-const defaultValues: EditConsumerUnitForm = {
-  isActive: true,
-  title: "askjdf",
-  code: "",
-  distributor: "",
-  startDate: null,
-  supplyVoltage: "",
-  tariffFlag: "G",
-  contracted: "",
-  peakContractedDemandInKw: "",
-  offPeakContractedDemandInKw: "",
-};
 
-const ConsumerUnitEditForm = (currentConsumerUnitId: number) => {
-
-  const { data: session } = useSession()
-  const { data: subgroupsList } = useGetSubgroupsQuery()
-  const { data: distributorList } = useGetDistributorsQuery(session?.user?.universityId || 0)
-  const { data: contract } = useGetContractQuery(1) // TODO - Adicionar o id
-  console.log("currentConsumerUnitId", currentConsumerUnitId)
+const ConsumerUnitEditForm = () => {
 
   const dispatch = useDispatch();
   const isEditFormOpen = useSelector(selectIsConsumerUnitEditFormOpen);
+  const activeConsumerUnit = useSelector(selectActiveConsumerUnitId)
   const [shouldShowDistributoFormDialog, setShouldShowDistributoFormDialog] = useState(false);
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
   const [openSucessNotification, setOpenSucessNotification] = useState(false)
   const [openFailNotification, setOpenFailNotification] = useState(false)
+
+  const { data: session } = useSession()
+  const { data: subgroupsList } = useGetSubgroupsQuery()
+  const { data: distributorList } = useGetDistributorsQuery(session?.user?.universityId || 0)
+  const { data: contract } = useGetContractQuery(activeConsumerUnit || skipToken)
+  const { data: consumerUnit } = useGetConsumerUnitQuery(activeConsumerUnit || skipToken)
+  const [editConsumerUnit, { isError, isSuccess }] = useEditConsumerUnitMutation()
+
+  const defaultValues: EditConsumerUnitForm = {
+    isActive: consumerUnit?.isActive as boolean,
+    name: consumerUnit?.name as string || "teste",
+    code: consumerUnit?.code as string,
+    distributor: contract?.distributor as number,
+    startDate: contract?.startDate as Date,
+    supplyVoltage: contract?.supplyVoltage as number,
+    tariffFlag: contract?.tariffFlag as TariffFlag,
+    peakContractedDemandInKw: contract?.peakContractedDemandInKw as number,
+    offPeakContractedDemandInKw: contract?.offPeakContractedDemandInKw as number,
+  };
 
   const form = useForm({ mode: "all", defaultValues });
 
@@ -86,23 +91,14 @@ const ConsumerUnitEditForm = (currentConsumerUnitId: number) => {
 
   const tariffFlag = watch("tariffFlag");
 
-
-  console.log("Contrato atual", contract)
   useEffect(() => {
-    const {
-      code,
-      contracted,
-    } = defaultValues;
-
-    setValue("title", '')
-    setValue("isActive", true)
-    setValue("code", code);
+    setValue("name", consumerUnit?.name as string)
+    setValue("isActive", consumerUnit?.isActive as boolean)
+    setValue("code", consumerUnit?.code as string);
     setValue("distributor", contract?.distributor as number)
     setValue("startDate", contract?.startDate as Date)
-    setValue("contracted", contracted);
-    setValue("supplyVoltage", contract?.supplyVoltage as number)
-    setValue("contracted", contract?.peakContractedDemandInKw as number)
-    setValue("peakContractedDemandInKw", contract?.peakContractedDemandInKw as number);
+    setValue("supplyVoltage", contract?.supplyVoltage as number | "")
+    setValue("peakContractedDemandInKw", contract?.peakContractedDemandInKw as number || "");
     setValue("offPeakContractedDemandInKw", contract?.offPeakContractedDemandInKw as number);
   });
 
@@ -134,7 +130,7 @@ const ConsumerUnitEditForm = (currentConsumerUnitId: number) => {
     return true
   }
 
-  const hasEnoughCaracteresLength = (value: EditConsumerUnitForm['code'] | EditConsumerUnitForm['title']) => {
+  const hasEnoughCaracteresLength = (value: EditConsumerUnitForm['code'] | EditConsumerUnitForm['name']) => {
     if (value.length < 3) return "Insira ao menos 3 caracteres"
     return true
   }
@@ -162,9 +158,32 @@ const ConsumerUnitEditForm = (currentConsumerUnitId: number) => {
     dispatch(setIsConsumerUnitEditFormOpen(false));
   };
 
-  const onSubmitHandler: SubmitHandler<EditConsumerUnitForm> = (data) => {
-    console.log(data);
-  };
+  const onSubmitHandler: SubmitHandler<EditConsumerUnitForm> = useCallback(async (data) => {
+    if (data.tariffFlag === 'G') {
+      data.offPeakContractedDemandInKw = data.peakContractedDemandInKw
+    }
+
+    const body: EditConsumerUnitRequestPayload = {
+      consumerUnit: {
+        consumerUnitId: activeConsumerUnit as number,
+        name: data.name,
+        code: data.code,
+        isActive: true,
+        university: session?.user.universityId || 0
+      },
+      contract: {
+        contractId: contract?.id as number,
+        startDate: `${data.startDate?.getFullYear()}-${data.startDate?.getMonth()}-${data.startDate?.getDate()}` as unknown as Date,
+        tariffFlag: data.tariffFlag,
+        peakContractedDemandInKw: data.peakContractedDemandInKw as number,
+        offPeakContractedDemandInKw: data.offPeakContractedDemandInKw as number,
+        supplyVoltage: data.supplyVoltage as number,
+        distributor: data.distributor as number,
+      }
+    }
+    await editConsumerUnit(body)
+  }, [activeConsumerUnit, contract?.id, editConsumerUnit, session?.user.universityId]);
+
 
   const getSubgroupsText = () => {
     return <Box p={1}>
@@ -187,15 +206,14 @@ const ConsumerUnitEditForm = (currentConsumerUnitId: number) => {
 
   //Notificações
 
-  const handleNotification = useCallback(() => { // TODO - Ajustar as notificaçoes
-    /*     if (isSuccess) {
-          setOpenSucessNotification(true);
-          reset();
-          setTimeout(() => dispatch(setIsConsumerUnitEditFormOpen(false)), 6000)
-        }
-        else if (isError) setOpenFailNotification(true); */
-    console.log("Resolbver")
-  }, [])
+  const handleNotification = useCallback(() => {
+    if (isSuccess) {
+      setOpenSucessNotification(true);
+      reset();
+      setTimeout(() => dispatch(setIsConsumerUnitEditFormOpen(false)), 6000)
+    }
+    else if (isError) setOpenFailNotification(true);
+  }, [dispatch, isError, isSuccess, reset])
 
   useEffect(() => {
     handleNotification()
@@ -259,7 +277,7 @@ const ConsumerUnitEditForm = (currentConsumerUnitId: number) => {
             <Grid item xs={12}>
               <Controller
                 control={control}
-                name="title"
+                name="name"
                 rules={{
                   required: "Preencha este campo",
                   validate: hasEnoughCaracteresLength
@@ -490,7 +508,7 @@ const ConsumerUnitEditForm = (currentConsumerUnitId: number) => {
               <Grid item xs={7}>
                 <Controller
                   control={control}
-                  name="contracted"
+                  name="peakContractedDemandInKw"
                   rules={{
                     required: "Preencha este campo",
                     validate: isValueGreaterThenZero

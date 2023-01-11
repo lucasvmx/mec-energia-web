@@ -102,7 +102,6 @@ const CreateEditElectricityBillForm = ({ month, year }: CreateEditElectricityBil
       peakMeasuredDemandInKw } = data;
 
     const formatedDate = `${date.getFullYear()}-${date.getMonth()}-01`
-    console.log("Data formatadas", formatedDate)
 
     const body: PostElectricityBillRequestPayload = {
       consumerUnit: 1, //TODO ADICIONAR A INFORMAÇÃO DE FORMA DINÂMICA
