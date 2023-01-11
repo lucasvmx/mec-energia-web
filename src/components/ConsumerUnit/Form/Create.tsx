@@ -42,6 +42,7 @@ import DistributorCreateFormDialog from "@/components/Distributor/Form/CreateFor
 import SucessNotification from "@/components/Notification/SucessNotification";
 import FailNotification from "@/components/Notification/FailNotification";
 import { DistributorPropsTariffs } from "@/types/distributor";
+import { skipToken } from "@reduxjs/toolkit/dist/query";
 
 const defaultValues: CreateConsumerUnitForm = {
   name: "",
@@ -65,7 +66,7 @@ const ConsumerUnitCreateForm = () => {
 
   //Requisições Redux Query
   const { data: subgroupsList } = useGetSubgroupsQuery()
-  const { data: distributorList } = useGetDistributorsQuery(session?.user?.universityId || 0)
+  const { data: distributorList } = useGetDistributorsQuery(session?.user?.universityId || skipToken)
   const [createConsumerUnit, { status, isError, isSuccess }] = useCreateConsumerUnitMutation()
 
   //Estados

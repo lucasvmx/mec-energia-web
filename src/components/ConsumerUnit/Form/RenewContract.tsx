@@ -31,6 +31,7 @@ import {
 import { DatePicker } from "@mui/x-date-pickers";
 
 import {
+  selectActiveConsumerUnitId,
   selectIsConsumerUnitRenewContractFormOpen,
   setIsConsumerUnitRenewContractFormOpen as setIsRenewContractFormOpen,
 } from "@/store/appSlice";
@@ -44,6 +45,7 @@ import { DistributorPropsTariffs } from "@/types/distributor";
 import DistributorCreateFormDialog from "@/components/Distributor/Form/CreateForm";
 import SucessNotification from "@/components/Notification/SucessNotification";
 import FailNotification from "@/components/Notification/FailNotification";
+import { skipToken } from "@reduxjs/toolkit/dist/query";
 
 const defaultValues: RenewContractForm = {
   code: '',
@@ -56,7 +58,7 @@ const defaultValues: RenewContractForm = {
   offPeakContractedDemandInKw: "",
 };
 
-const ConsumerUnitRenewContractForm = (consumerUnitId: number) => {
+const ConsumerUnitRenewContractForm = () => {
   //Sessão
   const { data: session } = useSession()
 
@@ -65,10 +67,11 @@ const ConsumerUnitRenewContractForm = (consumerUnitId: number) => {
   const isRenewContractFormOpen = useSelector(
     selectIsConsumerUnitRenewContractFormOpen
   );
+  const activeConsumerUnit = useSelector(selectActiveConsumerUnitId)
 
   //Requisições Redux Query
   const { data: subgroupsList } = useGetSubgroupsQuery()
-  const { data: distributorList } = useGetDistributorsQuery(session?.user?.university_id || 0)
+  const { data: distributorList } = useGetDistributorsQuery(session?.user?.universityId || skipToken)
   const [renewContract, { isError, isSuccess }] = useRenewContractMutation()
 
   //Estados
@@ -161,7 +164,7 @@ const ConsumerUnitRenewContractForm = (consumerUnitId: number) => {
       data.peakContractedDemandInKw = data.contracted;
     }
     const body: RenewContractRequestPayload = {
-      consumerUnit: consumerUnitId,
+      consumerUnit: activeConsumerUnit as number,
       code: data.code,
       distributor: data.distributor as number,
       startDate: `${data.startDate?.getFullYear()}-${data.startDate?.getMonth()}-${data.startDate?.getDate()}` as unknown as Date,
