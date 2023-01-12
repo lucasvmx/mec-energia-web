@@ -1,7 +1,19 @@
 Chart.defaults.font.family = 'Lexend';
 Chart.defaults.color = '#000';
 var ctx = document.getElementById("demandCurrentBlue");
+var maxValue = 0;
 var myChart = new Chart(ctx, {
+    // plugins: [{
+    //     afterBuildTicks: function(chart, args, options) {
+    //         //..
+    //         console.log("after: " + maxValue)
+    //         chart.data.datasets[chart.data.datasets.length - 1].data = [null, null, null, maxValue, null, null, null, null, null, null, null, null]
+    //         console.log(chart.data.datasets[chart.data.datasets.length - 1].data)
+    //         if (maxValue != 0){
+    //             // chart.update()
+    //         } 
+    //     }
+    // }],
     type: 'line',
     data: {
         labels: [['Jan', '2022'], ['Fev', '2022'], ['Mar', '2022'], ['Abr', '2022'], ['Mai', '2022'], ['Jun', '2022'], ['Jul', '2022'], ['Ago', '2022'], ['Set', '2022'], ['Out', '2022'], ['Nov', '2022'], ['Dez', '2022'],],
@@ -49,7 +61,7 @@ var myChart = new Chart(ctx, {
             },
             {
                 label: 'Indisponível',
-                data: [null, null, null, 600, null, null, null, null, null, null, null, null],
+                // data: [null, null, null, 506.52, null, null, null, null, null, null, null, null],
                 type: 'bar',
                 backgroundColor: '#F5F5F5',
                 borderColor: '#C3C3C3',
@@ -106,7 +118,7 @@ var myChart = new Chart(ctx, {
                         return label;
                     }
                 }
-            }
+            },
         },
         scales: {
             x: {
@@ -116,10 +128,20 @@ var myChart = new Chart(ctx, {
                 ticks: {
                     maxRotation: 0,
                 },
+   
             },
             y: {
                 ticks: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    callback : function(value,index,values){
+                        if (maxValue == 0 && index == values.length - 1){
+                            maxValue = values[index].value
+                            var datasets = this.chart.data.datasets
+                            datasets[datasets.length - 1].data = [null, null, null, maxValue, null, null, null, null, null, null, null, null]
+                        }
+                        
+                        return value;
+                    }
                 },
                 title: {
                     display: true,
@@ -127,8 +149,9 @@ var myChart = new Chart(ctx, {
                 },
                 grid: {
                     color: "#C3C3C3",
-                }
+                },
             },
+
         },
         datasets: {
             bar: {
@@ -137,3 +160,4 @@ var myChart = new Chart(ctx, {
         },
     },
 });
+myChart.update()
