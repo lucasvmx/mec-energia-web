@@ -6,6 +6,7 @@ import {
   ConsumerUnitInvoiceFilter,
   ConsumerUnitTab,
   DashboardFilter,
+  NotificationProps,
   RootState,
   STORE_HYDRATE,
 } from "@/types/app";
@@ -62,6 +63,16 @@ const initialState: AppState = {
   electricityBill:{
     isCreateFormOpen:false,
     isEditFormOpen:false,
+  },
+  notifications:{
+    sucess:{
+      isOpen:false,
+      text:"",
+    },
+    error:{
+      isOpen:false,
+      text:"",
+    },
   }
 };
 
@@ -158,6 +169,12 @@ export const appSlice = createSlice({
         state.electricityBill.isCreateFormOpen = !action.payload;
       }
     },
+    setIsSucessNotificationOpen: (state, action:PayloadAction<NotificationProps>) =>{
+      state.notifications.sucess = action.payload
+    },
+    setIsErrorNotificationOpen: (state, action:PayloadAction<NotificationProps>) =>{
+      state.notifications.error = action.payload
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(STORE_HYDRATE, (state, action) => {
@@ -190,7 +207,10 @@ export const {
   setIsTariffEdiFormOpen,
   setCurrenTariff,
   setIsElectricityBillCreateFormOpen,
-  setIsElectricityBillEdiFormOpen
+  setIsElectricityBillEdiFormOpen,
+
+  setIsSucessNotificationOpen,
+  setIsErrorNotificationOpen,
 } = appSlice.actions;
 
 // App
@@ -262,3 +282,11 @@ export const selectIsElectricityBillCreateFormOpen = (state: RootState) => {
 export const selectIsElectricityBillEditFormOpen = (state: RootState) => {
   return state.app.electricityBill.isEditFormOpen;
 };
+
+export const selectSucessNotification = (state: RootState) => {
+  return state.app.notifications.sucess;
+}
+
+export const selectErrorNotification = (state: RootState) => {
+  return state.app.notifications.error;
+}

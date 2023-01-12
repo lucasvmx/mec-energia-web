@@ -63,7 +63,7 @@ export interface ContractRequestPayload {
 
 export interface EditContractRequestPayload {
   contractId:                  number;
-  startDate:                   Date;
+  startDate:                   string;
   tariffFlag:                  string;
   peakContractedDemandInKw:    number;
   offPeakContractedDemandInKw: number;

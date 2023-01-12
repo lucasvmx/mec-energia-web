@@ -26,17 +26,19 @@ const baseQuery = fetchBaseQuery({
 export const mecEnergiaApi = createApi({
   reducerPath: "mecEnergiaApi",
   baseQuery,
-  tagTypes: ['Distributors', 'ConsumerUnit', 'Subgroups', 'CurrentContract', "Invoices"],
+  tagTypes: ['Distributors', 'ConsumerUnit', 'Subgroups', 'CurrentContract', "Invoices", "Recommendation"],
   endpoints: (builder) => ({
     fetchConsumerUnits: builder.query<ConsumerUnitsPayload, number>({
       query: (universityId) => `consumer-units?university_id=${universityId}`,
     }),
     getConsumerUnit: builder.query<ConsumerUnit, number>({
       query: (consumerUnitId) => `consumer-units/${consumerUnitId}`,
+      providesTags: ['ConsumerUnit']
     }),
     fetchInvoices: builder.query<void, number>({
       query: (consumerUnitId) =>
         `energy-bills?consumer_unit_id=${consumerUnitId}`,
+      providesTags: ['Invoices']
     }),
     getSubgroups: builder.query<GetSubgroupsResponsePayload, void>({
       query: () => "/contracts/list-subgroups/",
@@ -98,6 +100,7 @@ export const mecEnergiaApi = createApi({
     // endpoint deve ser invalidado. Como faz isso?
     recommendation: builder.query<Recommendation, number>({
       query: (consumerUnitId) => `recommendation/${consumerUnitId}`,
+      providesTags: ["Recommendation"]
     }),
     recommendationSettings: builder.query<RecommendationSettings, void>({
       query: () => "recommendation-settings",

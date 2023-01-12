@@ -50,6 +50,10 @@ export interface AppState {
     isCreateFormOpen:boolean,
     isEditFormOpen:boolean,
   };
+  notifications:{
+    sucess:NotificationProps;
+    error:NotificationProps;
+  }
 }
 
 type Store = ReturnType<typeof makeStore>;
@@ -78,4 +82,9 @@ export interface CardProps extends CardWrapperProps {
   action?: ReactNode;
   actionIcon?: ReactNode;
   onActionIconClick?: IconButtonProps["onClick"];
+}
+
+export interface NotificationProps{
+  isOpen: boolean;
+  text?: string;
 }

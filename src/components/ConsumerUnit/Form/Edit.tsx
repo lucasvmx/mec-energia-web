@@ -33,7 +33,8 @@ import { DatePicker } from "@mui/x-date-pickers";
 import {
   selectIsConsumerUnitEditFormOpen,
   setIsConsumerUnitEditFormOpen,
-  selectActiveConsumerUnitId
+  selectActiveConsumerUnitId,
+  setIsSucessNotificationOpen
 } from "@/store/appSlice";
 import FormDrawer from "@/components/Form/Drawer";
 import { EditConsumerUnitForm, EditConsumerUnitRequestPayload } from "@/types/consumerUnit";
@@ -42,11 +43,22 @@ import { useEditConsumerUnitMutation, useGetConsumerUnitQuery, useGetContractQue
 import { useSession } from "next-auth/react";
 import { DistributorPropsTariffs } from "@/types/distributor";
 import DistributorCreateFormDialog from "@/components/Distributor/Form/CreateForm";
-import SucessNotification from "@/components/Notification/SucessNotification";
-import FailNotification from "@/components/Notification/FailNotification";
+import ErrorNotification from "@/components/Notification/FailNotification";
 import { Subgroup } from "@/types/subgroups";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
-import { TariffFlag } from "@/types/supplier";
+import { sendFormattedDate } from "@/utils/date";
+
+const defaultValues: EditConsumerUnitForm = {
+  isActive: true,
+  name: "",
+  code: "",
+  distributor: "",
+  startDate: new Date(),
+  supplyVoltage: "",
+  tariffFlag: "B",
+  peakContractedDemandInKw: "",
+  offPeakContractedDemandInKw: "",
+};
 
 
 const ConsumerUnitEditForm = () => {
@@ -56,8 +68,7 @@ const ConsumerUnitEditForm = () => {
   const activeConsumerUnit = useSelector(selectActiveConsumerUnitId)
   const [shouldShowDistributoFormDialog, setShouldShowDistributoFormDialog] = useState(false);
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
-  const [openSucessNotification, setOpenSucessNotification] = useState(false)
-  const [openFailNotification, setOpenFailNotification] = useState(false)
+  const [openErrorNotification, setOpenFailNotification] = useState(false)
 
   const { data: session } = useSession()
   const { data: subgroupsList } = useGetSubgroupsQuery()
@@ -66,17 +77,7 @@ const ConsumerUnitEditForm = () => {
   const { data: consumerUnit } = useGetConsumerUnitQuery(activeConsumerUnit || skipToken)
   const [editConsumerUnit, { isError, isSuccess }] = useEditConsumerUnitMutation()
 
-  const defaultValues: EditConsumerUnitForm = {
-    isActive: consumerUnit?.isActive as boolean,
-    name: consumerUnit?.name as string || "teste",
-    code: consumerUnit?.code as string,
-    distributor: contract?.distributor as number,
-    startDate: contract?.startDate as Date,
-    supplyVoltage: contract?.supplyVoltage as number,
-    tariffFlag: contract?.tariffFlag as TariffFlag,
-    peakContractedDemandInKw: contract?.peakContractedDemandInKw as number,
-    offPeakContractedDemandInKw: contract?.offPeakContractedDemandInKw as number,
-  };
+
 
   const form = useForm({ mode: "all", defaultValues });
 
@@ -90,17 +91,43 @@ const ConsumerUnitEditForm = () => {
   } = form;
 
   const tariffFlag = watch("tariffFlag");
+  const supplyVoltage = watch("supplyVoltage");
+  const peakContractedDemandInKw = watch("peakContractedDemandInKw");
+  const offPeakContractedDemandInKw = watch("offPeakContractedDemandInKw");
+  const isActive = watch("isActive")
 
   useEffect(() => {
-    setValue("name", consumerUnit?.name as string)
-    setValue("isActive", consumerUnit?.isActive as boolean)
-    setValue("code", consumerUnit?.code as string);
-    setValue("distributor", contract?.distributor as number)
-    setValue("startDate", contract?.startDate as Date)
-    setValue("supplyVoltage", contract?.supplyVoltage as number | "")
-    setValue("peakContractedDemandInKw", contract?.peakContractedDemandInKw as number || "");
-    setValue("offPeakContractedDemandInKw", contract?.offPeakContractedDemandInKw as number);
-  });
+    if (isEditFormOpen) {
+      if (consumerUnit?.name) setValue("name", consumerUnit?.name)
+      if (consumerUnit?.isActive) setValue("isActive", true)
+      if (consumerUnit?.code) setValue("code", consumerUnit?.code);
+      if (contract?.distributor) setValue("distributor", contract?.distributor)
+      if (contract?.supplyVoltage) setValue("supplyVoltage", contract?.supplyVoltage)
+      if (contract?.peakContractedDemandInKw) setValue("peakContractedDemandInKw", contract?.peakContractedDemandInKw);
+      if (contract?.offPeakContractedDemandInKw) setValue("offPeakContractedDemandInKw", contract?.offPeakContractedDemandInKw);
+      if (contract?.startDate) {
+        const currentDate = new Date(contract?.startDate)
+        currentDate.setDate(currentDate.getDate() + 1)
+        setValue("startDate", currentDate)
+      }
+    }
+  }, [isEditFormOpen, consumerUnit, contract, setValue]);
+
+  useEffect(() => {
+    setValue("isActive", isActive)
+    if (supplyVoltage === undefined) {
+      setValue("supplyVoltage", "")
+      return
+    }
+    if (peakContractedDemandInKw === undefined) {
+      setValue("peakContractedDemandInKw", "")
+      return
+    }
+    if (offPeakContractedDemandInKw === undefined) {
+      setValue("offPeakContractedDemandInKw", "")
+      return
+    }
+  }, [isActive, offPeakContractedDemandInKw, peakContractedDemandInKw, setValue, supplyVoltage])
 
 
   // Validações
@@ -155,6 +182,7 @@ const ConsumerUnitEditForm = () => {
   const handleDiscardForm = () => {
     handleCloseDialog();
     reset();
+    handleCloseNotification()
     dispatch(setIsConsumerUnitEditFormOpen(false));
   };
 
@@ -168,12 +196,12 @@ const ConsumerUnitEditForm = () => {
         consumerUnitId: activeConsumerUnit as number,
         name: data.name,
         code: data.code,
-        isActive: true,
+        isActive: data.isActive,
         university: session?.user.universityId || 0
       },
       contract: {
         contractId: contract?.id as number,
-        startDate: `${data.startDate?.getFullYear()}-${data.startDate?.getMonth() + 1}-${data.startDate?.getDate()}` as unknown as Date,
+        startDate: data.startDate ? sendFormattedDate(data.startDate) : '',
         tariffFlag: data.tariffFlag,
         peakContractedDemandInKw: data.peakContractedDemandInKw as number,
         offPeakContractedDemandInKw: data.offPeakContractedDemandInKw as number,
@@ -208,9 +236,12 @@ const ConsumerUnitEditForm = () => {
 
   const handleNotification = useCallback(() => {
     if (isSuccess) {
-      setOpenSucessNotification(true);
+      dispatch(setIsSucessNotificationOpen({
+        isOpen: true,
+        text: "Unidade consumidora modificada com sucesso!"
+      }))
       reset();
-      setTimeout(() => dispatch(setIsConsumerUnitEditFormOpen(false)), 6000)
+      dispatch(setIsConsumerUnitEditFormOpen(false))
     }
     else if (isError) setOpenFailNotification(true);
   }, [dispatch, isError, isSuccess, reset])
@@ -228,7 +259,6 @@ const ConsumerUnitEditForm = () => {
       return;
     }
     setOpenFailNotification(false)
-    setOpenSucessNotification(false);
   };
 
   return (
@@ -257,6 +287,7 @@ const ConsumerUnitEditForm = () => {
                           <Switch
                             value={value}
                             onChange={onChange}
+                            defaultChecked={consumerUnit?.isActive}
                           />
                         }
                         label="Unidade ativa"
@@ -647,14 +678,8 @@ const ConsumerUnitEditForm = () => {
             onClose={handleCloseDistributorFomrDialog}
           />
 
-          <SucessNotification
-            open={openSucessNotification}
-            message={"Unidade Consumidora editada com sucesso!"}
-            handleClose={handleCloseNotification}
-          />
-
-          <FailNotification
-            open={openFailNotification}
+          <ErrorNotification
+            open={openErrorNotification}
             message={"Erro ao editar unidade consumidora. Verifique se essa unidade já existe!"}
             handleClose={handleCloseNotification}
           />
