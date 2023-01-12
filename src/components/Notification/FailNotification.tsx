@@ -1,25 +1,31 @@
+import { selectErrorNotification, setIsErrorNotificationOpen } from "@/store/appSlice";
 import { Alert, Snackbar } from "@mui/material"
+import { useDispatch, useSelector } from "react-redux";
 
-type FailNotificationProps = {
-  open: boolean,
-  message: string,
-  handleClose: () => void
-}
 
-const FailNotification = (props: FailNotificationProps) => {
-  const { open, message, handleClose } = props
+const ErrorNotification = () => {
+  const dispatch = useDispatch()
+  const notification = useSelector(selectErrorNotification)
+  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    dispatch(setIsErrorNotificationOpen({
+      isOpen: false,
+    }))
+  };
 
   return (
     <Snackbar
-      open={open}
-      autoHideDuration={5000}
+      open={notification.isOpen}
+      autoHideDuration={6000}
       onClose={handleClose}
       anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
     >
       <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-        {message}
+        {notification.text}
       </Alert>
     </Snackbar>
   )
 }
-export default FailNotification;
+export default ErrorNotification;

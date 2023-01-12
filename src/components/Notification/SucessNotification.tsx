@@ -17,9 +17,9 @@ const SucessNotification = () => {
   return (
     <Snackbar
       open={notificationProps.isOpen}
-      autoHideDuration={5000}
+      autoHideDuration={6000}
       onClose={handleClose}
-      anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
+      anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
     >
       <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
         {notificationProps.text}

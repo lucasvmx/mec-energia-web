@@ -30,6 +30,8 @@ import { NumericFormat } from "react-number-format";
 import {
   selectIsConsumerUnitCreateFormOpen,
   setIsConsumerUnitCreateFormOpen,
+  setIsErrorNotificationOpen,
+  setIsSucessNotificationOpen,
 } from "../../../store/appSlice";
 import FormDrawer from "../../Form/Drawer";
 import { CreateConsumerUnitForm, CreateConsumerUnitRequestPayload } from "../../../types/consumerUnit";
@@ -39,8 +41,6 @@ import { useCreateConsumerUnitMutation, useGetDistributorsQuery, useGetSubgroups
 import { Subgroup } from "@/types/subgroups";
 import { useSession } from "next-auth/react";
 import DistributorCreateFormDialog from "@/components/Distributor/Form/CreateForm";
-import SucessNotification from "@/components/Notification/SucessNotification";
-import FailNotification from "@/components/Notification/FailNotification";
 import { DistributorPropsTariffs } from "@/types/distributor";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 
@@ -72,8 +72,6 @@ const ConsumerUnitCreateForm = () => {
   //Estados
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
   const [shouldShowDistributoFormDialog, setShouldShowDistributoFormDialog] = useState(false);
-  const [openSucessNotification, setOpenSucessNotification] = useState(false)
-  const [openFailNotification, setOpenFailNotification] = useState(false)
 
   //Formulário
   const form = useForm({ mode: "all", defaultValues });
@@ -199,11 +197,18 @@ const ConsumerUnitCreateForm = () => {
 
   const handleNotification = useCallback(() => {
     if (isSuccess) {
-      setOpenSucessNotification(true);
+      dispatch(setIsSucessNotificationOpen({
+        isOpen: true,
+        text: "Unidade consumidora adicionada com sucesso!"
+      }))
       reset();
-      setTimeout(() => dispatch(setIsConsumerUnitCreateFormOpen(false)), 6000)
+      dispatch(setIsConsumerUnitCreateFormOpen(false))
     }
-    else if (isError) setOpenFailNotification(true);
+    else if (isError)
+      dispatch(setIsErrorNotificationOpen({
+        isOpen: true,
+        text: "Erro ao adicionar unidade consumidora. Verifique se já existe uma unidade com  nome ou código"
+      }))
   }, [dispatch, isError, isSuccess, reset])
 
   useEffect(() => {
@@ -213,14 +218,6 @@ const ConsumerUnitCreateForm = () => {
   const handleCloseDistributorFomrDialog = () => {
     setShouldShowDistributoFormDialog(false)
   }
-
-  const handleCloseNotification = (event?: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpenFailNotification(false)
-    setOpenSucessNotification(false);
-  };
 
   return (
     <FormDrawer open={isCreateFormOpen} handleCloseDrawer={handleCancelEdition}>
@@ -611,18 +608,6 @@ const ConsumerUnitCreateForm = () => {
           <DistributorCreateFormDialog
             open={shouldShowDistributoFormDialog}
             onClose={handleCloseDistributorFomrDialog}
-          />
-
-          <SucessNotification
-            open={openSucessNotification}
-            message={"Unidade Consumidora adicionada com sucesso!"}
-            handleClose={handleCloseNotification}
-          />
-
-          <FailNotification
-            open={openFailNotification}
-            message={"Erro ao adicionar unidade consumidora. Verifique se essa unidade já existe!"}
-            handleClose={handleCloseNotification}
           />
         </Box>
       </FormProvider>

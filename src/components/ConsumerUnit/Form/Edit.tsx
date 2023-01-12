@@ -34,7 +34,8 @@ import {
   selectIsConsumerUnitEditFormOpen,
   setIsConsumerUnitEditFormOpen,
   selectActiveConsumerUnitId,
-  setIsSucessNotificationOpen
+  setIsSucessNotificationOpen,
+  setIsErrorNotificationOpen
 } from "@/store/appSlice";
 import FormDrawer from "@/components/Form/Drawer";
 import { EditConsumerUnitForm, EditConsumerUnitRequestPayload } from "@/types/consumerUnit";
@@ -43,7 +44,6 @@ import { useEditConsumerUnitMutation, useGetConsumerUnitQuery, useGetContractQue
 import { useSession } from "next-auth/react";
 import { DistributorPropsTariffs } from "@/types/distributor";
 import DistributorCreateFormDialog from "@/components/Distributor/Form/CreateForm";
-import ErrorNotification from "@/components/Notification/FailNotification";
 import { Subgroup } from "@/types/subgroups";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { sendFormattedDate } from "@/utils/date";
@@ -68,7 +68,6 @@ const ConsumerUnitEditForm = () => {
   const activeConsumerUnit = useSelector(selectActiveConsumerUnitId)
   const [shouldShowDistributoFormDialog, setShouldShowDistributoFormDialog] = useState(false);
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
-  const [openErrorNotification, setOpenFailNotification] = useState(false)
 
   const { data: session } = useSession()
   const { data: subgroupsList } = useGetSubgroupsQuery()
@@ -182,7 +181,6 @@ const ConsumerUnitEditForm = () => {
   const handleDiscardForm = () => {
     handleCloseDialog();
     reset();
-    handleCloseNotification()
     dispatch(setIsConsumerUnitEditFormOpen(false));
   };
 
@@ -243,7 +241,11 @@ const ConsumerUnitEditForm = () => {
       reset();
       dispatch(setIsConsumerUnitEditFormOpen(false))
     }
-    else if (isError) setOpenFailNotification(true);
+    else if (isError)
+      dispatch(setIsErrorNotificationOpen({
+        isOpen: true,
+        text: "Erro ao editar unidade consumidora. Verifique se já existe uma unidade com o mesmo nome ou código"
+      }))
   }, [dispatch, isError, isSuccess, reset])
 
   useEffect(() => {
@@ -253,13 +255,6 @@ const ConsumerUnitEditForm = () => {
   const handleCloseDistributorFomrDialog = () => {
     setShouldShowDistributoFormDialog(false)
   }
-
-  const handleCloseNotification = (event?: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpenFailNotification(false)
-  };
 
   return (
     <FormDrawer open={isEditFormOpen} handleCloseDrawer={handleCancelEdition}>
@@ -676,12 +671,6 @@ const ConsumerUnitEditForm = () => {
           <DistributorCreateFormDialog
             open={shouldShowDistributoFormDialog}
             onClose={handleCloseDistributorFomrDialog}
-          />
-
-          <ErrorNotification
-            open={openErrorNotification}
-            message={"Erro ao editar unidade consumidora. Verifique se essa unidade já existe!"}
-            handleClose={handleCloseNotification}
           />
         </Box>
       </FormProvider>

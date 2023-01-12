@@ -5,7 +5,7 @@ export type GetContractsResponsePayload = {
   id:                          number;
   consumerUnit:                number;
   distributor:                 number;
-  startDate:                   Date;
+  startDate:                   string;
   endDate:                     Date;
   tariffFlag:                  TariffFlag;
   subgroup:                    string;
@@ -29,7 +29,7 @@ export interface RenewContractRequestPayload {
   consumerUnit:                number;
   code:                        string;
   distributor:                 number;
-  startDate:                   Date;
+  startDate:                   string;
   supplyVoltage:               number;
   tariffFlag:                  string;
   peakContractedDemandInKw:    number;
@@ -40,7 +40,7 @@ export interface RenewContractResponsePayload {
   id:                          number;
   consumerUnit:                number;
   distributor:                 number;
-  startDate:                   Date;
+  startDate:                   string;
   endDate:                     null;
   tariffFlag:                  string;
   subgroup:                    string;

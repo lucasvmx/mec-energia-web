@@ -19,6 +19,8 @@ import {
   selectIsElectricityBillEditFormOpen,
   setIsElectricityBillCreateFormOpen,
   setIsElectricityBillEdiFormOpen,
+  setIsErrorNotificationOpen,
+  setIsSucessNotificationOpen,
 } from '../../../store/appSlice'
 import FormDrawer from '../../Form/Drawer'
 import LiveHelpIcon from '@mui/icons-material/LiveHelp';
@@ -29,8 +31,6 @@ import { CreateAndEditElectricityBillForm, PostElectricityBillRequestPayload } f
 import InsightsIcon from '@mui/icons-material/Insights';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import { usePostInvoiceMutation } from '@/api'
-import SucessNotification from '@/components/Notification/SucessNotification'
-import FailNotification from '@/components/Notification/FailNotification'
 
 const defaultValues: CreateAndEditElectricityBillForm = {
   date: new Date(),
@@ -52,9 +52,6 @@ const CreateEditElectricityBillForm = ({ month, year }: CreateEditElectricityBil
   const isEditElectricityBillFormOpen = useSelector(selectIsElectricityBillEditFormOpen)
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
   const [postInvoice, { isError, isSuccess }] = usePostInvoiceMutation()
-
-  const [openSucessNotification, setOpenSucessNotification] = useState(false)
-  const [openFailNotification, setOpenFailNotification] = useState(false)
 
   const form = useForm({ defaultValues })
   const {
@@ -119,28 +116,23 @@ const CreateEditElectricityBillForm = ({ month, year }: CreateEditElectricityBil
 
   const handleNotification = useCallback(() => {
     if (isSuccess) {
-      setOpenSucessNotification(true);
+      dispatch(setIsSucessNotificationOpen({
+        isOpen: true,
+        text: "Distribuuidora adicionada com sucesso!"
+      }))
       reset();
-      setTimeout(() => {
-
-        dispatch(setIsElectricityBillCreateFormOpen(false))
-        dispatch(setIsElectricityBillEdiFormOpen(false))
-      }, 6000)
+      dispatch(setIsElectricityBillCreateFormOpen(false))
     }
-    else if (isError) setOpenFailNotification(true);
+    else if (isError)
+      dispatch(setIsErrorNotificationOpen({
+        isOpen: true,
+        text: "Erro ao adicionar distribuidora."
+      }))
   }, [dispatch, isError, isSuccess, reset])
 
   useEffect(() => {
     handleNotification()
   }, [handleNotification, isSuccess, isError])
-
-  const handleCloseNotification = (event?: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpenFailNotification(false)
-    setOpenSucessNotification(false);
-  };
 
   return (
     <FormDrawer open={isCreateElectricityBillFormOpen || isEditElectricityBillFormOpen} handleCloseDrawer={
@@ -479,19 +471,6 @@ const CreateEditElectricityBillForm = ({ month, year }: CreateEditElectricityBil
         </Box>
 
       </FormProvider>
-
-      <SucessNotification
-        open={openSucessNotification}
-        message={"Fatura adicionada com sucesso!"}
-        handleClose={handleCloseNotification}
-      />
-
-      <FailNotification
-        open={openFailNotification}
-        message={"Erro ao adicionar Fatura"}
-        handleClose={handleCloseNotification}
-      />
-
     </FormDrawer>
   )
 }

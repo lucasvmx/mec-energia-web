@@ -14,6 +14,7 @@ import ConsumerUnitCreateForm from "@/components/ConsumerUnit/Form/Create";
 import ConsumerUnitEditForm from "@/components/ConsumerUnit/Form/Edit";
 import ConsumerUnitRenewContractForm from "@/components/ConsumerUnit/Form/RenewContract";
 import SucessNotification from "@/components/Notification/SucessNotification";
+import ErrorNotification from "@/components/Notification/FailNotification";
 
 type ExpectedQuery = {
   id: string;
@@ -83,6 +84,7 @@ const ConsumerUnitPage: NextPage = () => {
       <ConsumerUnitEditForm />
       <ConsumerUnitRenewContractForm />
       <SucessNotification />
+      <ErrorNotification />
     </Box>
   );
 };

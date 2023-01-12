@@ -34,6 +34,8 @@ import {
   selectActiveConsumerUnitId,
   selectIsConsumerUnitRenewContractFormOpen,
   setIsConsumerUnitRenewContractFormOpen as setIsRenewContractFormOpen,
+  setIsErrorNotificationOpen,
+  setIsSucessNotificationOpen,
 } from "@/store/appSlice";
 import { RenewContractForm, RenewContractRequestPayload } from "@/types/contract";
 import FormDrawer from "@/components/Form/Drawer";
@@ -43,9 +45,8 @@ import { useSession } from "next-auth/react";
 import { Subgroup } from "@/types/subgroups";
 import { DistributorPropsTariffs } from "@/types/distributor";
 import DistributorCreateFormDialog from "@/components/Distributor/Form/CreateForm";
-import SucessNotification from "@/components/Notification/SucessNotification";
-import FailNotification from "@/components/Notification/FailNotification";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
+import { sendFormattedDate } from "@/utils/date";
 
 const defaultValues: RenewContractForm = {
   code: '',
@@ -78,8 +79,6 @@ const ConsumerUnitRenewContractForm = () => {
   //Estados
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
   const [shouldShowDistributoFormDialog, setShouldShowDistributoFormDialog] = useState(false);
-  const [openSucessNotification, setOpenSucessNotification] = useState(false)
-  const [openFailNotification, setOpenFailNotification] = useState(false)
 
   const form = useForm({ mode: "all", defaultValues });
 
@@ -164,11 +163,12 @@ const ConsumerUnitRenewContractForm = () => {
       data.offPeakContractedDemandInKw = data.contracted;
       data.peakContractedDemandInKw = data.contracted;
     }
+    const formatedDate = sendFormattedDate(data.startDate as Date)
     const body: RenewContractRequestPayload = {
       consumerUnit: activeConsumerUnit as number,
       code: data.code,
       distributor: data.distributor as number,
-      startDate: `${data.startDate?.getFullYear()}-${data.startDate?.getMonth() + 1}-${data.startDate?.getDate()}` as unknown as Date,
+      startDate: formatedDate,
       tariffFlag: data.tariffFlag,
       peakContractedDemandInKw: data.peakContractedDemandInKw as number,
       offPeakContractedDemandInKw: data.offPeakContractedDemandInKw as number,
@@ -199,11 +199,18 @@ const ConsumerUnitRenewContractForm = () => {
   // Notificações
   const handleNotification = useCallback(() => {
     if (isSuccess) {
-      setOpenSucessNotification(true);
+      dispatch(setIsSucessNotificationOpen({
+        isOpen: true,
+        text: "Contrato renovado com sucesso!"
+      }))
       reset();
-      setTimeout(() => dispatch(setIsRenewContractFormOpen(false)), 6000)
+      dispatch(setIsRenewContractFormOpen(false))
     }
-    else if (isError) setOpenFailNotification(true);
+    else if (isError)
+      dispatch(setIsErrorNotificationOpen({
+        isOpen: true,
+        text: "Erro ao renovar contrato"
+      }))
   }, [dispatch, isError, isSuccess, reset])
 
   useEffect(() => {
@@ -213,14 +220,6 @@ const ConsumerUnitRenewContractForm = () => {
   const handleCloseDistributorFomrDialog = () => {
     setShouldShowDistributoFormDialog(false)
   }
-
-  const handleCloseNotification = (event?: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpenFailNotification(false)
-    setOpenSucessNotification(false);
-  };
 
   return (
     <FormDrawer
@@ -588,18 +587,6 @@ const ConsumerUnitRenewContractForm = () => {
           <DistributorCreateFormDialog
             open={shouldShowDistributoFormDialog}
             onClose={handleCloseDistributorFomrDialog}
-          />
-
-          <SucessNotification
-            open={openSucessNotification}
-            message={"Contrato renovado com sucesso!"}
-            handleClose={handleCloseNotification}
-          />
-
-          <FailNotification
-            open={openFailNotification}
-            message={"Erro ao renovar contrato."}
-            handleClose={handleCloseNotification}
           />
         </Box>
       </FormProvider>

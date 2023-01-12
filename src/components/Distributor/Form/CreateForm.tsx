@@ -9,8 +9,8 @@ import { Box, Button, Dialog, DialogTitle, Grid, TextField, Typography } from '@
 import FormWarningDialog from '../../ConsumerUnit/Form/WarningDialog';
 import { useCreateDistributorMutation } from '@/api';
 import { useSession } from 'next-auth/react';
-import SucessNotification from '@/components/Notification/SucessNotification';
-import FailNotification from '@/components/Notification/FailNotification';
+import { setIsErrorNotificationOpen, setIsSucessNotificationOpen } from '@/store/appSlice';
+import { useDispatch } from 'react-redux';
 
 const defaultValues: CreateDistributorForm = {
   name: "",
@@ -27,6 +27,9 @@ const DistributorCreateFormDialog = (props: DistributorCreateFormDialogProps) =>
 
   const { open, onClose } = props
 
+  // Redux
+  const dispatch = useDispatch()
+
   //SESSÃO
   const { data: session } = useSession()
   const user = session?.user
@@ -36,8 +39,6 @@ const DistributorCreateFormDialog = (props: DistributorCreateFormDialogProps) =>
 
   // ESTADOS
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
-  const [openSucessNotification, setOpenSucessNotification] = useState(false)
-  const [openFailNotification, setOpenFailNotification] = useState(false)
 
   //FORMULÁRIO
   const form = useForm({ defaultValues });
@@ -82,24 +83,24 @@ const DistributorCreateFormDialog = (props: DistributorCreateFormDialogProps) =>
   //Notificações
   const handleNotification = useCallback(() => {
     if (isSuccess) {
-      setOpenSucessNotification(true);
+      dispatch(setIsSucessNotificationOpen({
+        isOpen: true,
+        text: "Distribuuidora adicionada com sucesso!"
+      }))
       reset();
-      setTimeout(handleDiscardForm, 5500)
+      handleDiscardForm();
     }
-    else if (isError) setOpenFailNotification(true);
-  }, [handleDiscardForm, isError, isSuccess, reset])
+    else if (isError)
+      dispatch(setIsErrorNotificationOpen({
+        isOpen: true,
+        text: "Erro ao adicionar distribuidora."
+      }))
+  }, [dispatch, handleDiscardForm, isError, isSuccess, reset])
 
   useEffect(() => {
     handleNotification()
   }, [handleNotification, isSuccess, isError])
 
-  const handleCloseNotification = (event?: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpenFailNotification(false)
-    setOpenSucessNotification(false);
-  };
 
   return (
     <Dialog
@@ -195,18 +196,6 @@ const DistributorCreateFormDialog = (props: DistributorCreateFormDialogProps) =>
 
           </Box>
         </FormProvider>
-
-        <SucessNotification
-          open={openSucessNotification}
-          message={"Distribuidora adicionada com sucesso!"}
-          handleClose={handleCloseNotification}
-        />
-
-        <FailNotification
-          open={openFailNotification}
-          message={"Erro ao adicionar distribuidora. Verifique se essa distribuidora já existe!"}
-          handleClose={handleCloseNotification}
-        />
       </Box >
     </Dialog >
   )
