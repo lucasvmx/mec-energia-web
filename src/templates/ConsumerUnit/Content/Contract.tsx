@@ -68,7 +68,6 @@ const ConsumerUnitContractContent = () => {
     <Box display="flex" justifyContent="center">
       <Card sx={{ maxWidth: "450px" }}>
         <CardHeader title={contract?.distributorName} />
-
         <CardContent>
           <Grid container spacing={4}>
             <Grid item xs={6}>

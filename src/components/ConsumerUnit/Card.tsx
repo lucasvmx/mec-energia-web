@@ -63,7 +63,7 @@ const ConsumerUnitCard = ({
     if (favorite) {
       router.prefetch(consumerUnitUrl);
     }
-  }, [favorite]);
+  }, [consumerUnitUrl, favorite, router]);
 
   useEffect(() => {
     handleTextBottomCard();

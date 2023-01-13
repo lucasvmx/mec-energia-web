@@ -22,7 +22,7 @@ import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import DrawerListItem from "@/components/Drawer/ListItem";
 import routes from "@/routes";
 
-import { signOut } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 
 export const openDrawerWidth = 224;
 export const closedDrawerWidth = `calc(${theme.spacing(8)} + 1px)`;
@@ -66,11 +66,11 @@ const Drawer = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const isDrawerOpen = useSelector(selectIsDrawerOpen);
+  const { data: session } = useSession()
 
   const isCurrentRoute = (pathname: string) => pathname === router.pathname;
 
   const handleLogout = () => {
-    console.log("Log out");
     signOut({ callbackUrl: '/api/auth/signin' })// TODO Quando tiver página de login, redirecionar para ela
   };
 
@@ -151,7 +151,7 @@ const Drawer = () => {
       <List>
         <DrawerListItem
           Icon={AccountCircleRoundedIcon}
-          text="Joaquim Cruz" // TODO Resolver glitch de white-space
+          text={session?.user.name || ' '} // TODO Resolver glitch de white-space
           href="/perfil"
           active={isCurrentRoute("/perfil")}
         />

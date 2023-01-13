@@ -1,39 +1,28 @@
 import { ConsumerUnitInvoiceFilter } from "./app";
-import { TariffType } from "./supplier";
+import { TariffFlag} from "./supplier";
 
 export interface CreateConsumerUnitForm {
-  title: string;
-  code: string;
-  supplier: string;
-  startDate: Date | null;
-  supplied: number | "";
-  tariffType: TariffType;
-  contracted: number | "";
-  peakContracted: number | "";
-  outOfPeakContracted: number | "";
+  name:                    string;
+  code:                     string;
+  distributor:              number | "";
+  startDate:                Date | null;
+  supplyVoltage:            number | "";
+  tariffFlag:               TariffFlag;
+  contracted:               number | "";
+  peakContractedDemandInKw: number | "";
+  offPeakContractedDemandInKw: number | "";
 }
 
 export interface EditConsumerUnitForm {
-  isActive: boolean;
-  title: string;
-  code: string;
-  supplier: string;
-  startDate: Date | null;
-  supplied: number | "";
-  tariffType: TariffType;
-  contracted: number | "";
-  peakContracted: number | "";
-  outOfPeakContracted: number | "";
-}
-
-export interface RenewConsumerUnitContractForm {
-  supplier: string;
-  startDate: Date | null;
-  supplied: number | "";
-  tariffType: TariffType;
-  contracted: number | "";
-  peakContracted: number | "";
-  outOfPeakContracted: number | "";
+  name:                       string;
+  code:                        string;
+  isActive:                    boolean;
+  startDate:                   Date | null;
+  tariffFlag:                  TariffFlag;
+  peakContractedDemandInKw:    number | "";
+  offPeakContractedDemandInKw: number | "";
+  supplyVoltage:               number | "";
+  distributor:                 number | "";
 }
 
 export type ConsumerUnit = {
@@ -47,6 +36,50 @@ export type ConsumerUnit = {
 };
 
 export type ConsumerUnitsPayload = ConsumerUnit[];
+
+export interface ConsumerUnitRequestPayload {
+  name:       string;
+  code:       string;
+  isActive:   boolean;
+  university: number;
+}
+
+export interface ConsumerUnitRequestPayloadEdit {
+  consumerUnitId: number;
+  name:           string;
+  code:           string;
+  isActive:       boolean;
+  university:     number;
+}
+
+export interface ContractRequestPayload {
+  startDate:                   string;
+  tariffFlag:                  string;
+  peakContractedDemandInKw:    number;
+  offPeakContractedDemandInKw: number;
+  supplyVoltage:               number;
+  distributor:                 number;
+}
+
+export interface EditContractRequestPayload {
+  contractId:                  number;
+  startDate:                   string;
+  tariffFlag:                  string;
+  peakContractedDemandInKw:    number;
+  offPeakContractedDemandInKw: number;
+  supplyVoltage:               number;
+  distributor:                 number;
+}
+
+export interface CreateConsumerUnitRequestPayload {
+  consumerUnit: ConsumerUnitRequestPayload;
+  contract:     ContractRequestPayload;
+}
+
+export interface EditConsumerUnitRequestPayload {
+  consumerUnit: ConsumerUnitRequestPayloadEdit;
+  contract:     EditContractRequestPayload;
+}
 
 export type EnergyBill = {
   id: number;

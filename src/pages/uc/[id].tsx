@@ -13,6 +13,9 @@ import ConsumerUnitContent from "@/templates/ConsumerUnit/Content";
 import ConsumerUnitCreateForm from "@/components/ConsumerUnit/Form/Create";
 import ConsumerUnitEditForm from "@/components/ConsumerUnit/Form/Edit";
 import ConsumerUnitRenewContractForm from "@/components/ConsumerUnit/Form/RenewContract";
+import SucessNotification from "@/components/Notification/SucessNotification";
+import ErrorNotification from "@/components/Notification/FailNotification";
+import CreateEditEnergyBillForm from "@/components/ElectricityBill/Form/CreateEditElectricityBillForm";
 
 type ExpectedQuery = {
   id: string;
@@ -81,6 +84,9 @@ const ConsumerUnitPage: NextPage = () => {
       <ConsumerUnitCreateForm />
       <ConsumerUnitEditForm />
       <ConsumerUnitRenewContractForm />
+      <SucessNotification />
+      <ErrorNotification />
+      <CreateEditEnergyBillForm />
     </Box>
   );
 };

@@ -51,7 +51,7 @@ export default function DistributorContainer() {
   const [currentDist, setCurrentDist] = useState<DistributorPropsTariffs | undefined>()
   const dispatch = useDispatch()
 
-  const getAllSubgroups = () => {
+  const getAllSubgroups = React.useCallback(() => {
     const sub: Array<SubGroup> = [];
     currentDist?.tariffs?.forEach(tariff => {
       if (sub.findIndex(sub => sub.subgroup === tariff.subgroup) === -1) {
@@ -67,22 +67,22 @@ export default function DistributorContainer() {
       }
     })
     setSubgroups(sub)
-  }
+  }, [currentDist?.tariffs])
 
   useEffect(() => {
     const { id } = router.query
     setCurrentDist(mockedDistributor[Number(id) - 1])
     getAllSubgroups()
-  }, [])
+  }, [getAllSubgroups, router.query])
 
   useEffect(() => {
     const { id } = router.query
     setCurrentDist(mockedDistributor[Number(id) - 1])
-  }, [router.asPath])
+  }, [router.asPath, router.query])
 
   useEffect(() => {
     getAllSubgroups()
-  }, [currentDist])
+  }, [currentDist, getAllSubgroups])
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);

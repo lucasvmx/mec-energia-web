@@ -4,8 +4,9 @@ export interface DistributorPropsTariffs {
   id: number;
   name: string;
   cnpj?:string;
-  is_active: boolean;
-  consumer_units:number;
+  university:number;
+  isActive: boolean;
+  consumerUnits:number;
   tariffs: Array<Tariff>;
 }
 
@@ -34,3 +35,19 @@ export interface ConsumerUnit{
   id:number;
 }
 export interface DistributorProps extends DistributorPropsTariffs , DistributorConsumerUnits{}
+
+export interface CreateDistributorRequestPayload {
+    university: number,
+    name: string,
+    cnpj: string,
+    isActive: boolean 
+}
+
+export interface CreateDistributorResponsePayload {
+  id: number,
+  university: number,
+  tariffs: Array<Tariff>,
+  name: string,
+  cnpj: string,
+  isActive: boolean
+}

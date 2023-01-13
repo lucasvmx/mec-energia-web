@@ -9,17 +9,19 @@ import {
 
 interface FormWarningDialogProps {
   open: boolean;
+  entity: string;
   onClose: () => void;
   onDiscard: () => void;
 }
 
 const FormWarningDialog = ({
   open,
+  entity,
   onClose,
   onDiscard,
 }: FormWarningDialogProps) => (
   <Dialog open={open} onClick={onClose}>
-    <DialogTitle>Descartar?</DialogTitle>
+    <DialogTitle>{`Descartar ${entity}?`}</DialogTitle>
 
     <DialogContent>
       <DialogContentText>Os dados inseridos serão perdidos.</DialogContentText>

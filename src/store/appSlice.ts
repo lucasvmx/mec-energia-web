@@ -6,6 +6,8 @@ import {
   ConsumerUnitInvoiceFilter,
   ConsumerUnitTab,
   DashboardFilter,
+  EnergyBillEdiFormParams,
+  NotificationProps,
   RootState,
   STORE_HYDRATE,
 } from "@/types/app";
@@ -37,27 +39,46 @@ const initialState: AppState = {
     isCreateFormOpen: false,
     isEditFormOpen: false,
     currentTariff: {
+      distributor:1,
       blue: {
-        off_peak_te_in_reais_per_mwh: 0,
-        off_peak_tusd_in_reais_per_kw: 0,
-        off_peak_tusd_in_reais_per_mwh: 0,
-        peak_te_in_reais_per_mwh: 0,
-        peak_tusd_in_reais_per_kw: 0,
-        peak_tusd_in_reais_per_mwh: 8,
+        offPeakTeInReaisPerMwh: 0,
+        offPeakTusdInReaisPerKw: 0,
+        offPeakTusdInReaisPerMwh: 0,
+        peakTeInReaisPerMwh: 0,
+        peakTusdInReaisPerKw: 0,
+        peakTusdInReaisPerMwh: 8,
       },
-      end_date: "2010-1-1",
+      endDate: "2010-1-1",
       overdue: false,
-      start_date: "2010-1-1",
+      startDate: "2010-1-1",
       subgroup: "A0",
       green: {
-        na_tusd_in_reais_per_kw: 9,
-        off_peak_te_in_reais_per_mwh: 2,
-        off_peak_tusd_in_reais_per_mwh: 8,
-        peak_te_in_reais_per_mwh: 6,
-        peak_tusd_in_reais_per_mwh: 9,
+        naTusdInReaisPerKw: 9,
+        offPeakTeInReaisPerMwh: 2,
+        offPeakTusdInReaisPerMwh: 8,
+        peakTeInReaisPerMwh: 6,
+        peakTusdInReaisPerMwh: 9,
       },
     },
   },
+  energyBill:{
+    isCreateFormOpen:false,
+    isEditFormOpen:false,
+    params:{
+      month:0,
+      year:0,
+    }
+  },
+  notifications:{
+    sucess:{
+      isOpen:false,
+      text:"",
+    },
+    error:{
+      isOpen:false,
+      text:"",
+    },
+  }
 };
 
 export const appSlice = createSlice({
@@ -141,6 +162,27 @@ export const appSlice = createSlice({
     setCurrenTariff: (state, action: PayloadAction<Tariff>) => {
       state.tariff.currentTariff = action.payload;
     },
+    setIsEnergyBillCreateFormOpen: (state, action: PayloadAction<boolean>) => {
+      state.energyBill.isCreateFormOpen = action.payload;
+      if (action.payload) {
+        state.energyBill.isEditFormOpen = !action.payload;
+      }
+    },
+    setIsEnergyBillEdiFormOpen: (state, action: PayloadAction<boolean>) => {
+      state.energyBill.isEditFormOpen = action.payload;
+      if (action.payload) {
+        state.energyBill.isCreateFormOpen = !action.payload;
+      }
+    },
+    setEnergyBillEdiFormParams:(state, action: PayloadAction<EnergyBillEdiFormParams>)=>{
+    state.energyBill.params = action.payload;
+    },
+    setIsSucessNotificationOpen: (state, action:PayloadAction<NotificationProps>) =>{
+      state.notifications.sucess = action.payload
+    },
+    setIsErrorNotificationOpen: (state, action:PayloadAction<NotificationProps>) =>{
+      state.notifications.error = action.payload
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(STORE_HYDRATE, (state, action) => {
@@ -172,6 +214,11 @@ export const {
   setIsTariffCreateFormOpen,
   setIsTariffEdiFormOpen,
   setCurrenTariff,
+  setIsEnergyBillCreateFormOpen,
+  setIsEnergyBillEdiFormOpen,
+  setEnergyBillEdiFormParams,
+  setIsSucessNotificationOpen,
+  setIsErrorNotificationOpen,
 } = appSlice.actions;
 
 // App
@@ -235,3 +282,23 @@ export const selectIsTariffEditFormOpen = (state: RootState) => {
 export const selectCurrentTariff = (state: RootState) => {
   return state.app.tariff.currentTariff;
 };
+
+export const selectIsEnergyBillCreateFormOpen = (state: RootState) => {
+  return state.app.energyBill.isCreateFormOpen;
+};
+
+export const selectIsEnergyBillEditFormOpen = (state: RootState) => {
+  return state.app.energyBill.isEditFormOpen;
+};
+
+export const selectEnergyBillParams = (state: RootState) => {
+  return state.app.energyBill.params;
+};
+
+export const selectSucessNotification = (state: RootState) => {
+  return state.app.notifications.sucess;
+}
+
+export const selectErrorNotification = (state: RootState) => {
+  return state.app.notifications.error;
+}

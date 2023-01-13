@@ -46,6 +46,15 @@ export interface AppState {
     isEditFormOpen: boolean;
     currentTariff: Tariff;
   };
+  energyBill:{
+    isCreateFormOpen:boolean,
+    isEditFormOpen:boolean,
+    params:EnergyBillEdiFormParams,
+  };
+  notifications:{
+    sucess:NotificationProps;
+    error:NotificationProps;
+  }
 }
 
 type Store = ReturnType<typeof makeStore>;
@@ -74,4 +83,15 @@ export interface CardProps extends CardWrapperProps {
   action?: ReactNode;
   actionIcon?: ReactNode;
   onActionIconClick?: IconButtonProps["onClick"];
+}
+
+export interface NotificationProps{
+  isOpen: boolean;
+  text?: string;
+}
+
+export interface EnergyBillEdiFormParams {
+  month?:number;
+  year?:number;
+  id?:number;
 }
