@@ -86,8 +86,6 @@ const CreateEditEnergyBillForm = () => {
     }
   })
 
-  console.log("Fatura atual", currentInvoice)
-
   useEffect(() => {
     if (isCreateEnergyBillFormOpen) {
       setValue('invoiceInReais', "")

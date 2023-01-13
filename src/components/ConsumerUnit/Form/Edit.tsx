@@ -48,6 +48,7 @@ import { Subgroup } from "@/types/subgroups";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { sendFormattedDate } from "@/utils/date";
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import { getSubgroupsText } from "@/utils/get-subgroup-text";
 
 const defaultValues: EditConsumerUnitForm = {
   isActive: true,
@@ -150,8 +151,10 @@ const ConsumerUnitEditForm = () => {
 
   const isInSomeSugroups = (supplied: EditConsumerUnitForm['supplyVoltage']) => {
     const subgroups = subgroupsList?.subgroups;
+    if (!subgroups) return true
     const isValidValue = subgroups?.some((subgroup: Subgroup) => supplied >= subgroup.min && supplied <= subgroup.max)
-    if (!isValidValue) {
+    const isGreatherMax = supplied >= subgroups[subgroups?.length - 1].min
+    if (!isValidValue && !isGreatherMax) {
       return "Insira um valor conforme os intervalos ao lado"
     }
     return true
@@ -210,26 +213,6 @@ const ConsumerUnitEditForm = () => {
     }
     await editConsumerUnit(body)
   }, [activeConsumerUnit, contract?.id, editConsumerUnit, session?.user.universityId]);
-
-
-  const getSubgroupsText = () => {
-    return <Box p={1}>
-      <p>- {subgroupsList?.subgroups[0].max.toLocaleString('pt-BR')} kV ou inferior</p>
-      <p>
-        - De {subgroupsList?.subgroups[1].min.toLocaleString('pt-BR')} kV a {subgroupsList?.subgroups[1].max.toLocaleString('pt-BR')} kV
-      </p>
-      <p>
-        - De {subgroupsList?.subgroups[2].min.toLocaleString('pt-BR')} kV a {subgroupsList?.subgroups[2].max.toLocaleString('pt-BR')} kV
-      </p>
-      <p>
-        - {subgroupsList?.subgroups[3].min.toLocaleString('pt-BR')} kV
-      </p>
-      <p>
-        - De {subgroupsList?.subgroups[4].min.toLocaleString('pt-BR')} kV a {subgroupsList?.subgroups[4].max.toLocaleString('pt-BR')} kV
-      </p>
-    </Box>
-
-  }
 
   //Notificações
 
@@ -451,7 +434,11 @@ const ConsumerUnitEditForm = () => {
               />
             </Grid>
             <Tooltip
-              title={getSubgroupsText()}
+              title={
+                <div style={{ whiteSpace: 'pre-line' }}>
+                  {subgroupsList ? getSubgroupsText(subgroupsList?.subgroups) : ''}
+                </div>
+              }
               arrow
               placement="right"
               sx={{ color: 'red' }}
@@ -683,7 +670,7 @@ const ConsumerUnitEditForm = () => {
           />
         </Box>
       </FormProvider>
-    </FormDrawer>
+    </FormDrawer >
   );
 };
 

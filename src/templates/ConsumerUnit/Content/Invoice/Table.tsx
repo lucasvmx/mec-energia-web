@@ -203,7 +203,6 @@ const ConsumerUnitInvoiceContentTable = () => {
   }, [activeFilter, invoicesPayload, dispatch]);
 
   const handleOpenAddEnergyBillForm = useCallback((month: number, year: number) => {
-    console.log("ENtou no click do form", month, year)
     dispatch(setEnergyBillEdiFormParams({ month, year }))
     dispatch(setIsEnergyBillCreateFormOpen(true))
   }, [dispatch])

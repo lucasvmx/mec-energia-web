@@ -154,6 +154,7 @@ const DistributorEditForm = () => {
 
           <FormWarningDialog
             open={shouldShowCancelDialog}
+            entity={'distribuidora'}
             onClose={handleCloseDialog}
             onDiscard={handleDiscardForm}
           />

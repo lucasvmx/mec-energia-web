@@ -46,6 +46,7 @@ import { DistributorPropsTariffs } from "@/types/distributor";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { sendFormattedDate } from "@/utils/date";
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import { getSubgroupsText } from "@/utils/get-subgroup-text";
 
 const defaultValues: CreateConsumerUnitForm = {
   name: "",
@@ -177,25 +178,6 @@ const ConsumerUnitCreateForm = () => {
     }
     await createConsumerUnit(body)
   }, [createConsumerUnit, session?.user.universityId]);
-
-  const getSubgroupsText = () => {
-    return <Box p={1}>
-      <p>- {subgroupsList?.subgroups[0].max.toLocaleString('pt-BR')} kV ou inferior</p>
-      <p>
-        - De {subgroupsList?.subgroups[1].min.toLocaleString('pt-BR')} kV a {subgroupsList?.subgroups[1].max.toLocaleString('pt-BR')} kV
-      </p>
-      <p>
-        - De {subgroupsList?.subgroups[2].min.toLocaleString('pt-BR')} kV a {subgroupsList?.subgroups[2].max.toLocaleString('pt-BR')} kV
-      </p>
-      <p>
-        - {subgroupsList?.subgroups[3].min.toLocaleString('pt-BR')} kV
-      </p>
-      <p>
-        - De {subgroupsList?.subgroups[4].min.toLocaleString('pt-BR')} kV a {subgroupsList?.subgroups[4].max.toLocaleString('pt-BR')} kV
-      </p>
-    </Box>
-
-  }
 
   // Notificações
 
@@ -382,7 +364,11 @@ const ConsumerUnitCreateForm = () => {
             </Grid>
 
             <Tooltip
-              title={getSubgroupsText()}
+              title={
+                <div style={{ whiteSpace: 'pre-line' }}>
+                  {subgroupsList ? getSubgroupsText(subgroupsList?.subgroups) : ''}
+                </div>
+              }
               arrow
               placement="right"
               sx={{ color: 'red' }}
