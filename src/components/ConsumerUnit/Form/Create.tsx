@@ -7,6 +7,7 @@ import {
   useForm,
 } from "react-hook-form";
 import {
+  Alert,
   Box,
   Button,
   FormControl,
@@ -44,6 +45,7 @@ import DistributorCreateFormDialog from "@/components/Distributor/Form/CreateFor
 import { DistributorPropsTariffs } from "@/types/distributor";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { sendFormattedDate } from "@/utils/date";
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 const defaultValues: CreateConsumerUnitForm = {
   name: "",
@@ -82,7 +84,7 @@ const ConsumerUnitCreateForm = () => {
     handleSubmit,
     watch,
     setValue,
-    formState: { isDirty },
+    formState: { isDirty, errors },
   } = form;
 
   const tariffFlag = watch("tariffFlag");
@@ -588,6 +590,14 @@ const ConsumerUnitCreateForm = () => {
                 </Grid>
               </Box>
             )}
+
+            {Object.keys(errors).length !== 0 &&
+              <Grid item xs={8}>
+                <Box mt={3} mb={3}>
+                  <Alert icon={<ErrorOutlineIcon fontSize="inherit" />} severity="error">Corrija os erros acima antes de gravar</Alert>
+                </Box>
+              </Grid>
+            }
 
             <Grid item xs={12}>
               <Button type="submit" variant="contained">

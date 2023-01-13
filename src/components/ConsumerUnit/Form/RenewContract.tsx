@@ -11,6 +11,7 @@ import {
 import { NumericFormat } from "react-number-format";
 
 import {
+  Alert,
   Box,
   Button,
   FormControl,
@@ -47,6 +48,7 @@ import { DistributorPropsTariffs } from "@/types/distributor";
 import DistributorCreateFormDialog from "@/components/Distributor/Form/CreateForm";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { sendFormattedDate } from "@/utils/date";
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 const defaultValues: RenewContractForm = {
   code: '',
@@ -88,7 +90,7 @@ const ConsumerUnitRenewContractForm = () => {
     handleSubmit,
     watch,
     setValue,
-    formState: { isDirty },
+    formState: { isDirty, errors },
   } = form;
 
   const tariffFlag = watch("tariffFlag");
@@ -565,6 +567,14 @@ const ConsumerUnitRenewContractForm = () => {
                 </Grid>
               </Box>
             )}
+
+            {Object.keys(errors).length !== 0 &&
+              <Grid item xs={8}>
+                <Box mt={3} mb={3}>
+                  <Alert icon={<ErrorOutlineIcon fontSize="inherit" />} severity="error">Corrija os erros acima antes de gravar</Alert>
+                </Box>
+              </Grid>
+            }
 
             <Grid item xs={12}>
               <Button type="submit" variant="contained">

@@ -66,7 +66,7 @@ const initialState: AppState = {
     isEditFormOpen:false,
     params:{
       month:0,
-      year:0
+      year:0,
     }
   },
   notifications:{

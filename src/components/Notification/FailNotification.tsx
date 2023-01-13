@@ -20,7 +20,7 @@ const ErrorNotification = () => {
       open={notification.isOpen}
       autoHideDuration={6000}
       onClose={handleClose}
-      anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
+      anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
     >
       <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
         {notification.text}

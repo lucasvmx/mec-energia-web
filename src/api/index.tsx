@@ -1,7 +1,7 @@
-import { CreateConsumerUnitRequestPayload, EditConsumerUnitRequestPayload } from "@/types/consumerUnit";
+import { CreateConsumerUnitRequestPayload, EditConsumerUnitRequestPayload, InvoicesPayload } from "@/types/consumerUnit";
 import { GetContractsResponsePayload, RenewContractRequestPayload, RenewContractResponsePayload } from "@/types/contract";
 import { CreateDistributorRequestPayload, CreateDistributorResponsePayload, DistributorPropsTariffs } from "@/types/distributor";
-import { PostEnergyBillRequestPayload, PostEnergyBillResponsePayload } from "@/types/energyBill";
+import { CurrentEneryBillResponsePayload, EditEnergyBillRequestPayload, EditEnergyBillResponsePayload, PostEnergyBillRequestPayload, PostEnergyBillResponsePayload } from "@/types/energyBill";
 import { GetSubgroupsResponsePayload } from "@/types/subgroups";
 import { Recommendation, RecommendationSettings } from "@/types/recommendation";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
@@ -35,7 +35,7 @@ export const mecEnergiaApi = createApi({
       query: (consumerUnitId) => `consumer-units/${consumerUnitId}`,
       providesTags: ['ConsumerUnit']
     }),
-    fetchInvoices: builder.query<void, number>({
+    fetchInvoices: builder.query<InvoicesPayload, number>({
       query: (consumerUnitId) =>
         `energy-bills?consumer_unit_id=${consumerUnitId}`,
       providesTags: ['Invoices']
@@ -95,6 +95,21 @@ export const mecEnergiaApi = createApi({
       }),
       invalidatesTags: ["Invoices"]
     }),
+    editInvoice: builder.mutation<EditEnergyBillResponsePayload, EditEnergyBillRequestPayload>({
+      query: (body) => ({
+        url: `/energy-bills/${body.id}/`,
+        method: "PUT",
+        body
+      }),
+      invalidatesTags: ["Invoices"]
+    }),
+    getCurrentInvoice: builder.query<CurrentEneryBillResponsePayload, number>({
+      query: (energyBillId) => `energy-bills/${energyBillId}/`,
+      providesTags: (result, error, arg) =>
+        result
+          ? [{ type: 'Invoices', arg }, 'Invoices']
+          : ['Invoices']
+    }),
     // FIXME: Seria interessante cachear a resposta desse endpoint. Se for
     // realizada qq requisição POST para faturas ou tarifas, o cache desse
     // endpoint deve ser invalidado. Como faz isso?
@@ -118,6 +133,8 @@ export const {
   useGetContractQuery,
   useRenewContractMutation,
   usePostInvoiceMutation,
+  useEditInvoiceMutation,
+  useGetCurrentInvoiceQuery,
   useFetchConsumerUnitsQuery,
   useGetConsumerUnitQuery,
   useFetchInvoicesQuery,

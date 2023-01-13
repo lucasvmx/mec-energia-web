@@ -19,7 +19,7 @@ const SucessNotification = () => {
       open={notificationProps.isOpen}
       autoHideDuration={6000}
       onClose={handleClose}
-      anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
+      anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
     >
       <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
         {notificationProps.text}

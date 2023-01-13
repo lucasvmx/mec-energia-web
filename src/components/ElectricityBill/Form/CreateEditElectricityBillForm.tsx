@@ -19,20 +19,20 @@ import {
   selectEnergyBillParams,
   selectIsEnergyBillCreateFormOpen,
   selectIsEnergyBillEditFormOpen,
-  setIsEnergyBillCreateFormOpen as setIsEnergyBillCreateFormOpen,
-  setIsEnergyBillEdiFormOpen as setIsEnergyBillEdiFormOpen,
+  setIsEnergyBillCreateFormOpen,
+  setIsEnergyBillEdiFormOpen,
   setIsErrorNotificationOpen,
   setIsSucessNotificationOpen,
 } from '../../../store/appSlice'
 import FormDrawer from '../../Form/Drawer'
-import LiveHelpIcon from '@mui/icons-material/LiveHelp';
 import { DatePicker } from '@mui/x-date-pickers'
 import { NumericFormat } from "react-number-format";
 import FormWarningDialog from '../../ConsumerUnit/Form/WarningDialog'
-import { CreateAndEditEnergyBillForm, PostEnergyBillRequestPayload } from '@/types/energyBill'
+import { CreateAndEditEnergyBillForm, EditEnergyBillRequestPayload, PostEnergyBillRequestPayload } from '@/types/energyBill'
 import InsightsIcon from '@mui/icons-material/Insights';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
-import { useGetConsumerUnitQuery, useGetContractQuery, useGetDistributorsQuery, usePostInvoiceMutation } from '@/api'
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import { useEditInvoiceMutation, useGetConsumerUnitQuery, useGetContractQuery, useGetCurrentInvoiceQuery, useGetDistributorsQuery, usePostInvoiceMutation } from '@/api'
 import { skipToken } from '@reduxjs/toolkit/dist/query'
 import { useSession } from 'next-auth/react'
 import { DistributorPropsTariffs } from '@/types/distributor'
@@ -41,7 +41,7 @@ import { sendFormattedDate } from '@/utils/date'
 const defaultValues: CreateAndEditEnergyBillForm = {
   date: new Date(),
   invoiceInReais: undefined,
-  isAtypical: false,
+  isIncludedInAnalysis: true,
   peakMeasuredDemandInKw: "",
   peakConsumptionInKwh: "",
   offPeakConsumptionInKwh: "",
@@ -52,13 +52,15 @@ const CreateEditEnergyBillForm = () => {
   const dispatch = useDispatch();
   const isCreateEnergyBillFormOpen = useSelector(selectIsEnergyBillCreateFormOpen);
   const isEditEnergyBillFormOpen = useSelector(selectIsEnergyBillEditFormOpen)
-  const { month, year } = useSelector(selectEnergyBillParams)
+  const { month, year, id: currentInvoiceId } = useSelector(selectEnergyBillParams)
   const activeConsumerUnitId = useSelector(selectActiveConsumerUnitId)
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
-  const [postInvoice, { isError, isSuccess }] = usePostInvoiceMutation()
+  const [postInvoice, { isError: isPostInvoiceError, isSuccess: isPostInvoiceSuccess }] = usePostInvoiceMutation()
+  const [editInvoice, { isError: isEditInvoiceError, isSuccess: isEditInvoiceSucess }] = useEditInvoiceMutation()
   const { data: consumerUnit } = useGetConsumerUnitQuery(activeConsumerUnitId || skipToken)
   const { data: contract } = useGetContractQuery(activeConsumerUnitId || skipToken)
   const { data: distributors } = useGetDistributorsQuery(session.data?.user.universityId || skipToken)
+  const { data: currentInvoice } = useGetCurrentInvoiceQuery(currentInvoiceId || skipToken)
   const [currentDistributor, setCurrentDistributor] = useState<DistributorPropsTariffs>()
 
   const form = useForm({ defaultValues })
@@ -67,8 +69,15 @@ const CreateEditEnergyBillForm = () => {
     reset,
     handleSubmit,
     setValue,
+    watch,
     formState: { isDirty, errors },
   } = form;
+
+  const invoiceInReais = watch('invoiceInReais');
+  const peakConsumptionInKwh = watch('peakConsumptionInKwh')
+  const offPeakConsumptionInKwh = watch('offPeakConsumptionInKwh')
+  const peakMeasuredDemandInKw = watch('peakMeasuredDemandInKw')
+  const offPeakMeasuredDemandInKw = watch('offPeakMeasuredDemandInKw')
 
   useEffect(() => {
     if (month) {
@@ -77,16 +86,49 @@ const CreateEditEnergyBillForm = () => {
     }
   })
 
+  console.log("Fatura atual", currentInvoice)
+
   useEffect(() => {
     if (isCreateEnergyBillFormOpen) {
       setValue('invoiceInReais', "")
-      setValue('isAtypical', false)
       setValue('peakConsumptionInKwh', "")
       setValue('offPeakConsumptionInKwh', "")
       setValue('peakMeasuredDemandInKw', "")
       setValue('offPeakMeasuredDemandInKw', "")
     }
-  }, [isCreateEnergyBillFormOpen, setValue])
+    else if (isEditEnergyBillFormOpen) {
+      setValue('invoiceInReais', currentInvoice?.invoiceInReais)
+      setValue('peakConsumptionInKwh', currentInvoice?.peakConsumptionInKwh)
+      setValue('offPeakConsumptionInKwh', currentInvoice?.offPeakConsumptionInKwh)
+      setValue('peakMeasuredDemandInKw', currentInvoice?.peakMeasuredDemandInKw)
+      setValue('offPeakMeasuredDemandInKw', currentInvoice?.offPeakMeasuredDemandInKw)
+    }
+  }, [currentInvoice?.invoiceInReais, currentInvoice?.offPeakConsumptionInKwh, currentInvoice?.offPeakMeasuredDemandInKw, currentInvoice?.peakConsumptionInKwh, currentInvoice?.peakMeasuredDemandInKw, isCreateEnergyBillFormOpen, isEditEnergyBillFormOpen, setValue])
+
+  useEffect(() => {
+    if (isEditEnergyBillFormOpen) {
+      if (invoiceInReais === undefined) {
+        setValue("invoiceInReais", "")
+        return
+      }
+      if (peakConsumptionInKwh === undefined) {
+        setValue("peakConsumptionInKwh", "")
+        return
+      }
+      if (offPeakConsumptionInKwh === undefined) {
+        setValue("offPeakConsumptionInKwh", "")
+        return
+      }
+      if (peakMeasuredDemandInKw === undefined) {
+        setValue("peakMeasuredDemandInKw", "")
+        return
+      }
+      if (offPeakMeasuredDemandInKw === undefined) {
+        setValue("offPeakMeasuredDemandInKw", "")
+        return
+      }
+    }
+  }, [invoiceInReais, isEditEnergyBillFormOpen, offPeakConsumptionInKwh, offPeakMeasuredDemandInKw, peakConsumptionInKwh, peakMeasuredDemandInKw, setValue])
 
   useEffect(() => {
     const ditributor = distributors?.find((distributor) => distributor.id === contract?.distributor)
@@ -117,46 +159,68 @@ const CreateEditEnergyBillForm = () => {
     console.log(data);
     const {
       date,
-      isAtypical,
+      isIncludedInAnalysis,
       invoiceInReais,
       offPeakConsumptionInKwh,
       offPeakMeasuredDemandInKw,
       peakConsumptionInKwh,
-      peakMeasuredDemandInKw } = data;
+      peakMeasuredDemandInKw
+    } = data;
 
-    const body: PostEnergyBillRequestPayload = {
+    let body: PostEnergyBillRequestPayload | EditEnergyBillRequestPayload = {
       consumerUnit: consumerUnit?.id ?? 0,
       contract: contract?.id ?? 0,
       date: date ? sendFormattedDate(date) : '',
-      isAtypical,
+      isAtypical: !isIncludedInAnalysis,
       invoiceInReais: invoiceInReais as number,
       offPeakConsumptionInKwh: offPeakConsumptionInKwh as number,
       peakConsumptionInKwh: peakConsumptionInKwh as number,
       peakMeasuredDemandInKw: peakMeasuredDemandInKw as number,
       offPeakMeasuredDemandInKw: offPeakMeasuredDemandInKw as number,
     }
-    await postInvoice(body)
+
+    if (isEditEnergyBillFormOpen) body = { ...body, id: currentInvoice?.id }
+
+    if (isCreateEnergyBillFormOpen) await postInvoice(body)
+    if (isEditEnergyBillFormOpen) await editInvoice(body as EditEnergyBillRequestPayload)
   }
 
   const handleNotification = useCallback(() => {
-    if (isSuccess) {
-      dispatch(setIsSucessNotificationOpen({
-        isOpen: true,
-        text: "Fatura lançada com sucesso!"
-      }))
-      reset();
-      dispatch(setIsEnergyBillCreateFormOpen(false))
+    if (isCreateEnergyBillFormOpen) {
+      if (isPostInvoiceSuccess) {
+        dispatch(setIsSucessNotificationOpen({
+          isOpen: true,
+          text: "Fatura lançada com sucesso!"
+        }))
+        reset();
+        dispatch(setIsEnergyBillCreateFormOpen(false))
+      }
+      else if (isPostInvoiceError)
+        dispatch(setIsErrorNotificationOpen({
+          isOpen: true,
+          text: "Erro ao lançar fatura!"
+        }))
     }
-    else if (isError)
-      dispatch(setIsErrorNotificationOpen({
-        isOpen: true,
-        text: "Erro ao lançar fatura!"
-      }))
-  }, [dispatch, isError, isSuccess, reset])
+    else if (isEditEnergyBillFormOpen) {
+      if (isEditInvoiceSucess) {
+        dispatch(setIsSucessNotificationOpen({
+          isOpen: true,
+          text: "Fatura modificada com sucesso!"
+        }))
+        reset();
+        dispatch(setIsEnergyBillEdiFormOpen(false))
+      }
+      else if (isEditInvoiceError)
+        dispatch(setIsErrorNotificationOpen({
+          isOpen: true,
+          text: "Erro ao modificar fatura!"
+        }))
+    }
+  }, [dispatch, isCreateEnergyBillFormOpen, isEditEnergyBillFormOpen, isEditInvoiceError, isEditInvoiceSucess, isPostInvoiceError, isPostInvoiceSuccess, reset])
 
   useEffect(() => {
     handleNotification()
-  }, [handleNotification, isSuccess, isError])
+  }, [handleNotification, isPostInvoiceSuccess, isPostInvoiceError])
 
   return (
     <FormDrawer open={isCreateEnergyBillFormOpen || isEditEnergyBillFormOpen} handleCloseDrawer={
@@ -173,7 +237,7 @@ const CreateEditEnergyBillForm = () => {
                 Campus Gama
               </Typography>
               <Typography>
-                Un. Consumidora: {consumerUnit?.name}
+                Un. Consumidora: {consumerUnit?.code}
               </Typography>
               <Typography>
                 Distribuidora: {currentDistributor?.name}
@@ -273,27 +337,45 @@ const CreateEditEnergyBillForm = () => {
             <Grid container mt={2}>
               <Grid item xs={8}>
                 <Controller
-                  name="isAtypical"
+                  name="isIncludedInAnalysis"
                   control={control}
                   render={({ field: { onChange, value } }) => (
                     <FormGroup>
                       <Box >
-                        <Box display='flex' justifyContent='flex-start' alignItems='center'>
-                          <InsightsIcon color='primary' />
-                          <FormControlLabel
-                            value="start"
-                            label="Incluir na análise"
-                            labelPlacement="start"
-                            control={
-                              <Switch
-                                value={!value}
-                                defaultChecked
-                                onChange={onChange}
-                              />
-                            }
-                          />
-                        </Box>
-
+                        {isCreateEnergyBillFormOpen &&
+                          <Box display='flex' justifyContent='flex-start' alignItems='center'>
+                            <InsightsIcon color='primary' />
+                            <FormControlLabel
+                              value="start"
+                              label="Incluir na análise"
+                              labelPlacement="start"
+                              control={
+                                <Switch
+                                  value={value}
+                                  defaultChecked
+                                  onChange={onChange}
+                                />
+                              }
+                            />
+                          </Box>
+                        }
+                        {isEditEnergyBillFormOpen && currentInvoice &&
+                          <Box display='flex' justifyContent='flex-start' alignItems='center'>
+                            <InsightsIcon color='primary' />
+                            <FormControlLabel
+                              value="start"
+                              label="Incluir na análise"
+                              labelPlacement="start"
+                              control={
+                                <Switch
+                                  value={value}
+                                  defaultChecked={!currentInvoice?.isAtypical}
+                                  onChange={onChange}
+                                />
+                              }
+                            />
+                          </Box>
+                        }
                         <FormHelperText>
                           <p>Inclua todas as faturas, exceto casos radicalemente excepcionais como greves ou a pandemia</p>
                         </FormHelperText>
@@ -465,13 +547,10 @@ const CreateEditEnergyBillForm = () => {
             {Object.keys(errors).length !== 0 &&
               <Grid item xs={8}>
                 <Box mt={3} mb={3}>
-                  <Alert icon={<LiveHelpIcon fontSize="inherit" />} severity="error">Corrija os erros acima antes de gravar</Alert>
+                  <Alert icon={<ErrorOutlineIcon fontSize="inherit" />} severity="error">Corrija os erros acima antes de gravar</Alert>
                 </Box>
               </Grid>
             }
-
-
-
             <Grid item xs={8}>
               <Button type="submit" variant="contained">
                 <Box display='flex' justifyContent='space-around' alignItems='center'>
