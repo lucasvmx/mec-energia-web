@@ -4,6 +4,7 @@ export type GetContractsResponsePayload = {
   url:                         string;
   id:                          number;
   consumerUnit:                number;
+  distributorName:             string;
   distributor:                 number;
   startDate:                   string;
   endDate:                     Date;
