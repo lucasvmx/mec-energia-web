@@ -4,7 +4,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 
 import { Recommendation } from "@/types/recommendation";
-import { Link, Typography } from "@mui/material";
+import { Box, Link, Typography } from "@mui/material";
 
 import {
   Chart as ChartJS,
@@ -53,6 +53,12 @@ export const PlotBaseCostComparison = ({
     style: "currency",
     currency: "BRL",
   });
+
+  // FIXME: deve ser investigado pq esse valor pode vir menor que zero
+  const nominalSavings = Math.max(
+    0,
+    recommendation.costsPercentageDifference * 100
+  );
 
   const KnowMore = () => (
     <>
@@ -196,16 +202,16 @@ export const PlotBaseCostComparison = ({
 
         <br />
         <Typography>
-          Total atual: R${" "}
+          Total atual:{" "}
           {moneyFormatter.format(
             recommendation.plotCurrentVsEstimatedCosts
               .totalTotalCostInReaisInCurrent
           )}
         </Typography>
 
-        <div>
+        <Box>
           <Typography sx={{ display: "inline", marginRight: 0.5 }}>
-            Total proposto: R${" "}
+            Total proposto:{" "}
             {moneyFormatter.format(
               recommendation.plotCurrentVsEstimatedCosts
                 .totalTotalCostInReaisInRecommended
@@ -221,10 +227,9 @@ export const PlotBaseCostComparison = ({
               display: "inline",
             }}
           >
-            {recommendation.costsPercentageDifference * 100}% de economia
-            nominal
+            {nominalSavings}% de economia nominal
           </Typography>
-        </div>
+        </Box>
 
         <br />
         <KnowMore />

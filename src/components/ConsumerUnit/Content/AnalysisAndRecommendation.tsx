@@ -11,6 +11,8 @@ import { CardRecommendation } from "@/templates/Analysis/CardRecommendation";
 import { selectActiveConsumerUnitId } from "@/store/appSlice";
 import { useSelector } from "react-redux";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
+import { parseISO } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 export const AnalysisAndRecommendation = () => {
   const consumerUnitId = useSelector(selectActiveConsumerUnitId);
@@ -31,10 +33,12 @@ export const AnalysisAndRecommendation = () => {
     );
 
   const dates = recommendation.plotConsumptionHistory.date.map((d) => {
-    const date = new Date(d);
-    const formatted = format(date, "MMM'-'yyyy");
+    const formatted = format(parseISO(d), "MMMM'-'yyyy", { locale: ptBR });
     const [month, year] = formatted.split("-");
-    return [month, year];
+    // MMM retorna o nome do mês com todas as letras em minúsculo. Capitalize
+    // a 1ª letra:
+    const monthFirstLetter = month[0].toUpperCase();
+    return [monthFirstLetter + month.slice(1, 3), year];
   }) as string[][];
 
   const hasErrors = !!recommendation && recommendation.errors.length > 0;

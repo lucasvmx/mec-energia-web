@@ -18,10 +18,11 @@ import {
   LineController,
 } from "chart.js";
 import { Chart } from "react-chartjs-2";
+import { findMaxValue } from "./findMaxValue";
 
 interface Props {
   dates: string[][];
-  recommendation: Recommendation | undefined;
+  recommendation: Recommendation;
 }
 
 export const PlotMeasuredConsumption = ({ dates, recommendation }: Props) => {
@@ -38,9 +39,14 @@ export const PlotMeasuredConsumption = ({ dates, recommendation }: Props) => {
     Legend
   );
 
+  const maxValue = findMaxValue([
+    recommendation.plotConsumptionHistory.offPeakConsumptionInKwh,
+    recommendation.plotConsumptionHistory.peakConsumptionInKwh,
+  ]);
+
   const missingData =
-    recommendation?.plotConsumptionHistory.offPeakConsumptionInKwh.map((n) =>
-      n === null ? 120_000 : null
+    recommendation.plotConsumptionHistory.offPeakConsumptionInKwh.map((n) =>
+      n === null ? maxValue * 1.2 : null
     ) as number[];
 
   return (
@@ -137,7 +143,7 @@ export const PlotMeasuredConsumption = ({ dates, recommendation }: Props) => {
               {
                 type: "line" as const,
                 label: "Fora ponta",
-                data: recommendation?.plotConsumptionHistory
+                data: recommendation.plotConsumptionHistory
                   .offPeakConsumptionInKwh,
                 backgroundColor: "#0E438C",
                 borderColor: "#0E438C",
@@ -148,7 +154,7 @@ export const PlotMeasuredConsumption = ({ dates, recommendation }: Props) => {
               {
                 type: "line" as const,
                 label: "Ponta",
-                data: recommendation?.plotConsumptionHistory
+                data: recommendation.plotConsumptionHistory
                   .peakConsumptionInKwh,
                 backgroundColor: "#296DCC",
                 borderColor: "#296DCC",

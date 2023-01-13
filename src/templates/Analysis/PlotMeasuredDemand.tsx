@@ -18,6 +18,7 @@ import {
   LineController,
 } from "chart.js";
 import { Chart } from "react-chartjs-2";
+import { findMaxValue } from "./findMaxValue";
 
 interface Props {
   dates: string[][];
@@ -38,9 +39,16 @@ export const PlotMeasuredDemand = ({ dates, recommendation }: Props) => {
     Legend
   );
 
+  const maxValue = findMaxValue([
+    recommendation.plotConsumptionHistory.offPeakMeasuredDemandInKw,
+    recommendation.plotConsumptionHistory.peakMeasuredDemandInKw,
+    [recommendation.currentContract.peakContractedDemandInKw],
+    [recommendation.currentContract.offPeakContractedDemandInKw],
+  ]);
+
   const missingData =
-    recommendation.plotConsumptionHistory.offPeakConsumptionInKwh.map((n) =>
-      n === null ? 600 : null
+    recommendation.plotConsumptionHistory.offPeakMeasuredDemandInKw.map((n) =>
+      n === null ? maxValue * 1.2 : null
     ) as number[];
 
   const contractPeakDemands = Array(12).fill(
