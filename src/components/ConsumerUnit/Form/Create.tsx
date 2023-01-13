@@ -43,6 +43,7 @@ import { useSession } from "next-auth/react";
 import DistributorCreateFormDialog from "@/components/Distributor/Form/CreateForm";
 import { DistributorPropsTariffs } from "@/types/distributor";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
+import { sendFormattedDate } from "@/utils/date";
 
 const defaultValues: CreateConsumerUnitForm = {
   name: "",
@@ -155,6 +156,7 @@ const ConsumerUnitCreateForm = () => {
       data.offPeakContractedDemandInKw = data.contracted;
       data.peakContractedDemandInKw = data.contracted;
     }
+
     const body: CreateConsumerUnitRequestPayload = {
       consumerUnit: {
         name: data.name,
@@ -163,7 +165,7 @@ const ConsumerUnitCreateForm = () => {
         university: session?.user.universityId || 0
       },
       contract: {
-        startDate: `${data.startDate?.getFullYear()}-${data.startDate?.getMonth()}-${data.startDate?.getDate()}` as unknown as Date,
+        startDate: data.startDate ? sendFormattedDate(data.startDate) : '',
         tariffFlag: data.tariffFlag,
         peakContractedDemandInKw: data.peakContractedDemandInKw as number,
         offPeakContractedDemandInKw: data.offPeakContractedDemandInKw as number,

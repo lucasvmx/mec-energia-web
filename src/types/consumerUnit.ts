@@ -53,7 +53,7 @@ export interface ConsumerUnitRequestPayloadEdit {
 }
 
 export interface ContractRequestPayload {
-  startDate:                   Date;
+  startDate:                   string;
   tariffFlag:                  string;
   peakContractedDemandInKw:    number;
   offPeakContractedDemandInKw: number;
