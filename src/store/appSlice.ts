@@ -6,6 +6,7 @@ import {
   ConsumerUnitInvoiceFilter,
   ConsumerUnitTab,
   DashboardFilter,
+  EnergyBillEdiFormParams,
   NotificationProps,
   RootState,
   STORE_HYDRATE,
@@ -60,9 +61,13 @@ const initialState: AppState = {
       },
     },
   },
-  electricityBill:{
+  energyBill:{
     isCreateFormOpen:false,
     isEditFormOpen:false,
+    params:{
+      month:0,
+      year:0
+    }
   },
   notifications:{
     sucess:{
@@ -157,17 +162,20 @@ export const appSlice = createSlice({
     setCurrenTariff: (state, action: PayloadAction<Tariff>) => {
       state.tariff.currentTariff = action.payload;
     },
-    setIsElectricityBillCreateFormOpen: (state, action: PayloadAction<boolean>) => {
-      state.electricityBill.isCreateFormOpen = action.payload;
+    setIsEnergyBillCreateFormOpen: (state, action: PayloadAction<boolean>) => {
+      state.energyBill.isCreateFormOpen = action.payload;
       if (action.payload) {
-        state.electricityBill.isEditFormOpen = !action.payload;
+        state.energyBill.isEditFormOpen = !action.payload;
       }
     },
-    setIsElectricityBillEdiFormOpen: (state, action: PayloadAction<boolean>) => {
-      state.electricityBill.isEditFormOpen = action.payload;
+    setIsEnergyBillEdiFormOpen: (state, action: PayloadAction<boolean>) => {
+      state.energyBill.isEditFormOpen = action.payload;
       if (action.payload) {
-        state.electricityBill.isCreateFormOpen = !action.payload;
+        state.energyBill.isCreateFormOpen = !action.payload;
       }
+    },
+    setEnergyBillEdiFormParams:(state, action: PayloadAction<EnergyBillEdiFormParams>)=>{
+    state.energyBill.params = action.payload;
     },
     setIsSucessNotificationOpen: (state, action:PayloadAction<NotificationProps>) =>{
       state.notifications.sucess = action.payload
@@ -206,9 +214,9 @@ export const {
   setIsTariffCreateFormOpen,
   setIsTariffEdiFormOpen,
   setCurrenTariff,
-  setIsElectricityBillCreateFormOpen,
-  setIsElectricityBillEdiFormOpen,
-
+  setIsEnergyBillCreateFormOpen,
+  setIsEnergyBillEdiFormOpen,
+  setEnergyBillEdiFormParams,
   setIsSucessNotificationOpen,
   setIsErrorNotificationOpen,
 } = appSlice.actions;
@@ -275,12 +283,16 @@ export const selectCurrentTariff = (state: RootState) => {
   return state.app.tariff.currentTariff;
 };
 
-export const selectIsElectricityBillCreateFormOpen = (state: RootState) => {
-  return state.app.electricityBill.isCreateFormOpen;
+export const selectIsEnergyBillCreateFormOpen = (state: RootState) => {
+  return state.app.energyBill.isCreateFormOpen;
 };
 
-export const selectIsElectricityBillEditFormOpen = (state: RootState) => {
-  return state.app.electricityBill.isEditFormOpen;
+export const selectIsEnergyBillEditFormOpen = (state: RootState) => {
+  return state.app.energyBill.isEditFormOpen;
+};
+
+export const selectEnergyBillParams = (state: RootState) => {
+  return state.app.energyBill.params;
 };
 
 export const selectSucessNotification = (state: RootState) => {

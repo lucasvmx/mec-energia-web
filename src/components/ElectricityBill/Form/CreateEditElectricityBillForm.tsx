@@ -15,10 +15,12 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import {
-  selectIsElectricityBillCreateFormOpen,
-  selectIsElectricityBillEditFormOpen,
-  setIsElectricityBillCreateFormOpen,
-  setIsElectricityBillEdiFormOpen,
+  selectActiveConsumerUnitId,
+  selectEnergyBillParams,
+  selectIsEnergyBillCreateFormOpen,
+  selectIsEnergyBillEditFormOpen,
+  setIsEnergyBillCreateFormOpen as setIsEnergyBillCreateFormOpen,
+  setIsEnergyBillEdiFormOpen as setIsEnergyBillEdiFormOpen,
   setIsErrorNotificationOpen,
   setIsSucessNotificationOpen,
 } from '../../../store/appSlice'
@@ -27,12 +29,16 @@ import LiveHelpIcon from '@mui/icons-material/LiveHelp';
 import { DatePicker } from '@mui/x-date-pickers'
 import { NumericFormat } from "react-number-format";
 import FormWarningDialog from '../../ConsumerUnit/Form/WarningDialog'
-import { CreateAndEditElectricityBillForm, PostElectricityBillRequestPayload } from '@/types/electricityBill'
+import { CreateAndEditEnergyBillForm, PostEnergyBillRequestPayload } from '@/types/energyBill'
 import InsightsIcon from '@mui/icons-material/Insights';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
-import { usePostInvoiceMutation } from '@/api'
+import { useGetConsumerUnitQuery, useGetContractQuery, useGetDistributorsQuery, usePostInvoiceMutation } from '@/api'
+import { skipToken } from '@reduxjs/toolkit/dist/query'
+import { useSession } from 'next-auth/react'
+import { DistributorPropsTariffs } from '@/types/distributor'
+import { sendFormattedDate } from '@/utils/date'
 
-const defaultValues: CreateAndEditElectricityBillForm = {
+const defaultValues: CreateAndEditEnergyBillForm = {
   date: new Date(),
   invoiceInReais: undefined,
   isAtypical: false,
@@ -41,17 +47,19 @@ const defaultValues: CreateAndEditElectricityBillForm = {
   offPeakConsumptionInKwh: "",
 }
 
-type CreateEditElectricityBillFormProps = {
-  month: number;
-  year: number;
-}
-
-const CreateEditElectricityBillForm = ({ month, year }: CreateEditElectricityBillFormProps) => {
+const CreateEditEnergyBillForm = () => {
+  const session = useSession()
   const dispatch = useDispatch();
-  const isCreateElectricityBillFormOpen = useSelector(selectIsElectricityBillCreateFormOpen);
-  const isEditElectricityBillFormOpen = useSelector(selectIsElectricityBillEditFormOpen)
+  const isCreateEnergyBillFormOpen = useSelector(selectIsEnergyBillCreateFormOpen);
+  const isEditEnergyBillFormOpen = useSelector(selectIsEnergyBillEditFormOpen)
+  const { month, year } = useSelector(selectEnergyBillParams)
+  const activeConsumerUnitId = useSelector(selectActiveConsumerUnitId)
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
   const [postInvoice, { isError, isSuccess }] = usePostInvoiceMutation()
+  const { data: consumerUnit } = useGetConsumerUnitQuery(activeConsumerUnitId || skipToken)
+  const { data: contract } = useGetContractQuery(activeConsumerUnitId || skipToken)
+  const { data: distributors } = useGetDistributorsQuery(session.data?.user.universityId || skipToken)
+  const [currentDistributor, setCurrentDistributor] = useState<DistributorPropsTariffs>()
 
   const form = useForm({ defaultValues })
   const {
@@ -63,9 +71,27 @@ const CreateEditElectricityBillForm = ({ month, year }: CreateEditElectricityBil
   } = form;
 
   useEffect(() => {
-    const date = new Date(`${year}-${month}`)
-    setValue("date", date)
+    if (month) {
+      const date = new Date(`${year}-${month + 1}`)
+      setValue("date", date)
+    }
   })
+
+  useEffect(() => {
+    if (isCreateEnergyBillFormOpen) {
+      setValue('invoiceInReais', "")
+      setValue('isAtypical', false)
+      setValue('peakConsumptionInKwh', "")
+      setValue('offPeakConsumptionInKwh', "")
+      setValue('peakMeasuredDemandInKw', "")
+      setValue('offPeakMeasuredDemandInKw', "")
+    }
+  }, [isCreateEnergyBillFormOpen, setValue])
+
+  useEffect(() => {
+    const ditributor = distributors?.find((distributor) => distributor.id === contract?.distributor)
+    if (ditributor) setCurrentDistributor(ditributor)
+  }, [contract?.distributor, distributors])
 
   const handleCancelEdition = () => {
     if (isDirty) {
@@ -79,15 +105,15 @@ const CreateEditElectricityBillForm = ({ month, year }: CreateEditElectricityBil
   const handleDiscardForm = () => {
     handleCloseDialog();
     reset();
-    if (isCreateElectricityBillFormOpen) dispatch(setIsElectricityBillCreateFormOpen(false));
-    else dispatch(setIsElectricityBillEdiFormOpen(false));
+    if (isCreateEnergyBillFormOpen) dispatch(setIsEnergyBillCreateFormOpen(false));
+    else dispatch(setIsEnergyBillEdiFormOpen(false));
   }
 
   const handleCloseDialog = () => {
     setShouldShowCancelDialog(false);
   }
 
-  const onSubmitHandler: SubmitHandler<CreateAndEditElectricityBillForm> = async (data) => {
+  const onSubmitHandler: SubmitHandler<CreateAndEditEnergyBillForm> = async (data) => {
     console.log(data);
     const {
       date,
@@ -98,12 +124,10 @@ const CreateEditElectricityBillForm = ({ month, year }: CreateEditElectricityBil
       peakConsumptionInKwh,
       peakMeasuredDemandInKw } = data;
 
-    const formatedDate = `${date.getFullYear()}-${date.getMonth()}-01`
-
-    const body: PostElectricityBillRequestPayload = {
-      consumerUnit: 1, //TODO ADICIONAR A INFORMAÇÃO DE FORMA DINÂMICA
-      contract: 1, // TODO - PRA ESSE TAMBEM
-      date: formatedDate,
+    const body: PostEnergyBillRequestPayload = {
+      consumerUnit: consumerUnit?.id ?? 0,
+      contract: contract?.id ?? 0,
+      date: date ? sendFormattedDate(date) : '',
       isAtypical,
       invoiceInReais: invoiceInReais as number,
       offPeakConsumptionInKwh: offPeakConsumptionInKwh as number,
@@ -118,15 +142,15 @@ const CreateEditElectricityBillForm = ({ month, year }: CreateEditElectricityBil
     if (isSuccess) {
       dispatch(setIsSucessNotificationOpen({
         isOpen: true,
-        text: "Distribuuidora adicionada com sucesso!"
+        text: "Fatura lançada com sucesso!"
       }))
       reset();
-      dispatch(setIsElectricityBillCreateFormOpen(false))
+      dispatch(setIsEnergyBillCreateFormOpen(false))
     }
     else if (isError)
       dispatch(setIsErrorNotificationOpen({
         isOpen: true,
-        text: "Erro ao adicionar distribuidora."
+        text: "Erro ao lançar fatura!"
       }))
   }, [dispatch, isError, isSuccess, reset])
 
@@ -135,7 +159,7 @@ const CreateEditElectricityBillForm = ({ month, year }: CreateEditElectricityBil
   }, [handleNotification, isSuccess, isError])
 
   return (
-    <FormDrawer open={isCreateElectricityBillFormOpen || isEditElectricityBillFormOpen} handleCloseDrawer={
+    <FormDrawer open={isCreateEnergyBillFormOpen || isEditEnergyBillFormOpen} handleCloseDrawer={
       handleCancelEdition
     }>
       <FormProvider {...form}>
@@ -143,16 +167,16 @@ const CreateEditElectricityBillForm = ({ month, year }: CreateEditElectricityBil
           <Grid container spacing={2}>
             <Grid item xs={8}>
               <Typography>
-                {isCreateElectricityBillFormOpen ? 'Lançar' : 'Editar'} fatura
+                {isCreateEnergyBillFormOpen ? 'Lançar' : 'Editar'} fatura
               </Typography>
               <Typography variant="h4">
                 Campus Gama
               </Typography>
               <Typography>
-                Un. Consumidora: TODO
+                Un. Consumidora: {consumerUnit?.name}
               </Typography>
               <Typography>
-                Distribuidora: TODO
+                Distribuidora: {currentDistributor?.name}
               </Typography>
             </Grid>
 
@@ -475,4 +499,4 @@ const CreateEditElectricityBillForm = ({ month, year }: CreateEditElectricityBil
   )
 }
 
-export default CreateEditElectricityBillForm;
+export default CreateEditEnergyBillForm;

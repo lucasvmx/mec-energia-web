@@ -1,7 +1,7 @@
 import { CreateConsumerUnitRequestPayload, EditConsumerUnitRequestPayload } from "@/types/consumerUnit";
 import { GetContractsResponsePayload, RenewContractRequestPayload, RenewContractResponsePayload } from "@/types/contract";
 import { CreateDistributorRequestPayload, CreateDistributorResponsePayload, DistributorPropsTariffs } from "@/types/distributor";
-import { PostElectricityBillRequestPayload, PostElectricityBillResponsePayload } from "@/types/electricityBill";
+import { PostEnergyBillRequestPayload, PostEnergyBillResponsePayload } from "@/types/energyBill";
 import { GetSubgroupsResponsePayload } from "@/types/subgroups";
 import { Recommendation, RecommendationSettings } from "@/types/recommendation";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
@@ -87,7 +87,7 @@ export const mecEnergiaApi = createApi({
       }),
       invalidatesTags: ["CurrentContract"]
     }),
-    postInvoice: builder.mutation<PostElectricityBillResponsePayload, PostElectricityBillRequestPayload>({
+    postInvoice: builder.mutation<PostEnergyBillResponsePayload, PostEnergyBillRequestPayload>({
       query: (body) => ({
         url: "/energy-bills/",
         method: "POST",

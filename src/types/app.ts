@@ -46,9 +46,10 @@ export interface AppState {
     isEditFormOpen: boolean;
     currentTariff: Tariff;
   };
-  electricityBill:{
+  energyBill:{
     isCreateFormOpen:boolean,
     isEditFormOpen:boolean,
+    params:EnergyBillEdiFormParams,
   };
   notifications:{
     sucess:NotificationProps;
@@ -87,4 +88,9 @@ export interface CardProps extends CardWrapperProps {
 export interface NotificationProps{
   isOpen: boolean;
   text?: string;
+}
+
+export interface EnergyBillEdiFormParams {
+  month?:number;
+  year?:number;
 }

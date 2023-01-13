@@ -1,4 +1,4 @@
-export interface CreateAndEditElectricityBillForm {
+export interface CreateAndEditEnergyBillForm {
   date:                       Date;
   invoiceInReais?:            number | "";
   isAtypical:                 boolean;
@@ -8,7 +8,7 @@ export interface CreateAndEditElectricityBillForm {
   offPeakConsumptionInKwh?:   number | "";
 }
 
-export interface PostElectricityBillRequestPayload {
+export interface PostEnergyBillRequestPayload {
   date:                     string;
   invoiceInReais?:          number;
   isAtypical:               boolean;
@@ -20,7 +20,7 @@ export interface PostElectricityBillRequestPayload {
   consumerUnit:             number;
 }
 
-export interface PostElectricityBillResponsePayload {
+export interface PostEnergyBillResponsePayload {
   id:                        number;
   date:	                     Date;
   invoiceInReais:            number;
