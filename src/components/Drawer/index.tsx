@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
 import { signOut, useSession } from "next-auth/react";
 
@@ -120,13 +121,19 @@ const Drawer = () => {
 
         <Box
           sx={{
-            backgroundColor: "orange",
             width: "100%",
             maxWidth: "144px",
             aspectRatio: "1/1",
-            borderRadius: "50%",
           }}
-        />
+        >
+          <Image
+            src="/icons/mec-energia.svg"
+            alt="MEC Energia"
+            layout="responsive"
+            width="144px"
+            height="144px"
+          />
+        </Box>
       </Box>
 
       <List sx={{ padding: 0 }}>
