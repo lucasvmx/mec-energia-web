@@ -1,14 +1,12 @@
 import { NextPage } from "next";
-import { Box, Container } from "@mui/material";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 
 import { wrapper } from "@/store";
 import { setActiveConsumerUnitId } from "@/store/appSlice";
 
-import Drawer from "@/components/Drawer";
-import Header from "@/components/Header";
+import DefaultTemplateV2 from "@/templates/DefaultV2";
 import ConsumerUnitsCardGrid from "@/templates/ConsumerUnit/Grid";
-import ConsumerUnitHeader from "@/templates/ConsumerUnit/Header";
+import ConsumerUnitHeaderAction from "@/templates/ConsumerUnit/HeaderAction";
 import ConsumerUnitContent from "@/templates/ConsumerUnit/Content";
 import ConsumerUnitCreateForm from "@/components/ConsumerUnit/Form/Create";
 import ConsumerUnitEditForm from "@/components/ConsumerUnit/Form/Edit";
@@ -16,6 +14,7 @@ import ConsumerUnitRenewContractForm from "@/components/ConsumerUnit/Form/RenewC
 import SucessNotification from "@/components/Notification/SucessNotification";
 import ErrorNotification from "@/components/Notification/FailNotification";
 import CreateEditEnergyBillForm from "@/components/ElectricityBill/Form/CreateEditElectricityBillForm";
+import ConsumerUnitContentHeader from "@/templates/ConsumerUnit/Content/Header";
 
 type ExpectedQuery = {
   id: string;
@@ -52,34 +51,12 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
 const ConsumerUnitPage: NextPage = () => {
   return (
-    <Box display="flex" height="100vh">
-      <Drawer />
-
-      <Box flexGrow={1}>
-        <Header />
-
-        <Box display="flex">
-          <Box height="calc(100vh - 64px)">
-            <ConsumerUnitsCardGrid />
-          </Box>
-
-          <Box
-            flexGrow={1}
-            minHeight="calc(100vh - 64px)"
-            maxHeight="calc(100vh - 64px)"
-            overflow="scroll"
-            position="relative"
-            pb={5}
-          >
-            <Container>
-              <ConsumerUnitHeader />
-              <ConsumerUnitContent />
-            </Container>
-          </Box>
-        </Box>
-
-        <Box sx={{ backgroundColor: "primary.main" }} height="300px" />
-      </Box>
+    <DefaultTemplateV2
+      headerAction={<ConsumerUnitHeaderAction />}
+      secondaryDrawer={<ConsumerUnitsCardGrid />}
+      contentHeader={<ConsumerUnitContentHeader />}
+    >
+      <ConsumerUnitContent />
 
       <ConsumerUnitCreateForm />
       <ConsumerUnitEditForm />
@@ -87,7 +64,7 @@ const ConsumerUnitPage: NextPage = () => {
       <SucessNotification />
       <ErrorNotification />
       <CreateEditEnergyBillForm />
-    </Box>
+    </DefaultTemplateV2>
   );
 };
 

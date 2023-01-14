@@ -63,7 +63,7 @@ const ConsumerUnitsCardGrid = () => {
       overflow="scroll"
     >
       <Box
-        sx={{ backgroundColor: "Background" }}
+        sx={{ backgroundColor: "background.default" }}
         position="sticky"
         px={2}
         pb={2}
