@@ -28,6 +28,9 @@ const theme = createTheme(
         default: "#EEF4F4",
         paper: "#fff",
       },
+      error: {
+        main: "#B31B0A",
+      },
       warning: {
         main: "#FB736C",
       },

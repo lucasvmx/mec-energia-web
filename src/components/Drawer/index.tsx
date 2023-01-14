@@ -1,7 +1,6 @@
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
-
-import { selectIsDrawerOpen, setIsDrawerOpen } from "@/store/appSlice";
+import { signOut, useSession } from "next-auth/react";
 
 import theme from "@/theme";
 import { styled, Theme, CSSObject } from "@mui/material/styles";
@@ -13,6 +12,8 @@ import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
 import Toolbar from "@mui/material/Toolbar";
 
+import routes from "@/routes";
+import { selectIsDrawerOpen, setIsDrawerOpen } from "@/store/appSlice";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 
@@ -20,9 +21,6 @@ import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 
 import DrawerListItem from "@/components/Drawer/ListItem";
-import routes from "@/routes";
-
-import { signOut, useSession } from 'next-auth/react'
 
 export const openDrawerWidth = 224;
 export const closedDrawerWidth = `calc(${theme.spacing(8)} + 1px)`;
@@ -66,12 +64,12 @@ const Drawer = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const isDrawerOpen = useSelector(selectIsDrawerOpen);
-  const { data: session } = useSession()
+  const { data: session } = useSession();
 
   const isCurrentRoute = (pathname: string) => pathname === router.pathname;
 
-  const handleLogout = () => {
-    signOut({ callbackUrl: '/api/auth/signin' })// TODO Quando tiver página de login, redirecionar para ela
+  const handleSignOutClick = () => {
+    signOut({ callbackUrl: "/" });
   };
 
   const handleToggleDrawer = () => {
@@ -146,24 +144,28 @@ const Drawer = () => {
         )}
       </List>
 
-      <Box flexGrow={1} />
+      {session && (
+        <>
+          <Box flexGrow={1} />
 
-      <List>
-        <DrawerListItem
-          Icon={AccountCircleRoundedIcon}
-          text={session?.user.name || ' '} // TODO Resolver glitch de white-space
-          href="/perfil"
-          active={isCurrentRoute("/perfil")}
-        />
+          <List>
+            <DrawerListItem
+              Icon={AccountCircleRoundedIcon}
+              text={session.user.firstName}
+              href="/perfil"
+              active={isCurrentRoute("/perfil")}
+            />
 
-        <Divider />
+            <Divider />
 
-        <DrawerListItem
-          Icon={LogoutRoundedIcon}
-          text="Sair"
-          onClick={handleLogout}
-        />
-      </List>
+            <DrawerListItem
+              Icon={LogoutRoundedIcon}
+              text="Sair"
+              onClick={handleSignOutClick}
+            />
+          </List>
+        </>
+      )}
     </StyledDrawer>
   );
 };

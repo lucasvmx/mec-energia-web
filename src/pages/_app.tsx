@@ -12,6 +12,7 @@ import { Provider } from "react-redux";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import ptBRLocale from "date-fns/locale/pt-BR";
+import { getHeadTitle } from "@/utils/head";
 
 interface MyAppProps extends AppProps {
   emotionCache?: EmotionCache;
@@ -24,11 +25,16 @@ const MyApp = ({ Component, ...rest }: MyAppProps) => {
   const { store, props } = wrapper.useWrappedStore(rest);
   const { emotionCache = clientSideEmotionCache, pageProps } = props;
 
+  const headTitle = React.useMemo(() => {
+    return getHeadTitle();
+  }, []);
+
   return (
     <SessionProvider session={pageProps.session}>
       <Provider store={store}>
         <CacheProvider value={emotionCache}>
           <Head>
+            <title>{headTitle}</title>
             <meta
               name="viewport"
               content="initial-scale=1, width=device-width"

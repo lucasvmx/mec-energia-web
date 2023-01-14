@@ -1,25 +1,22 @@
 import type { NextPage } from "next";
-import Head from "next/head";
-import { Container } from "@mui/material";
+import { useSession } from "next-auth/react";
 
-import DefaultTemplate from "@/templates/Default";
-import DashboardFilterButtons from "@/templates/Dashboard/FilterButtons";
-import DashboardCardGrid from "@/templates/Dashboard/Grid";
+import SignInTemplate from "@/templates/Auth/SignIn";
+import DashboardTemplate from "@/templates/Dashboard";
+import LoadingTemplate from "@/templates/Loading";
 
-const Dashboard: NextPage = () => {
-  return (
-    <>
-      <Head>
-        <title>Painel</title>
-      </Head>
+const DashboardPage: NextPage = () => {
+  const { data: session, status } = useSession();
 
-      <DefaultTemplate disableGutters headerAction={<DashboardFilterButtons />}>
-        <Container maxWidth="xl">
-          <DashboardCardGrid />
-        </Container>
-      </DefaultTemplate>
-    </>
-  );
+  if (status === "unauthenticated") {
+    return <SignInTemplate />;
+  }
+
+  if (session) {
+    return <DashboardTemplate />;
+  }
+
+  return <LoadingTemplate />;
 };
 
-export default Dashboard;
+export default DashboardPage;

@@ -6,6 +6,10 @@ const signInUrl = `${process.env.API_URL}/token/`;
 
 const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
+  pages: {
+    signIn: "/",
+    signOut: "/",
+  },
   providers: [
     CredentialsProvider({
       type: "credentials",
@@ -15,6 +19,7 @@ const authOptions: NextAuthOptions = {
         username: { label: "Username", type: "text" },
         password: { label: "Password", type: "password" },
       },
+
       authorize: async (credentials) => {
         const response = await fetch(signInUrl, {
           method: "POST",
@@ -29,13 +34,14 @@ const authOptions: NextAuthOptions = {
         }
 
         const {
-          user: { email, id, name, type, universityId },
+          user: { email, id, firstName, lastName, type, universityId },
           token,
         }: SignInResponsePayload = await response.json();
 
         return {
           id,
-          name,
+          firstName,
+          lastName,
           email,
           type,
           token,
@@ -45,6 +51,9 @@ const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
+    async redirect({ baseUrl }) {
+      return baseUrl;
+    },
     async jwt({ token, user }) {
       if (user) {
         token.token = user.token;
