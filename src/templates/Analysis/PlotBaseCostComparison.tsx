@@ -227,7 +227,7 @@ export const PlotBaseCostComparison = ({
               display: "inline",
             }}
           >
-            {nominalSavings}% de economia nominal
+            {nominalSavings.toFixed(1)}% de economia nominal
           </Typography>
         </Box>
 
