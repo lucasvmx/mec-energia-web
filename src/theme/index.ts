@@ -37,9 +37,6 @@ const theme = createTheme(
       highlighted: {
         main: "rgba(10, 92, 103, 0.12)",
       },
-      error:{
-        main:"#B31B0A",
-      }
     },
     typography: {
       fontFamily: ["Lexend", "sans-serif"].join(","),
@@ -66,21 +63,20 @@ const theme = createTheme(
           },
         },
       },
-      MuiAlert:{
-        styleOverrides:{
-          standardError:{
+      MuiAlert: {
+        styleOverrides: {
+          standardError: {
             backgroundColor: "#B31B0A",
             color: "#FFFFFF",
-            
           },
-          standardSuccess:{
+          standardSuccess: {
             backgroundColor: "#418026",
             color: "#FFFFFF",
           },
-          icon:{
-            color:"#FFFFFF",
-          }
-        }
+          icon: {
+            color: "#FFFFFF",
+          },
+        },
       },
       MuiDataGrid: {
         styleOverrides: {
