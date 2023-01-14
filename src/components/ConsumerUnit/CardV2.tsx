@@ -41,16 +41,24 @@ const ConsumerUnitCardAction = ({
   variant,
 }: ConsumerUnitCardActionProps) => {
   const isWarning = variant === "warning";
-  const totalPendenciesCount =
-    pendingEnergyBillsNumber + (isCurrentEnergyBillFilled ? 0 : 1);
-  const pendenciesMessage =
-    totalPendenciesCount > 0
-      ? `${totalPendenciesCount} faturas pendentes`
-      : "Em dia";
+
+  const pendenciesMessage = useMemo(() => {
+    if (pendingEnergyBillsNumber === 0) {
+      return "Em dia";
+    }
+
+    if (pendingEnergyBillsNumber === 1) {
+      return "1 fatura pendente";
+    }
+
+    if (pendingEnergyBillsNumber > 1) {
+      return `${pendingEnergyBillsNumber} faturas pendentes`;
+    }
+  }, [pendingEnergyBillsNumber]);
 
   const handleActionButtonClick = useCallback<
     MouseEventHandler<HTMLButtonElement>
-  >(async (event) => {
+  >((event) => {
     event.stopPropagation();
 
     console.log("Lançar fatura");
