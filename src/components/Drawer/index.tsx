@@ -12,14 +12,16 @@ import Fade from "@mui/material/Fade";
 import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
 import Toolbar from "@mui/material/Toolbar";
-
-import routes from "@/routes";
-import { selectIsDrawerOpen, setIsDrawerOpen } from "@/store/appSlice";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
-
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
+
+import {
+  selectIsDrawerOpen,
+  selectRoutes,
+  setIsDrawerOpen,
+} from "@/store/appSlice";
 
 import DrawerListItem from "@/components/Drawer/ListItem";
 
@@ -64,8 +66,9 @@ const StyledDrawer = styled(MuiDrawer, {
 const Drawer = () => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const isDrawerOpen = useSelector(selectIsDrawerOpen);
   const { data: session } = useSession();
+  const routes = useSelector(selectRoutes);
+  const isDrawerOpen = useSelector(selectIsDrawerOpen);
 
   const isCurrentRoute = (pathname: string) => pathname === router.pathname;
 
@@ -138,7 +141,7 @@ const Drawer = () => {
 
       <List sx={{ padding: 0 }}>
         {Object.entries(routes).map(
-          ([pathname, { title, href, Icon }], index) => (
+          ([pathname, { title, Icon, href }], index) => (
             <Box mt={index > 0 ? 1 : 0} key={pathname}>
               <DrawerListItem
                 Icon={Icon}

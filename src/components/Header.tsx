@@ -1,15 +1,15 @@
 import { ReactNode } from "react";
 import { useRouter } from "next/router";
-import NextLink from "next/link";
+import { useSelector } from "react-redux";
 
 import { AppBar, Box, Toolbar, Typography } from "@mui/material";
-import MuiLink from "@mui/material/Link";
-
-import routes from "@/routes";
+import { selectRoutes } from "@/store/appSlice";
+import { RoutesPathnames } from "@/types/router";
 
 const Header = ({ children }: { children?: ReactNode }) => {
   const { pathname } = useRouter();
-  const { Icon, title, href } = routes[pathname];
+  const routes = useSelector(selectRoutes);
+  const { Icon, title } = routes[pathname as RoutesPathnames];
 
   return (
     <AppBar
@@ -19,16 +19,13 @@ const Header = ({ children }: { children?: ReactNode }) => {
     >
       <Toolbar sx={{ px: 2 }} disableGutters>
         <Box flexGrow={1}>
-          <Typography variant="h6">
-            <NextLink href={href} passHref legacyBehavior>
-              <MuiLink color="primary" underline="none">
-                <Box display="flex" alignItems="center">
-                  <Icon fontSize="large" />
-                  <Box ml={1}>{title}</Box>
-                </Box>
-              </MuiLink>
-            </NextLink>
-          </Typography>
+          <Box display="flex" alignItems="center">
+            <Icon fontSize="large" color="primary" />
+
+            <Typography sx={{ ml: 1 }} variant="h6" color="primary">
+              {title}
+            </Typography>
+          </Box>
         </Box>
 
         {children}

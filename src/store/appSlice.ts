@@ -1,4 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
+import TungstenRoundedIcon from "@mui/icons-material/TungstenRounded";
+import FactoryRoundedIcon from "@mui/icons-material/FactoryRounded";
 
 import {
   AppState,
@@ -13,6 +16,7 @@ import {
 } from "@/types/app";
 import { InvoiceDataGridRow } from "@/types/consumerUnit";
 import { Tariff } from "@/types/tariffs";
+import { Routes } from "@/types/router";
 
 const initialState: AppState = {
   isDrawerOpen: true,
@@ -39,7 +43,7 @@ const initialState: AppState = {
     isCreateFormOpen: false,
     isEditFormOpen: false,
     currentTariff: {
-      distributor:1,
+      distributor: 1,
       blue: {
         offPeakTeInReaisPerMwh: 0,
         offPeakTusdInReaisPerKw: 0,
@@ -61,24 +65,24 @@ const initialState: AppState = {
       },
     },
   },
-  energyBill:{
-    isCreateFormOpen:false,
-    isEditFormOpen:false,
-    params:{
-      month:0,
-      year:0,
-    }
+  energyBill: {
+    isCreateFormOpen: false,
+    isEditFormOpen: false,
+    params: {
+      month: 0,
+      year: 0,
+    },
   },
-  notifications:{
-    sucess:{
-      isOpen:false,
-      text:"",
+  notifications: {
+    sucess: {
+      isOpen: false,
+      text: "",
     },
-    error:{
-      isOpen:false,
-      text:"",
+    error: {
+      isOpen: false,
+      text: "",
     },
-  }
+  },
 };
 
 export const appSlice = createSlice({
@@ -99,7 +103,10 @@ export const appSlice = createSlice({
     },
 
     // Consumer unit
-    setActiveConsumerUnitId: (state, action: PayloadAction<number>) => {
+    setActiveConsumerUnitId: (
+      state,
+      action: PayloadAction<AppState["consumerUnit"]["activeId"]>
+    ) => {
       state.consumerUnit.activeId = action.payload;
     },
     setConsumerUnitActiveFilter: (
@@ -174,15 +181,24 @@ export const appSlice = createSlice({
         state.energyBill.isCreateFormOpen = !action.payload;
       }
     },
-    setEnergyBillEdiFormParams:(state, action: PayloadAction<EnergyBillEdiFormParams>)=>{
-    state.energyBill.params = action.payload;
+    setEnergyBillEdiFormParams: (
+      state,
+      action: PayloadAction<EnergyBillEdiFormParams>
+    ) => {
+      state.energyBill.params = action.payload;
     },
-    setIsSucessNotificationOpen: (state, action:PayloadAction<NotificationProps>) =>{
-      state.notifications.sucess = action.payload
+    setIsSucessNotificationOpen: (
+      state,
+      action: PayloadAction<NotificationProps>
+    ) => {
+      state.notifications.sucess = action.payload;
     },
-    setIsErrorNotificationOpen: (state, action:PayloadAction<NotificationProps>) =>{
-      state.notifications.error = action.payload
-    }
+    setIsErrorNotificationOpen: (
+      state,
+      action: PayloadAction<NotificationProps>
+    ) => {
+      state.notifications.error = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(STORE_HYDRATE, (state, action) => {
@@ -224,6 +240,32 @@ export const {
 // App
 export const selectIsDrawerOpen = (state: RootState) => {
   return state.app.isDrawerOpen;
+};
+
+export const selectRoutes = (state: RootState) => {
+  const {
+    consumerUnit: { activeId },
+  } = state.app;
+
+  const routes: Routes = {
+    "/": {
+      title: "Painel",
+      Icon: DashboardRoundedIcon,
+      href: "/",
+    },
+    "/uc/[id]": {
+      title: "Unidades Consumidoras",
+      Icon: TungstenRoundedIcon,
+      ...(activeId && { href: `/uc/${activeId}` }),
+    },
+    "/distribuidoras/[id]": {
+      title: "Distribuidoras",
+      Icon: FactoryRoundedIcon,
+      href: "/distribuidoras/1",
+    },
+  };
+
+  return routes;
 };
 
 // Dashboard
@@ -297,8 +339,8 @@ export const selectEnergyBillParams = (state: RootState) => {
 
 export const selectSucessNotification = (state: RootState) => {
   return state.app.notifications.sucess;
-}
+};
 
 export const selectErrorNotification = (state: RootState) => {
   return state.app.notifications.error;
-}
+};

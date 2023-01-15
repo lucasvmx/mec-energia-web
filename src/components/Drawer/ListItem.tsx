@@ -55,6 +55,7 @@ const DrawerListItem = ({
           }}
           selected={active}
           onClick={onClick}
+          disabled={!href}
         >
           <ListItemIcon
             sx={{

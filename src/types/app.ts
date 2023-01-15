@@ -20,7 +20,7 @@ export enum ConsumerUnitTab {
 
 export type ConsumerUnitInvoiceFilter = "pending" | string;
 
-export interface AppState {
+export type AppState = {
   isDrawerOpen: boolean;
   dashboard: {
     activeFilter: DashboardFilter;
@@ -46,27 +46,19 @@ export interface AppState {
     isEditFormOpen: boolean;
     currentTariff: Tariff;
   };
-  energyBill:{
-    isCreateFormOpen:boolean,
-    isEditFormOpen:boolean,
-    params:EnergyBillEdiFormParams,
+  energyBill: {
+    isCreateFormOpen: boolean;
+    isEditFormOpen: boolean;
+    params: EnergyBillEdiFormParams;
   };
-  notifications:{
-    sucess:NotificationProps;
-    error:NotificationProps;
-  }
-}
+  notifications: {
+    sucess: NotificationProps;
+    error: NotificationProps;
+  };
+};
 
 type Store = ReturnType<typeof makeStore>;
 export type RootState = ReturnType<Store["getState"]>;
-
-export interface Routes {
-  [key: string]: {
-    title: string;
-    href: string;
-    Icon: ComponentType<SvgIconProps>;
-  };
-}
 
 export type CardWrapperProps = {
   dense?: boolean;
@@ -85,13 +77,13 @@ export interface CardProps extends CardWrapperProps {
   onActionIconClick?: IconButtonProps["onClick"];
 }
 
-export interface NotificationProps{
+export interface NotificationProps {
   isOpen: boolean;
   text?: string;
 }
 
 export interface EnergyBillEdiFormParams {
-  month?:number;
-  year?:number;
-  id?:number;
+  month?: number;
+  year?: number;
+  id?: number;
 }

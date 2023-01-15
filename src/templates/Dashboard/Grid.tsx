@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useEffect, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Grid } from "@mui/material";
 // import { useFetchDistributorsQuery } from "@/api/mocked";
-import { selectDashboardActiveFilter } from "@/store/appSlice";
+import {
+  selectDashboardActiveFilter,
+  setActiveConsumerUnitId,
+} from "@/store/appSlice";
 // import { DistributorsPayload } from "@/types/supplier";
-import { ConsumerUnitsPayload } from "@/types/consumerUnit";
 // import DistributorCard from "@/components/Distributor/Card";
 import ConsumerUnitCard from "@/components/ConsumerUnit/CardV2";
 import { useFetchConsumerUnitsQuery } from "@/api";
@@ -12,6 +14,7 @@ import { useSession } from "next-auth/react";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 
 const DashboardCardGrid = () => {
+  const dispatch = useDispatch();
   const { data: session } = useSession();
 
   // const { data: distributorsData } = useFetchDistributorsQuery();
@@ -21,22 +24,9 @@ const DashboardCardGrid = () => {
 
   const activeFilter = useSelector(selectDashboardActiveFilter);
 
-  // const [distributors, setDistributors] = useState<DistributorsPayload>([]);
-  const [consumerUnits, setConsumerUnits] = useState<ConsumerUnitsPayload>([]);
-
-  // useEffect(() => {
-  //   if (!distributorsData) {
-  //     return;
-  //   }
-
-  //   setDistributors(
-  //     distributorsData.filter(({ hasPendencies }) => hasPendencies)
-  //   );
-  // }, [distributorsData]);
-
-  useEffect(() => {
+  const consumerUnits = useMemo(() => {
     if (!consumerUnitsData) {
-      return;
+      return [];
     }
 
     const filteredConsumerUnits = [];
@@ -65,8 +55,14 @@ const DashboardCardGrid = () => {
       .sort(({ isFavorite }) => (isFavorite ? -1 : 1)) // favorites first
       .sort(({ isActive }) => (isActive ? -1 : 1)); // disabled last
 
-    setConsumerUnits(sortedConsumerUnits);
+    return sortedConsumerUnits;
   }, [activeFilter, consumerUnitsData]);
+
+  useEffect(() => {
+    const activeConsumerUnitId = consumerUnits.at(0)?.id ?? null;
+
+    dispatch(setActiveConsumerUnitId(activeConsumerUnitId));
+  }, [consumerUnits, dispatch]);
 
   return (
     <Grid container spacing={5} py={3}>
