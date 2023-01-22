@@ -73,7 +73,7 @@ const ConsumerUnitEditForm = () => {
 
   const { data: session } = useSession()
   const { data: subgroupsList } = useGetSubgroupsQuery()
-  const { data: distributorList } = useGetDistributorsQuery(session?.user?.universityId || 0)
+  const { data: distributorList } = useGetDistributorsQuery(session?.user?.universityId || skipToken)
   const { data: contract } = useGetContractQuery(activeConsumerUnit || skipToken)
   const { data: consumerUnit } = useGetConsumerUnitQuery(activeConsumerUnit || skipToken)
   const [editConsumerUnit, { isError, isSuccess }] = useEditConsumerUnitMutation()
@@ -98,19 +98,19 @@ const ConsumerUnitEditForm = () => {
   const isActive = watch("isActive")
 
   useEffect(() => {
-    if (isEditFormOpen) {
-      if (consumerUnit?.name) setValue("name", consumerUnit?.name)
-      if (consumerUnit?.isActive) setValue("isActive", true)
-      if (consumerUnit?.code) setValue("code", consumerUnit?.code);
-      if (contract?.distributor) setValue("distributor", contract?.distributor)
-      if (contract?.supplyVoltage) setValue("supplyVoltage", contract?.supplyVoltage)
-      if (contract?.peakContractedDemandInKw) setValue("peakContractedDemandInKw", contract?.peakContractedDemandInKw);
-      if (contract?.offPeakContractedDemandInKw) setValue("offPeakContractedDemandInKw", contract?.offPeakContractedDemandInKw);
-      if (contract?.startDate) {
-        const currentDate = new Date(contract?.startDate)
-        currentDate.setDate(currentDate.getDate() + 1)
-        setValue("startDate", currentDate)
-      }
+    if (isEditFormOpen && consumerUnit && contract) {
+      setValue("name", consumerUnit?.name)
+      setValue("isActive", true)
+      setValue("code", consumerUnit?.code);
+      setValue("distributor", contract?.distributor)
+      setValue("supplyVoltage", contract?.supplyVoltage)
+      setValue("peakContractedDemandInKw", contract?.peakContractedDemandInKw);
+      setValue("offPeakContractedDemandInKw", contract?.offPeakContractedDemandInKw);
+
+      const currentDate = new Date(contract?.startDate)
+      currentDate.setDate(currentDate.getDate() + 1)
+      setValue("startDate", currentDate)
+
     }
   }, [isEditFormOpen, consumerUnit, contract, setValue]);
 

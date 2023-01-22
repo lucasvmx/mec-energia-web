@@ -1,6 +1,6 @@
 import { CreateConsumerUnitRequestPayload, EditConsumerUnitRequestPayload, InvoicesPayload } from "@/types/consumerUnit";
 import { GetContractsResponsePayload, RenewContractRequestPayload, RenewContractResponsePayload } from "@/types/contract";
-import { CreateDistributorRequestPayload, CreateDistributorResponsePayload, DistributorPropsTariffs } from "@/types/distributor";
+import { CreateDistributorRequestPayload, CreateDistributorResponsePayload, DistributorPropsTariffs, EditDistributorRequestPayload, EditDistributorResponsePayload } from "@/types/distributor";
 import { CurrentEneryBillResponsePayload, EditEnergyBillRequestPayload, EditEnergyBillResponsePayload, PostEnergyBillRequestPayload, PostEnergyBillResponsePayload } from "@/types/energyBill";
 import { GetSubgroupsResponsePayload } from "@/types/subgroups";
 import { Recommendation, RecommendationSettings } from "@/types/recommendation";
@@ -48,10 +48,22 @@ export const mecEnergiaApi = createApi({
       query: (universityId) => `distributors/?university_id=${universityId}`,
       providesTags: ["Distributors"]
     }),
+    getDistributor: builder.query<DistributorPropsTariffs, number>({
+      query: (distributorId) => `distributors/${distributorId}/`,
+      providesTags: ["Distributors"]
+    }),
     createDistributor: builder.mutation<CreateDistributorResponsePayload, CreateDistributorRequestPayload>({
       query: (body) => ({
         url: "distributors/",
         method: "POST",
+        body
+      }),
+      invalidatesTags: ["Distributors"]
+    }),
+    editDistributor: builder.mutation<EditDistributorResponsePayload, EditDistributorRequestPayload>({
+      query: (body) => ({
+        url: `distributors/${body.id}/`,
+        method: 'PUT',
         body
       }),
       invalidatesTags: ["Distributors"]
@@ -127,7 +139,9 @@ export const mecEnergiaApi = createApi({
 export const {
   useGetSubgroupsQuery,
   useGetDistributorsQuery,
+  useGetDistributorQuery,
   useCreateDistributorMutation,
+  useEditDistributorMutation,
   useEditConsumerUnitMutation,
   useCreateConsumerUnitMutation,
   useGetContractQuery,

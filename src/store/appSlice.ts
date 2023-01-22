@@ -36,6 +36,7 @@ const initialState: AppState = {
     },
   },
   distributor: {
+    activeId: null,
     isCreateFormOpen: false,
     isEditFormOpen: false,
   },
@@ -148,6 +149,12 @@ export const appSlice = createSlice({
     ) => {
       state.consumerUnit.isRenewContractFormOpen = action.payload;
     },
+    setActiveDistributorId: (
+      state,
+      action: PayloadAction<AppState["distributor"]["activeId"]>
+    ) => {
+      state.distributor.activeId = action.payload;
+    },
     setIsDistributorCreateFormOpen: (state, action: PayloadAction<boolean>) => {
       state.distributor.isCreateFormOpen = action.payload;
     },
@@ -225,6 +232,7 @@ export const {
   setIsConsumerUnitEditFormOpen,
   setIsConsumerUnitRenewContractFormOpen,
 
+  setActiveDistributorId,
   setIsDistributorCreateFormOpen,
   setIsDistributorEditFormOpen,
   setIsTariffCreateFormOpen,
@@ -304,6 +312,10 @@ export const selectIsConsumerUnitEditFormOpen = (state: RootState) => {
 
 export const selectIsConsumerUnitRenewContractFormOpen = (state: RootState) => {
   return state.app.consumerUnit.isRenewContractFormOpen;
+};
+
+export const selectActiveDistributorId = (state: RootState) => {
+  return state.app.distributor.activeId;
 };
 
 export const selectIsDistributorCreateFormOpen = (state: RootState) => {

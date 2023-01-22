@@ -3,7 +3,7 @@ import { Tariff } from "./tariffs";
 export interface DistributorPropsTariffs {
   id: number;
   name: string;
-  cnpj?:string;
+  cnpj:string;
   university:number;
   isActive: boolean;
   consumerUnits:number;
@@ -50,4 +50,21 @@ export interface CreateDistributorResponsePayload {
   name: string,
   cnpj: string,
   isActive: boolean
+}
+
+export interface EditDistributorRequestPayload {
+  university: number,
+  name: string,
+  cnpj: string,
+  isActive: boolean,
+  id:number 
+}
+
+export interface EditDistributorResponsePayload {
+id: number,
+university: number,
+tariffs: Array<Tariff>,
+name: string,
+cnpj: string,
+isActive: boolean
 }

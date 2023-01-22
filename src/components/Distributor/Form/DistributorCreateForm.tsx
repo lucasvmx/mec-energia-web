@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { selectIsDistributorCreateFormOpen, setIsDistributorCreateFormOpen } from '../../../store/appSlice';
-import { CreateDistributorForm } from '../../../types/distributor';
+import { selectIsDistributorCreateFormOpen, setIsDistributorCreateFormOpen, setIsErrorNotificationOpen, setIsSucessNotificationOpen } from '../../../store/appSlice';
+import { CreateDistributorForm, CreateDistributorRequestPayload } from '../../../types/distributor';
 import FormDrawer from '../../Form/Drawer';
 import { PatternFormat } from 'react-number-format';
 
@@ -9,8 +9,11 @@ import {
   Controller, FormProvider, SubmitHandler, useForm,
 } from "react-hook-form";
 import { Box, Button, Grid, TextField, Typography } from '@mui/material';
+import { LoadingButton } from '@mui/lab'
+import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import FormWarningDialog from '../../ConsumerUnit/Form/WarningDialog';
-
+import { useCreateDistributorMutation } from '@/api';
+import { useSession } from 'next-auth/react';
 
 const defaultValues: CreateDistributorForm = {
   name: "",
@@ -19,8 +22,11 @@ const defaultValues: CreateDistributorForm = {
 
 const DistributorCreateForm = () => {
   const dispatch = useDispatch();
+  const { data: session } = useSession()
+  const user = session?.user
   const isCreateFormOpen = useSelector(selectIsDistributorCreateFormOpen);
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
+  const [createDistributor, { isError, isSuccess, isLoading }] = useCreateDistributorMutation()
   const form = useForm({ defaultValues });
   const {
     control,
@@ -36,19 +42,49 @@ const DistributorCreateForm = () => {
     handleDiscardForm();
   };
 
-  const handleDiscardForm = () => {
+  const handleDiscardForm = useCallback(() => {
     handleCloseDialog();
     reset();
     dispatch(setIsDistributorCreateFormOpen(false));
-  };
+  }, [dispatch, reset]);
 
   const handleCloseDialog = () => {
     setShouldShowCancelDialog(false);
   };
 
-  const onSubmitHandler: SubmitHandler<CreateDistributorForm> = (data) => {
-    console.log(data);
+  const onSubmitHandler: SubmitHandler<CreateDistributorForm> = async (data) => {
+    const cnpjSemMascara = data.cnpj.replace(/[\/.-]/g, '');
+    data.cnpj = cnpjSemMascara
+    const body: CreateDistributorRequestPayload = {
+      name: data.name,
+      cnpj: data.cnpj,
+      isActive: true,
+      university: user?.universityId as number
+    }
+    await createDistributor(body)
   };
+
+  //Notificações
+  const handleNotification = useCallback(() => {
+    if (isSuccess) {
+      dispatch(setIsSucessNotificationOpen({
+        isOpen: true,
+        text: "Distribuidora adicionada com sucesso!"
+      }))
+      reset();
+      dispatch(setIsDistributorCreateFormOpen(false))
+    }
+    else if (isError)
+      dispatch(setIsErrorNotificationOpen({
+        isOpen: true,
+        text: "Erro ao adicionar distribuidora."
+      }))
+  }, [dispatch, isError, isSuccess, reset])
+
+  useEffect(() => {
+    handleNotification()
+  }, [handleNotification, isSuccess, isError])
+
   return (
     <FormDrawer open={isCreateFormOpen} handleCloseDrawer={handleCancelEdition}>
       <FormProvider {...form}>
@@ -65,6 +101,12 @@ const DistributorCreateForm = () => {
             </Grid>
 
             <Grid item xs={12}>
+              <Typography variant="h5">
+                Distribuidora
+              </Typography>
+            </Grid>
+
+            <Grid item xs={12}>
               <Controller
                 control={control}
                 name="name"
@@ -77,6 +119,7 @@ const DistributorCreateForm = () => {
                     ref={ref}
                     value={value}
                     label="Nome *"
+                    placeholder='Ex.: CEMIG, Enel, Neonergia'
                     error={Boolean(error)}
                     helperText={error?.message ?? " "}
                     fullWidth
@@ -107,6 +150,7 @@ const DistributorCreateForm = () => {
                     customInput={TextField}
                     label="CNPJ *"
                     format='##.###.###/####-##'
+                    placeholder='Ex.: 12345678000167'
                     error={Boolean(error)}
                     helperText={error?.message ?? " "}
                     fullWidth
@@ -117,13 +161,23 @@ const DistributorCreateForm = () => {
               />
             </Grid>
 
-            <Grid item xs={12}>
-              <Button type="submit" variant="contained">
-                Gravar
-              </Button>
 
-              <Button variant="text" onClick={handleCancelEdition}>
-                Cancelar
+            <Grid item xs={3}>
+              <LoadingButton
+                type="submit"
+                variant="contained"
+                size='large'
+                loading={isLoading}
+                startIcon={<TaskAltIcon />}
+                loadingPosition="start"
+              >
+                {isLoading ? 'Gravando' : 'Gravar'}
+              </LoadingButton>
+            </Grid>
+
+            <Grid item xs={2}>
+              <Button variant="text" onClick={handleCancelEdition} size='large'>
+                <Typography pl={3} pr={3}>Cancelar</Typography>
               </Button>
             </Grid>
 

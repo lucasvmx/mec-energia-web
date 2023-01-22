@@ -85,7 +85,7 @@ const DistributorCreateFormDialog = (props: DistributorCreateFormDialogProps) =>
     if (isSuccess) {
       dispatch(setIsSucessNotificationOpen({
         isOpen: true,
-        text: "Distribuuidora adicionada com sucesso!"
+        text: "Distribuidora adicionada com sucesso!"
       }))
       reset();
       handleDiscardForm();

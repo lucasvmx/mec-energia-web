@@ -47,6 +47,8 @@ import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { sendFormattedDate } from "@/utils/date";
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { getSubgroupsText } from "@/utils/get-subgroup-text";
+import TaskAltIcon from '@mui/icons-material/TaskAlt';
+import { LoadingButton } from "@mui/lab";
 
 const defaultValues: CreateConsumerUnitForm = {
   name: "",
@@ -71,7 +73,7 @@ const ConsumerUnitCreateForm = () => {
   //Requisições Redux Query
   const { data: subgroupsList } = useGetSubgroupsQuery()
   const { data: distributorList } = useGetDistributorsQuery(session?.user?.universityId || skipToken)
-  const [createConsumerUnit, { status, isError, isSuccess }] = useCreateConsumerUnitMutation()
+  const [createConsumerUnit, { status, isError, isSuccess, isLoading }] = useCreateConsumerUnitMutation()
 
   //Estados
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
@@ -585,13 +587,22 @@ const ConsumerUnitCreateForm = () => {
               </Grid>
             }
 
-            <Grid item xs={12}>
-              <Button type="submit" variant="contained">
-                Gravar
-              </Button>
+            <Grid item xs={3}>
+              <LoadingButton
+                type="submit"
+                variant="contained"
+                size='large'
+                loading={isLoading}
+                startIcon={<TaskAltIcon />}
+                loadingPosition="start"
+              >
+                {isLoading ? 'Gravando' : 'Gravar'}
+              </LoadingButton>
+            </Grid>
 
-              <Button variant="text" onClick={handleCancelEdition}>
-                Cancelar
+            <Grid item xs={2}>
+              <Button variant="text" onClick={handleCancelEdition} size='large'>
+                <Typography pl={3} pr={3}>Cancelar</Typography>
               </Button>
             </Grid>
           </Grid>

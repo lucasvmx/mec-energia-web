@@ -38,6 +38,7 @@ export type AppState = {
     };
   };
   distributor: {
+    activeId: number | null;
     isCreateFormOpen: boolean;
     isEditFormOpen: boolean;
   };

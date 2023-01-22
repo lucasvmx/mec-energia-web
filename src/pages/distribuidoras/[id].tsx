@@ -32,6 +32,8 @@ import { useDispatch } from "react-redux";
 import DistributorCreateForm from "../../components/Distributor/Form/DistributorCreateForm";
 import DistributorEditForm from "../../components/Distributor/Form/DistributorEditForm";
 import TariffCreateForm from "../../components/Tariff/Form/TariffCreateForm";
+import SucessNotification from "@/components/Notification/SucessNotification";
+import ErrorNotification from "@/components/Notification/FailNotification";
 
 const DistributorPage: NextPage = () => {
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
@@ -235,6 +237,8 @@ const DistributorPage: NextPage = () => {
         <DistributorCreateForm />
         <DistributorEditForm />
         <TariffCreateForm />
+        <SucessNotification />
+        <ErrorNotification />
       </Box>
     </DefaultTemplate >
   );
