@@ -1,19 +1,23 @@
-import { Alert, Box, Button, Divider, Grid, InputAdornment, TextField, Typography } from '@mui/material'
-import React, { useState } from 'react'
+import { Alert, Box, Button, Grid, InputAdornment, TextField, Typography } from '@mui/material'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
-import { selectIsTariffCreateFormOpen, selectIsTariffEditFormOpen, setIsTariffCreateFormOpen, setIsTariffEdiFormOpen } from '../../../store/appSlice'
-import { CreateAndEditTariffForm } from '../../../types/tariffs'
+import { selectActiveDistributorId, selectIsTariffCreateFormOpen, selectIsTariffEditFormOpen, setIsErrorNotificationOpen, setIsSucessNotificationOpen, setIsTariffCreateFormOpen, setIsTariffEdiFormOpen } from '../../../store/appSlice'
+import { CreateAndEditTariffForm, CreateTariffRequestPayload } from '../../../types/tariffs'
 import FormDrawer from '../../Form/Drawer'
-import LiveHelpIcon from '@mui/icons-material/LiveHelp';
 import { DatePicker } from '@mui/x-date-pickers'
 import { isAfter, isFuture, isValid } from "date-fns";
 import { NumericFormat } from "react-number-format";
 import FormWarningDialog from '../../ConsumerUnit/Form/WarningDialog'
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import { LoadingButton } from '@mui/lab'
+import TaskAltIcon from '@mui/icons-material/TaskAlt';
+import { useCreateTariffMutation } from '@/api'
+import { sendFormattedDate } from '@/utils/date'
 
 const defaultValues: CreateAndEditTariffForm = {
-  start_date: '',
-  end_date: '',
+  start_date: new Date(),
+  end_date: new Date(),
   blue: {
     peakTusdInReaisPerKw: undefined,
     peakTusdInReaisPerMwh: undefined,
@@ -35,6 +39,8 @@ const TariffCreateForm = () => {
   const dispatch = useDispatch();
   const isCreateTariffFormOpen = useSelector(selectIsTariffCreateFormOpen);
   const isEditTariffFormOpen = useSelector(selectIsTariffEditFormOpen)
+  const [createTariff, { isError: isCreateTariffError, isSuccess: isCreateTariffSucess, isLoading: isCreatTariffLoading }] = useCreateTariffMutation()
+  const activeDistributor = useSelector(selectActiveDistributorId);
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
   const [startDate, setStartDate] = useState(new Date(2010))
   const form = useForm({ defaultValues })
@@ -62,10 +68,6 @@ const TariffCreateForm = () => {
 
   const handleCloseDialog = () => {
     setShouldShowCancelDialog(false);
-  }
-
-  const onSubmitHandler: SubmitHandler<CreateAndEditTariffForm> = (data) => {
-    console.log(data);
   }
 
   const isValidDate = (date: CreateAndEditTariffForm["start_date"]) => {
@@ -98,6 +100,44 @@ const TariffCreateForm = () => {
     return true;
   };
 
+  const onSubmitHandler: SubmitHandler<CreateAndEditTariffForm> = async (data: CreateAndEditTariffForm) => {
+    const { start_date, end_date, blue, green } = data;
+
+    const body: CreateTariffRequestPayload = {
+      startDate: sendFormattedDate(start_date),
+      endDate: sendFormattedDate(end_date),
+      blue: blue,
+      green: green,
+      subgroup: 'A4',// TODO: colocar dinâmico,
+      distributor: activeDistributor as number,
+    }
+
+    if (isCreateTariffFormOpen) await createTariff(body)
+  }
+
+  const handleNotification = useCallback(() => {
+    if (isCreateTariffFormOpen) {
+      if (isCreateTariffSucess) {
+        dispatch(setIsSucessNotificationOpen({
+          isOpen: true,
+          text: "Tarifas adicionadas com sucesso!"
+        }))
+        reset();
+        dispatch(setIsTariffCreateFormOpen(false))
+      }
+      else if (isCreateTariffError)
+        dispatch(setIsErrorNotificationOpen({
+          isOpen: true,
+          text: "Erro ao adicionar tarifas!"
+        }))
+    }
+    else if (isEditTariffFormOpen) { }
+  }, [dispatch, isCreateTariffError, isCreateTariffFormOpen, isCreateTariffSucess, isEditTariffFormOpen, reset])
+
+  useEffect(() => {
+    handleNotification()
+  }, [handleNotification])
+
   return (
     <FormDrawer open={isEditTariffFormOpen || isCreateTariffFormOpen} handleCloseDrawer={
       handleCancelEdition
@@ -116,12 +156,16 @@ const TariffCreateForm = () => {
                 Distribuidora: Alguma
               </Typography>
               <Box mt={3} mb={3}>
-                <Alert icon={<LiveHelpIcon fontSize="inherit" />} severity="info">Veja o passo-a-passo a seguir para encontrar as informações de tarifa no site da ANEEL.</Alert>
+                <Alert icon={<ErrorOutlineIcon />} severity="info">Veja o passo-a-passo a seguir para encontrar as informações de tarifa no site da ANEEL.</Alert>
 
               </Box>
               <Typography>
                 * campos obrigatórios
               </Typography>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Typography variant='h5'>Vigência</Typography>
             </Grid>
 
             <Grid item xs={4.5}>
@@ -138,7 +182,7 @@ const TariffCreateForm = () => {
                 }) => (
                   <DatePicker
                     value={value}
-                    label="Início da vigência *"
+                    label="Início *"
                     minDate={new Date("2010")}
                     disableFuture
                     toolbarPlaceholder="kajsdfh"
@@ -173,7 +217,7 @@ const TariffCreateForm = () => {
                 }) => (
                   <DatePicker
                     value={value}
-                    label="Fim da vigência *"
+                    label="Fim *"
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -192,13 +236,11 @@ const TariffCreateForm = () => {
             </Grid>
 
             <Grid item xs={12}>
-              <Typography variant='inherit' sx={{ color: 'text.secondary' }}>Modalidade</Typography>
-              <Typography variant='h5'>Azul</Typography>
-              <Divider></Divider>
+              <Typography variant='h5'>Modalidade Azul</Typography>
             </Grid>
 
             <Grid item xs={12}>
-              <Typography variant='inherit' sx={{ color: 'text.secondary' }}>Ponta</Typography>
+              <Typography variant='inherit' color='primary'>Ponta</Typography>
             </Grid>
 
             <Grid item xs={4}>
@@ -325,7 +367,7 @@ const TariffCreateForm = () => {
             </Grid>
 
             <Grid item xs={12}>
-              <Typography variant='inherit' sx={{ color: 'text.secondary' }}>Fora Ponta</Typography>
+              <Typography variant='inherit' color='primary'>Fora Ponta</Typography>
             </Grid>
 
             <Grid item xs={4}>
@@ -452,14 +494,12 @@ const TariffCreateForm = () => {
             </Grid>
 
             <Grid item xs={12}>
-              <Typography variant='inherit' sx={{ color: 'text.secondary' }}>Modalidade</Typography>
-              <Typography variant='h5'>Verde</Typography>
-              <Divider></Divider>
+              <Typography variant='h5' >Modalidade Verde</Typography>
             </Grid>
 
 
             <Grid item xs={12}>
-              <Typography variant='inherit' sx={{ color: 'text.secondary' }}>NA</Typography>
+              <Typography variant='inherit' color='primary'>NA</Typography>
             </Grid>
 
             <Grid item xs={4}>
@@ -503,7 +543,7 @@ const TariffCreateForm = () => {
             </Grid>
 
             <Grid item xs={12}>
-              <Typography variant='inherit' sx={{ color: 'text.secondary' }}>Ponta</Typography>
+              <Typography variant='inherit' color='primary'>Ponta</Typography>
             </Grid>
 
 
@@ -588,7 +628,7 @@ const TariffCreateForm = () => {
             </Grid>
 
             <Grid item xs={12}>
-              <Typography variant='inherit' sx={{ color: 'text.secondary' }}>Fora Ponta</Typography>
+              <Typography variant='inherit' color='primary'>Fora Ponta</Typography>
             </Grid>
 
             <Grid item xs={4}>
@@ -671,13 +711,22 @@ const TariffCreateForm = () => {
               />
             </Grid>
 
-            <Grid item xs={12}>
-              <Button type="submit" variant="contained">
-                Gravar
-              </Button>
+            <Grid item xs={3}>
+              <LoadingButton
+                type="submit"
+                variant="contained"
+                size='large'
+                loading={isCreatTariffLoading}
+                startIcon={<TaskAltIcon />}
+                loadingPosition="start"
+              >
+                {isCreatTariffLoading ? 'Gravando' : 'Gravar'}
+              </LoadingButton>
+            </Grid>
 
-              <Button variant="text" onClick={handleCancelEdition}>
-                Cancelar
+            <Grid item xs={2}>
+              <Button variant="text" onClick={handleCancelEdition} size='large'>
+                <Typography pl={3} pr={3}>Cancelar</Typography>
               </Button>
             </Grid>
 
@@ -692,7 +741,7 @@ const TariffCreateForm = () => {
 
       </FormProvider>
 
-    </FormDrawer>
+    </FormDrawer >
   )
 }
 

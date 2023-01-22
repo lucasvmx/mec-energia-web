@@ -36,9 +36,9 @@ const initialState: AppState = {
     },
   },
   distributor: {
-    activeId: 10,
+    activeId: null,
     isCreateFormOpen: false,
-    isEditFormOpen: true,
+    isEditFormOpen: false,
   },
   tariff: {
     isCreateFormOpen: false,

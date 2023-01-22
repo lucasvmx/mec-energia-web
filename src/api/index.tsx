@@ -7,6 +7,7 @@ import { Recommendation, RecommendationSettings } from "@/types/recommendation";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { getSession } from "next-auth/react";
 import { ConsumerUnit, ConsumerUnitsPayload } from "@/types/consumerUnit";
+import { CreateTariffResponsePayload } from "@/types/tariffs";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -26,7 +27,7 @@ const baseQuery = fetchBaseQuery({
 export const mecEnergiaApi = createApi({
   reducerPath: "mecEnergiaApi",
   baseQuery,
-  tagTypes: ['Distributors', 'ConsumerUnit', 'Subgroups', 'CurrentContract', "Invoices", "Recommendation"],
+  tagTypes: ['Distributors', 'ConsumerUnit', 'Subgroups', 'CurrentContract', "Invoices", "Recommendation", 'Tariffs'],
   endpoints: (builder) => ({
     fetchConsumerUnits: builder.query<ConsumerUnitsPayload, number>({
       query: (universityId) => `consumer-units?university_id=${universityId}`,
@@ -88,8 +89,8 @@ export const mecEnergiaApi = createApi({
       query: (consumerunitId) => `contracts/get-current-contract-of-consumer-unit/?consumer_unit_id=${consumerunitId}`,
       providesTags: (result, error, arg) =>
         result
-          ? [{ type: 'CurrentContract', arg }, 'CurrentContract']
-          : ['CurrentContract']
+          ? [{ type: 'CurrentContract', arg }, 'CurrentContract', "Recommendation"]
+          : ['CurrentContract', "Recommendation"]
     }),
     renewContract: builder.mutation<RenewContractResponsePayload, RenewContractRequestPayload>({
       query: (body) => ({
@@ -97,7 +98,7 @@ export const mecEnergiaApi = createApi({
         method: "POST",
         body
       }),
-      invalidatesTags: ["CurrentContract"]
+      invalidatesTags: ["CurrentContract", "Recommendation"]
     }),
     postInvoice: builder.mutation<PostEnergyBillResponsePayload, PostEnergyBillRequestPayload>({
       query: (body) => ({
@@ -105,7 +106,7 @@ export const mecEnergiaApi = createApi({
         method: "POST",
         body
       }),
-      invalidatesTags: ["Invoices"]
+      invalidatesTags: ["Invoices", "Recommendation"]
     }),
     editInvoice: builder.mutation<EditEnergyBillResponsePayload, EditEnergyBillRequestPayload>({
       query: (body) => ({
@@ -113,18 +114,23 @@ export const mecEnergiaApi = createApi({
         method: "PUT",
         body
       }),
-      invalidatesTags: ["Invoices"]
+      invalidatesTags: ["Invoices", "Recommendation"]
     }),
     getCurrentInvoice: builder.query<CurrentEneryBillResponsePayload, number>({
       query: (energyBillId) => `energy-bills/${energyBillId}/`,
       providesTags: (result, error, arg) =>
         result
-          ? [{ type: 'Invoices', arg }, 'Invoices']
-          : ['Invoices']
+          ? [{ type: 'Invoices', arg }, 'Invoices', "Recommendation"]
+          : ['Invoices', "Recommendation"]
     }),
-    // FIXME: Seria interessante cachear a resposta desse endpoint. Se for
-    // realizada qq requisição POST para faturas ou tarifas, o cache desse
-    // endpoint deve ser invalidado. Como faz isso?
+    createTariff: builder.mutation<CreateTariffResponsePayload, CreateTariffResponsePayload>({
+      query: (body) => ({
+        url: '/tariffs/',
+        method: 'POST',
+        body
+      }),
+      invalidatesTags: ['Tariffs', 'Recommendation']
+    }),
     recommendation: builder.query<Recommendation, number>({
       query: (consumerUnitId) => `recommendation/${consumerUnitId}`,
       providesTags: ["Recommendation"]
@@ -132,6 +138,7 @@ export const mecEnergiaApi = createApi({
     recommendationSettings: builder.query<RecommendationSettings, void>({
       query: () => "recommendation-settings",
       keepUnusedDataFor: 120,
+      providesTags: ["Recommendation"]
     }),
   })
 })
@@ -152,6 +159,7 @@ export const {
   useFetchConsumerUnitsQuery,
   useGetConsumerUnitQuery,
   useFetchInvoicesQuery,
+  useCreateTariffMutation,
   useRecommendationQuery,
   useRecommendationSettingsQuery,
 } = mecEnergiaApi;

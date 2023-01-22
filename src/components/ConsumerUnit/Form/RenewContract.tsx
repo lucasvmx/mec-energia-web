@@ -124,8 +124,10 @@ const ConsumerUnitRenewContractForm = () => {
 
   const isInSomeSugroups = (supplied: RenewContractForm['supplyVoltage']) => {
     const subgroups = subgroupsList?.subgroups;
+    if (!subgroups) return true
     const isValidValue = subgroups?.some((subgroup: Subgroup) => supplied >= subgroup.min && supplied <= subgroup.max)
-    if (!isValidValue) {
+    const isGreatherMax = supplied >= subgroups[subgroups?.length - 1].min
+    if (!isValidValue && !isGreatherMax) {
       return "Insira um valor conforme os intervalos ao lado"
     }
     return true
