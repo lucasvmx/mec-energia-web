@@ -85,6 +85,13 @@ const DistributorCreateForm = () => {
     handleNotification()
   }, [handleNotification, isSuccess, isError])
 
+  //Validações
+
+  const hasEnoughCaracteresLength = (value: CreateDistributorForm['name']) => {
+    if (value.length < 3) return "Insira ao menos 3 caracteres"
+    return true
+  }
+
   return (
     <FormDrawer open={isCreateFormOpen} handleCloseDrawer={handleCancelEdition}>
       <FormProvider {...form}>
@@ -110,7 +117,10 @@ const DistributorCreateForm = () => {
               <Controller
                 control={control}
                 name="name"
-                rules={{ required: "Preencha este campo" }}
+                rules={{
+                  required: "Preencha este campo",
+                  validate: hasEnoughCaracteresLength
+                }}
                 render={({
                   field: { onChange, onBlur, value, ref },
                   fieldState: { error },

@@ -11,6 +11,7 @@ import {
 import { Box, Button, FormControlLabel, FormGroup, FormHelperText, Grid, Switch, TextField, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
+import FlashOnIcon from '@mui/icons-material/FlashOn';
 import FormWarningDialog from '../../ConsumerUnit/Form/WarningDialog';
 import { useEditDistributorMutation, useGetDistributorQuery } from '@/api';
 import { useSession } from 'next-auth/react';
@@ -109,6 +110,13 @@ const DistributorEditForm = () => {
     handleNotification()
   }, [handleNotification, isSuccess, isError])
 
+  //Validações
+
+  const hasEnoughCaracteresLength = (value: EditDistributorForm['name']) => {
+    if (value.length < 3) return "Insira ao menos 3 caracteres"
+    return true
+  }
+
   return (
     <FormDrawer open={isEditFormOpen} handleCloseDrawer={handleCancelEdition}>
       <FormProvider {...form}>
@@ -126,37 +134,12 @@ const DistributorEditForm = () => {
 
             <Grid item xs={12}>
               <Controller
-                name="isActive"
-                control={control}
-                render={({ field: { onChange, value } }) => (
-                  <FormGroup>
-                    {distributor && (
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            value={value}
-                            defaultChecked={distributor.isActive}
-                            onChange={onChange}
-                          />
-                        }
-                        label="Distribuidora ativa"
-                      />
-                    )}
-
-                    <FormHelperText>
-                      <p>Distribuidoras desativadas impedem a geração de recomendações para as unidades consumidoras relacionadas.</p>
-                      <p>Só é possível excluir distribuidoras que não estejam relacionadas à nenhuma nenhuma unidade consumidora.</p>
-                    </FormHelperText>
-                  </FormGroup>
-                )}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <Controller
                 control={control}
                 name="name"
-                rules={{ required: "Campo obrigatório" }}
+                rules={{
+                  required: "Campo obrigatório",
+                  validate: hasEnoughCaracteresLength
+                }}
                 render={({
                   field: { onChange, onBlur, value, ref },
                   fieldState: { error },
@@ -180,7 +163,13 @@ const DistributorEditForm = () => {
               <Controller
                 control={control}
                 name="cnpj"
-                rules={{ required: "Campo obrigatório" }}
+                rules={{
+                  required: "Preencha este campo",
+                  pattern: {
+                    value: /([0-9]{2}[\.]?[0-9]{3}[\.]?[0-9]{3}[\/]?[0-9]{4}[-]?[0-9]{2})/,
+                    message: "Insira um CNPJ válido com 14 dígitos"
+                  }
+                }}
                 render={({
                   field: { onChange, onBlur, value },
                   fieldState: { error },
@@ -197,6 +186,42 @@ const DistributorEditForm = () => {
                     onChange={onChange}
                     onBlur={onBlur}
                   />
+                )}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <Controller
+                name="isActive"
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <FormGroup>
+                    <Box display='flex' justifyContent='flex-start' alignItems='center'>
+                      <FlashOnIcon color='primary' />
+                      {distributor && (
+                        <FormControlLabel
+                          label="Distribuidora ativa"
+                          labelPlacement='start'
+                          sx={{ width: '38%', margin: 0 }}
+                          control={
+                            <Box>
+                              <Switch
+                                value={value}
+                                defaultChecked={distributor.isActive}
+                                onChange={onChange}
+
+                              />
+                            </Box>
+                          }
+                        />
+                      )}
+                    </Box>
+
+                    <FormHelperText>
+                      <p>Só distribuidoras ativas permitem gerar recomendações para as unidades consumidoras relacionadas.</p>
+                      <p>Apenas as distribuidoras que não estão relacionadas à nenhuma unidade consumidora podem ser excluídas.</p>
+                    </FormHelperText>
+                  </FormGroup>
                 )}
               />
             </Grid>
