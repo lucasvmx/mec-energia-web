@@ -1,16 +1,16 @@
-import { selectSucessNotification, setIsSucessNotificationOpen } from "@/store/appSlice"
+import { selectSuccessNotification, setIsSuccessNotificationOpen } from "@/store/appSlice"
 import { Alert, Snackbar } from "@mui/material"
 import { useDispatch, useSelector } from "react-redux"
 
-const SucessNotification = () => {
+const SuccessNotification = () => {
 
   const dispatch = useDispatch()
-  const notificationProps = useSelector(selectSucessNotification)
+  const notificationProps = useSelector(selectSuccessNotification)
   const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
       return;
     }
-    dispatch(setIsSucessNotificationOpen({
+    dispatch(setIsSuccessNotificationOpen({
       isOpen: false,
     }))
   };
@@ -27,4 +27,4 @@ const SucessNotification = () => {
     </Snackbar>
   )
 }
-export default SucessNotification;
+export default SuccessNotification;

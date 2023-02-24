@@ -32,7 +32,7 @@ import { useDispatch } from "react-redux";
 import DistributorCreateForm from "../../components/Distributor/Form/DistributorCreateForm";
 import DistributorEditForm from "../../components/Distributor/Form/DistributorEditForm";
 import TariffCreateEditForm from "../../components/Tariff/Form/TariffCreateForm";
-import SucessNotification from "@/components/Notification/SucessNotification";
+import SuccessNotification from "@/components/Notification/SuccessNotification";
 import ErrorNotification from "@/components/Notification/FailNotification";
 
 const DistributorPage: NextPage = () => {
@@ -41,7 +41,7 @@ const DistributorPage: NextPage = () => {
   const [open, setOpen] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const router = useRouter();
-  const [slidevalue, setSlideValue] = useState<number>(0);
+  const [slideValue, setSlideValue] = useState<number>(0);
   const [isErrorColor, setIsErrorColor] = useState(false);
   const dispatch = useDispatch()
 
@@ -57,9 +57,9 @@ const DistributorPage: NextPage = () => {
   }, [router.asPath, router.query])
 
   useEffect(() => {
-    if (slidevalue === 100) setIsErrorColor(true)
+    if (slideValue === 100) setIsErrorColor(true)
     else setIsErrorColor(false)
-  }, [slidevalue])
+  }, [slideValue])
 
   useEffect(() => {
     if (openDelete === false) setSlideValue(0)
@@ -223,7 +223,7 @@ const DistributorPage: NextPage = () => {
                 <Stack spacing={2} direction="row" sx={{ mb: 1 }} alignItems="center">
                   <BusinessIcon color={isErrorColor ? 'secondary' : 'primary'} />
                   <Slider color={isErrorColor ? 'secondary' : 'primary'} aria-label="Volume"
-                    value={slidevalue}
+                    value={slideValue}
                     onChange={handleSlideChange} />
                   <DeleteIcon color="secondary" />
                 </Stack>
@@ -237,7 +237,7 @@ const DistributorPage: NextPage = () => {
         <DistributorCreateForm />
         <DistributorEditForm />
         <TariffCreateEditForm />
-        <SucessNotification />
+        <SuccessNotification />
         <ErrorNotification />
       </Box>
     </DefaultTemplate >

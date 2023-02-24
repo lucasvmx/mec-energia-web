@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { selectIsDistributorCreateFormOpen, setIsDistributorCreateFormOpen, setIsErrorNotificationOpen, setIsSucessNotificationOpen } from '../../../store/appSlice';
+import { selectIsDistributorCreateFormOpen, setIsDistributorCreateFormOpen, setIsErrorNotificationOpen, setIsSuccessNotificationOpen } from '../../../store/appSlice';
 import { CreateDistributorForm, CreateDistributorRequestPayload } from '../../../types/distributor';
 import FormDrawer from '../../Form/Drawer';
 import { PatternFormat } from 'react-number-format';
@@ -67,7 +67,7 @@ const DistributorCreateForm = () => {
   //Notificações
   const handleNotification = useCallback(() => {
     if (isSuccess) {
-      dispatch(setIsSucessNotificationOpen({
+      dispatch(setIsSuccessNotificationOpen({
         isOpen: true,
         text: "Distribuidora adicionada com sucesso!"
       }))

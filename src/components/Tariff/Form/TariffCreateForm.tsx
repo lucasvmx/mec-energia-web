@@ -2,7 +2,7 @@ import { Alert, Box, Button, Grid, InputAdornment, TextField, Typography } from 
 import React, { useCallback, useState } from 'react'
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
-import { selectActiveDistributorId, selectIsTariffCreateFormOpen, selectIsTariffEditFormOpen, setIsErrorNotificationOpen, setIsSucessNotificationOpen as setIsSuccessNotificationOpen, setIsTariffCreateFormOpen, setIsTariffEdiFormOpen } from '../../../store/appSlice'
+import { selectActiveDistributorId, selectIsTariffCreateFormOpen, selectIsTariffEditFormOpen, setIsErrorNotificationOpen, setIsSuccessNotificationOpen as setIsSuccessNotificationOpen, setIsTariffCreateFormOpen, setIsTariffEdiFormOpen } from '../../../store/appSlice'
 import { CreateAndEditTariffForm, CreateTariffRequestPayload } from '../../../types/tariffs'
 import FormDrawer from '../../Form/Drawer'
 import { DatePicker } from '@mui/x-date-pickers'
@@ -187,7 +187,6 @@ const TariffCreateEditForm = () => {
                     label="Início *"
                     minDate={new Date("2010")}
                     disableFuture
-                    toolbarPlaceholder="kajsdfh"
                     renderInput={(params) => (
                       <TextField
                         {...params}

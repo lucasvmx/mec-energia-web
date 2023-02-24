@@ -21,7 +21,7 @@ import {
   setIsEnergyBillCreateFormOpen,
   setIsEnergyBillEdiFormOpen,
   setIsErrorNotificationOpen,
-  setIsSucessNotificationOpen,
+  setIsSuccessNotificationOpen,
 } from '../../../store/appSlice'
 import FormDrawer from '../../Form/Drawer'
 import { DatePicker } from '@mui/x-date-pickers'
@@ -128,8 +128,8 @@ const CreateEditEnergyBillForm = () => {
   }, [invoiceInReais, isEditEnergyBillFormOpen, offPeakConsumptionInKwh, offPeakMeasuredDemandInKw, peakConsumptionInKwh, peakMeasuredDemandInKw, setValue])
 
   useEffect(() => {
-    const ditributor = distributors?.find((distributor) => distributor.id === contract?.distributor)
-    if (ditributor) setCurrentDistributor(ditributor)
+    const distributor = distributors?.find((distributor) => distributor.id === contract?.distributor)
+    if (distributor) setCurrentDistributor(distributor)
   }, [contract?.distributor, distributors])
 
   const handleCancelEdition = () => {
@@ -184,7 +184,7 @@ const CreateEditEnergyBillForm = () => {
   const handleNotification = useCallback(() => {
     if (isCreateEnergyBillFormOpen) {
       if (isPostInvoiceSuccess) {
-        dispatch(setIsSucessNotificationOpen({
+        dispatch(setIsSuccessNotificationOpen({
           isOpen: true,
           text: "Fatura lançada com sucesso!"
         }))
@@ -199,7 +199,7 @@ const CreateEditEnergyBillForm = () => {
     }
     else if (isEditEnergyBillFormOpen) {
       if (isEditInvoiceSuccess) {
-        dispatch(setIsSucessNotificationOpen({
+        dispatch(setIsSuccessNotificationOpen({
           isOpen: true,
           text: "Fatura modificada com sucesso!"
         }))
@@ -230,7 +230,7 @@ const CreateEditEnergyBillForm = () => {
                 {isCreateEnergyBillFormOpen ? 'Lançar' : 'Editar'} fatura
               </Typography>
               <Typography variant="h4">
-                Campus Gama
+                {consumerUnit?.name}
               </Typography>
               <Typography>
                 Un. Consumidora: {consumerUnit?.code}
@@ -373,7 +373,7 @@ const CreateEditEnergyBillForm = () => {
                           </Box>
                         }
                         <FormHelperText>
-                          <p>Inclua todas as faturas, exceto casos radicalemente excepcionais como greves ou a pandemia</p>
+                          <p>Inclua todas as faturas, exceto casos radicalmente excepcionais como greves ou a pandemia</p>
                         </FormHelperText>
                       </Box>
                     </FormGroup>

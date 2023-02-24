@@ -35,7 +35,7 @@ import {
   selectIsConsumerUnitRenewContractFormOpen,
   setIsConsumerUnitRenewContractFormOpen as setIsRenewContractFormOpen,
   setIsErrorNotificationOpen,
-  setIsSucessNotificationOpen,
+  setIsSuccessNotificationOpen,
 } from "@/store/appSlice";
 import { RenewContractForm, RenewContractRequestPayload } from "@/types/contract";
 import FormDrawer from "@/components/Form/Drawer";
@@ -66,7 +66,7 @@ const ConsumerUnitRenewContractForm = () => {
   //Sessão
   const { data: session } = useSession()
 
-  // Redix
+  // Redux
   const dispatch = useDispatch();
   const isRenewContractFormOpen = useSelector(
     selectIsConsumerUnitRenewContractFormOpen
@@ -81,7 +81,7 @@ const ConsumerUnitRenewContractForm = () => {
 
   //Estados
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
-  const [shouldShowDistributoFormDialog, setShouldShowDistributoFormDialog] = useState(false);
+  const [shouldShowDistributorFormDialog, setShouldShowDistributorFormDialog] = useState(false);
 
   const form = useForm({ mode: "all", defaultValues });
 
@@ -157,12 +157,12 @@ const ConsumerUnitRenewContractForm = () => {
       data.offPeakContractedDemandInKw = data.contracted;
       data.peakContractedDemandInKw = data.contracted;
     }
-    const formatedDate = sendFormattedDate(data.startDate as Date)
+    const formattedDate = sendFormattedDate(data.startDate as Date)
     const body: RenewContractRequestPayload = {
       consumerUnit: activeConsumerUnit as number,
       code: data.code,
       distributor: data.distributor as number,
-      startDate: formatedDate,
+      startDate: formattedDate,
       tariffFlag: data.tariffFlag,
       peakContractedDemandInKw: data.peakContractedDemandInKw as number,
       offPeakContractedDemandInKw: data.offPeakContractedDemandInKw as number,
@@ -174,7 +174,7 @@ const ConsumerUnitRenewContractForm = () => {
   // Notificações
   const handleNotification = useCallback(() => {
     if (isSuccess) {
-      dispatch(setIsSucessNotificationOpen({
+      dispatch(setIsSuccessNotificationOpen({
         isOpen: true,
         text: "Contrato renovado com sucesso!"
       }))
@@ -192,8 +192,8 @@ const ConsumerUnitRenewContractForm = () => {
     handleNotification()
   }, [handleNotification, isSuccess, isError])
 
-  const handleCloseDistributorFomrDialog = () => {
-    setShouldShowDistributoFormDialog(false)
+  const handleCloseDistributorFormDialog = () => {
+    setShouldShowDistributorFormDialog(false)
   }
 
   return (
@@ -207,7 +207,7 @@ const ConsumerUnitRenewContractForm = () => {
             <Grid item xs={12}>
               <Typography>Renovar contrato</Typography>
 
-              <Typography variant="h4">Campus Gama</Typography>
+              <Typography variant="h4">{consumerUnit?.name}</Typography>
             </Grid>
 
             <Grid item xs={12}>
@@ -285,7 +285,7 @@ const ConsumerUnitRenewContractForm = () => {
                       })}
                       <MenuItem>
                         <Button
-                          onClick={() => setShouldShowDistributoFormDialog(true)}>
+                          onClick={() => setShouldShowDistributorFormDialog(true)}>
                           Adicionar
                         </Button>
                       </MenuItem>
@@ -564,8 +564,8 @@ const ConsumerUnitRenewContractForm = () => {
           />
 
           <DistributorCreateFormDialog
-            open={shouldShowDistributoFormDialog}
-            onClose={handleCloseDistributorFomrDialog}
+            open={shouldShowDistributorFormDialog}
+            onClose={handleCloseDistributorFormDialog}
           />
         </Box>
       </FormProvider>

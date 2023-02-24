@@ -31,7 +31,7 @@ import {
   selectIsConsumerUnitCreateFormOpen,
   setIsConsumerUnitCreateFormOpen,
   setIsErrorNotificationOpen,
-  setIsSucessNotificationOpen,
+  setIsSuccessNotificationOpen,
 } from "../../../store/appSlice";
 import FormDrawer from "../../Form/Drawer";
 import { CreateConsumerUnitForm, CreateConsumerUnitRequestPayload } from "../../../types/consumerUnit";
@@ -75,7 +75,7 @@ const ConsumerUnitCreateForm = () => {
 
   //Estados
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
-  const [shouldShowDistributoFormDialog, setShouldShowDistributoFormDialog] = useState(false);
+  const [shouldShowDistributorFormDialog, setShouldShowDistributorFormDialog] = useState(false);
 
   //Formulário
   const form = useForm({ mode: "all", defaultValues });
@@ -174,7 +174,7 @@ const ConsumerUnitCreateForm = () => {
 
   const handleNotification = useCallback(() => {
     if (isSuccess) {
-      dispatch(setIsSucessNotificationOpen({
+      dispatch(setIsSuccessNotificationOpen({
         isOpen: true,
         text: "Unidade consumidora adicionada com sucesso!"
       }))
@@ -192,8 +192,8 @@ const ConsumerUnitCreateForm = () => {
     handleNotification()
   }, [handleNotification, isSuccess, isError, status])
 
-  const handleCloseDistributorFomrDialog = () => {
-    setShouldShowDistributoFormDialog(false)
+  const handleCloseDistributorFormDialog = () => {
+    setShouldShowDistributorFormDialog(false)
   }
 
   return (
@@ -308,7 +308,7 @@ const ConsumerUnitCreateForm = () => {
                       })}
                       <MenuItem>
                         <Button
-                          onClick={() => setShouldShowDistributoFormDialog(true)}>
+                          onClick={() => setShouldShowDistributorFormDialog(true)}>
                           Adicionar
                         </Button>
                       </MenuItem>
@@ -585,8 +585,8 @@ const ConsumerUnitCreateForm = () => {
           />
 
           <DistributorCreateFormDialog
-            open={shouldShowDistributoFormDialog}
-            onClose={handleCloseDistributorFomrDialog}
+            open={shouldShowDistributorFormDialog}
+            onClose={handleCloseDistributorFormDialog}
           />
         </Box>
       </FormProvider>

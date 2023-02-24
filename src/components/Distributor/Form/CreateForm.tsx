@@ -9,7 +9,7 @@ import { Box, Button, Dialog, DialogTitle, Grid, TextField, Typography } from '@
 import FormWarningDialog from '../../ConsumerUnit/Form/WarningDialog';
 import { useCreateDistributorMutation } from '@/api';
 import { useSession } from 'next-auth/react';
-import { setIsErrorNotificationOpen, setIsSucessNotificationOpen } from '@/store/appSlice';
+import { setIsErrorNotificationOpen, setIsSuccessNotificationOpen } from '@/store/appSlice';
 import { useDispatch } from 'react-redux';
 import { SubmitButton } from '@/components/Form/SubmitButton';
 import { FormErrorsAlert } from '@/components/Form/FormErrorsAlert';
@@ -85,7 +85,7 @@ const DistributorCreateFormDialog = (props: DistributorCreateFormDialogProps) =>
   //Notificações
   const handleNotification = useCallback(() => {
     if (isSuccess) {
-      dispatch(setIsSucessNotificationOpen({
+      dispatch(setIsSuccessNotificationOpen({
         isOpen: true,
         text: "Distribuidora adicionada com sucesso!"
       }))

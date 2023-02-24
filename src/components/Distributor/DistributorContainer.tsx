@@ -9,7 +9,7 @@ import { DistributorInfo } from './DistributorInfo';
 import { SubGroup } from '../../types/tariffs';
 import { Badge } from '@mui/material';
 import { mockedDistributor } from '../../mocks/mockedDistributor';
-import { setCurrenTariff } from '@/store/appSlice';
+import { setCurrentTariff } from '@/store/appSlice';
 import { useDispatch } from "react-redux";
 
 interface TabPanelProps {
@@ -88,7 +88,7 @@ export default function DistributorContainer() {
     setValue(newValue);
     const currentTariff = currentDist?.tariffs[newValue]
     if (currentTariff) {
-      dispatch(setCurrenTariff(currentTariff))
+      dispatch(setCurrentTariff(currentTariff))
     }
   };
 
