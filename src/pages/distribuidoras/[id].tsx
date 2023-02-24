@@ -31,7 +31,7 @@ import { setIsDistributorCreateFormOpen, setIsDistributorEditFormOpen } from "..
 import { useDispatch } from "react-redux";
 import DistributorCreateForm from "../../components/Distributor/Form/DistributorCreateForm";
 import DistributorEditForm from "../../components/Distributor/Form/DistributorEditForm";
-import TariffCreateForm from "../../components/Tariff/Form/TariffCreateForm";
+import TariffCreateEditForm from "../../components/Tariff/Form/TariffCreateForm";
 import SucessNotification from "@/components/Notification/SucessNotification";
 import ErrorNotification from "@/components/Notification/FailNotification";
 
@@ -236,7 +236,7 @@ const DistributorPage: NextPage = () => {
         </Dialog>
         <DistributorCreateForm />
         <DistributorEditForm />
-        <TariffCreateForm />
+        <TariffCreateEditForm />
         <SucessNotification />
         <ErrorNotification />
       </Box>

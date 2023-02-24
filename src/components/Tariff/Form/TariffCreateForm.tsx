@@ -1,8 +1,8 @@
 import { Alert, Box, Button, Grid, InputAdornment, TextField, Typography } from '@mui/material'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
-import { selectActiveDistributorId, selectIsTariffCreateFormOpen, selectIsTariffEditFormOpen, setIsErrorNotificationOpen, setIsSucessNotificationOpen, setIsTariffCreateFormOpen, setIsTariffEdiFormOpen } from '../../../store/appSlice'
+import { selectActiveDistributorId, selectIsTariffCreateFormOpen, selectIsTariffEditFormOpen, setIsErrorNotificationOpen, setIsSucessNotificationOpen as setIsSuccessNotificationOpen, setIsTariffCreateFormOpen, setIsTariffEdiFormOpen } from '../../../store/appSlice'
 import { CreateAndEditTariffForm, CreateTariffRequestPayload } from '../../../types/tariffs'
 import FormDrawer from '../../Form/Drawer'
 import { DatePicker } from '@mui/x-date-pickers'
@@ -10,10 +10,11 @@ import { isAfter, isFuture, isValid } from "date-fns";
 import { NumericFormat } from "react-number-format";
 import FormWarningDialog from '../../ConsumerUnit/Form/WarningDialog'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import { LoadingButton } from '@mui/lab'
-import TaskAltIcon from '@mui/icons-material/TaskAlt';
-import { useCreateTariffMutation } from '@/api'
+import { useCreateTariffMutation, useGetDistributorQuery } from '@/api'
 import { sendFormattedDate } from '@/utils/date'
+import { skipToken } from '@reduxjs/toolkit/dist/query'
+import { SubmitButton } from '@/components/Form/SubmitButton'
+import { FormErrorsAlert } from '@/components/Form/FormErrorsAlert'
 
 const defaultValues: CreateAndEditTariffForm = {
   start_date: new Date(),
@@ -35,12 +36,13 @@ const defaultValues: CreateAndEditTariffForm = {
   }
 }
 
-const TariffCreateForm = () => {
+const TariffCreateEditForm = () => {
   const dispatch = useDispatch();
   const isCreateTariffFormOpen = useSelector(selectIsTariffCreateFormOpen);
   const isEditTariffFormOpen = useSelector(selectIsTariffEditFormOpen)
-  const [createTariff, { isError: isCreateTariffError, isSuccess: isCreateTariffSucess, isLoading: isCreatTariffLoading }] = useCreateTariffMutation()
+  const [createTariff, { isError: isCreateTariffError, isSuccess: isCreateTariffSuccess, isLoading: isCreateTariffLoading, error }] = useCreateTariffMutation()
   const activeDistributor = useSelector(selectActiveDistributorId);
+  const distributor = useGetDistributorQuery(activeDistributor || skipToken)
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
   const [startDate, setStartDate] = useState(new Date(2010))
   const form = useForm({ defaultValues })
@@ -48,7 +50,7 @@ const TariffCreateForm = () => {
     control,
     reset,
     handleSubmit,
-    formState: { isDirty }
+    formState: { isDirty, errors }
   } = form;
 
   const handleCancelEdition = () => {
@@ -112,31 +114,31 @@ const TariffCreateForm = () => {
       distributor: activeDistributor as number,
     }
 
-    if (isCreateTariffFormOpen) await createTariff(body)
+    if (isCreateTariffFormOpen) await createTariff(body);
+    handleNotification();
   }
 
   const handleNotification = useCallback(() => {
     if (isCreateTariffFormOpen) {
-      if (isCreateTariffSucess) {
-        dispatch(setIsSucessNotificationOpen({
+      if (isCreateTariffSuccess) {
+        dispatch(setIsSuccessNotificationOpen({
           isOpen: true,
           text: "Tarifas adicionadas com sucesso!"
         }))
         reset();
         dispatch(setIsTariffCreateFormOpen(false))
+        return;
       }
-      else if (isCreateTariffError)
+      else if (isCreateTariffError) {
+        console.log("ERROR", error)
         dispatch(setIsErrorNotificationOpen({
           isOpen: true,
           text: "Erro ao adicionar tarifas!"
         }))
+      }
     }
     else if (isEditTariffFormOpen) { }
-  }, [dispatch, isCreateTariffError, isCreateTariffFormOpen, isCreateTariffSucess, isEditTariffFormOpen, reset])
-
-  useEffect(() => {
-    handleNotification()
-  }, [handleNotification])
+  }, [dispatch, error, isCreateTariffError, isCreateTariffFormOpen, isCreateTariffSuccess, isEditTariffFormOpen, reset])
 
   return (
     <FormDrawer open={isEditTariffFormOpen || isCreateTariffFormOpen} handleCloseDrawer={
@@ -153,7 +155,7 @@ const TariffCreateForm = () => {
                 Subgrupo A4
               </Typography>
               <Typography>
-                Distribuidora: Alguma
+                Distribuidora: {distributor.data?.name}
               </Typography>
               <Box mt={3} mb={3}>
                 <Alert icon={<ErrorOutlineIcon />} severity="info">Veja o passo-a-passo a seguir para encontrar as informações de tarifa no site da ANEEL.</Alert>
@@ -711,17 +713,10 @@ const TariffCreateForm = () => {
               />
             </Grid>
 
+            <FormErrorsAlert hasErrors={Object.keys(errors).length > 0 ? true : false} />
+
             <Grid item xs={3}>
-              <LoadingButton
-                type="submit"
-                variant="contained"
-                size='large'
-                loading={isCreatTariffLoading}
-                startIcon={<TaskAltIcon />}
-                loadingPosition="start"
-              >
-                {isCreatTariffLoading ? 'Gravando' : 'Gravar'}
-              </LoadingButton>
+              <SubmitButton isLoading={isCreateTariffLoading} />
             </Grid>
 
             <Grid item xs={2}>
@@ -745,4 +740,4 @@ const TariffCreateForm = () => {
   )
 }
 
-export default TariffCreateForm;
+export default TariffCreateEditForm;

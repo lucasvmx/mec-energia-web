@@ -7,7 +7,6 @@ import {
   useForm,
 } from "react-hook-form";
 import {
-  Alert,
   Box,
   Button,
   FormControl,
@@ -39,16 +38,15 @@ import { CreateConsumerUnitForm, CreateConsumerUnitRequestPayload } from "../../
 import FormWarningDialog from "./WarningDialog";
 import { isAfter, isFuture, isValid } from "date-fns";
 import { useCreateConsumerUnitMutation, useGetDistributorsQuery, useGetSubgroupsQuery } from "@/api";
-import { Subgroup } from "@/types/subgroups";
 import { useSession } from "next-auth/react";
 import DistributorCreateFormDialog from "@/components/Distributor/Form/CreateForm";
 import { DistributorPropsTariffs } from "@/types/distributor";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { sendFormattedDate } from "@/utils/date";
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { getSubgroupsText } from "@/utils/get-subgroup-text";
-import TaskAltIcon from '@mui/icons-material/TaskAlt';
-import { LoadingButton } from "@mui/lab";
+import { SubmitButton } from "@/components/Form/SubmitButton";
+import { isInSomeSubgroups } from "@/utils/validations/form-validations";
+import { FormErrorsAlert } from "../../Form/FormErrorsAlert";
 
 const defaultValues: CreateConsumerUnitForm = {
   name: "",
@@ -117,15 +115,6 @@ const ConsumerUnitCreateForm = () => {
 
     return true;
   };
-
-  const isInSomeSugroups = (supplied: CreateConsumerUnitForm['supplyVoltage']) => {
-    const subgroups = subgroupsList?.subgroups;
-    const isValidValue = subgroups?.some((subgroup: Subgroup) => supplied >= subgroup.min && supplied <= subgroup.max)
-    if (!isValidValue) {
-      return "Insira um valor conforme os intervalos ao lado"
-    }
-    return true
-  }
 
   const hasEnoughCaracteresLength = (value: CreateConsumerUnitForm['code'] | CreateConsumerUnitForm['name']) => {
     if (value.length < 3) return "Insira ao menos 3 caracteres"
@@ -381,7 +370,7 @@ const ConsumerUnitCreateForm = () => {
                   name={"supplyVoltage"}
                   rules={{
                     required: "Preencha este campo",
-                    validate: isInSomeSugroups
+                    validate: v => isInSomeSubgroups(v, subgroupsList?.subgroups || [])
                   }}
                   render={({
                     field: { onChange, onBlur, value },
@@ -391,7 +380,7 @@ const ConsumerUnitCreateForm = () => {
                     <NumericFormat
                       value={value}
                       customInput={TextField}
-                      label="Tensão constratada *"
+                      label="Tensão contratada *"
                       helperText={error?.message ?? "Se preciso, converta a tensão de V para kV dividindo o valor por 1.000."}
                       error={!!error}
                       fullWidth
@@ -579,28 +568,9 @@ const ConsumerUnitCreateForm = () => {
               </Box>
             )}
 
-            {Object.keys(errors).length !== 0 &&
-              <Grid item xs={8}>
-                <Box mt={3} mb={3}>
-                  <Alert icon={<ErrorOutlineIcon fontSize="inherit" />} severity="error">Corrija os erros acima antes de gravar</Alert>
-                </Box>
-              </Grid>
-            }
-
-            <Grid item xs={3}>
-              <LoadingButton
-                type="submit"
-                variant="contained"
-                size='large'
-                loading={isLoading}
-                startIcon={<TaskAltIcon />}
-                loadingPosition="start"
-              >
-                {isLoading ? 'Gravando' : 'Gravar'}
-              </LoadingButton>
-            </Grid>
-
-            <Grid item xs={2}>
+            <FormErrorsAlert hasErrors={Object.keys(errors).length > 0 ? true : false} />
+            <Grid item xs={12}>
+              <SubmitButton isLoading={isLoading} />
               <Button variant="text" onClick={handleCancelEdition} size='large'>
                 <Typography pl={3} pr={3}>Cancelar</Typography>
               </Button>

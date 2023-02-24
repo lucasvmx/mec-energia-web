@@ -9,11 +9,11 @@ import {
   Controller, FormProvider, SubmitHandler, useForm,
 } from "react-hook-form";
 import { Box, Button, Grid, TextField, Typography } from '@mui/material';
-import { LoadingButton } from '@mui/lab'
-import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import FormWarningDialog from '../../ConsumerUnit/Form/WarningDialog';
 import { useCreateDistributorMutation } from '@/api';
 import { useSession } from 'next-auth/react';
+import { SubmitButton } from '@/components/Form/SubmitButton';
+import { FormErrorsAlert } from '@/components/Form/FormErrorsAlert';
 
 const defaultValues: CreateDistributorForm = {
   name: "",
@@ -32,7 +32,7 @@ const DistributorCreateForm = () => {
     control,
     reset,
     handleSubmit,
-    formState: { isDirty },
+    formState: { isDirty, errors },
   } = form;
   const handleCancelEdition = () => {
     if (isDirty) {
@@ -171,18 +171,10 @@ const DistributorCreateForm = () => {
               />
             </Grid>
 
+            <FormErrorsAlert hasErrors={Object.keys(errors).length > 0 ? true : false} />
 
             <Grid item xs={3}>
-              <LoadingButton
-                type="submit"
-                variant="contained"
-                size='large'
-                loading={isLoading}
-                startIcon={<TaskAltIcon />}
-                loadingPosition="start"
-              >
-                {isLoading ? 'Gravando' : 'Gravar'}
-              </LoadingButton>
+              <SubmitButton isLoading={isLoading} />
             </Grid>
 
             <Grid item xs={2}>

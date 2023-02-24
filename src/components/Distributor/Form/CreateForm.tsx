@@ -11,6 +11,8 @@ import { useCreateDistributorMutation } from '@/api';
 import { useSession } from 'next-auth/react';
 import { setIsErrorNotificationOpen, setIsSucessNotificationOpen } from '@/store/appSlice';
 import { useDispatch } from 'react-redux';
+import { SubmitButton } from '@/components/Form/SubmitButton';
+import { FormErrorsAlert } from '@/components/Form/FormErrorsAlert';
 
 const defaultValues: CreateDistributorForm = {
   name: "",
@@ -35,7 +37,7 @@ const DistributorCreateFormDialog = (props: DistributorCreateFormDialogProps) =>
   const user = session?.user
 
   // REQUISIÇÕES
-  const [createDistributor, { isError, isSuccess }] = useCreateDistributorMutation()
+  const [createDistributor, { isError, isSuccess, isLoading }] = useCreateDistributorMutation()
 
   // ESTADOS
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
@@ -46,7 +48,7 @@ const DistributorCreateFormDialog = (props: DistributorCreateFormDialogProps) =>
     control,
     reset,
     handleSubmit,
-    formState: { isDirty },
+    formState: { isDirty, errors },
   } = form;
 
   const handleCancelEdition = () => {
@@ -173,11 +175,12 @@ const DistributorCreateFormDialog = (props: DistributorCreateFormDialogProps) =>
                   )}
                 />
               </Grid>
+
+              <FormErrorsAlert hasErrors={Object.keys(errors).length > 0 ? true : false} />
+
               <Grid item xs={12} display='flex' justifyContent='flex-end' alignItems='center'>
                 <Box pr={3}>
-                  <Button type="submit" variant="contained">
-                    Gravar
-                  </Button>
+                  <SubmitButton isLoading={isLoading} />
                 </Box>
 
                 <Button variant="text" onClick={handleCancelEdition}>

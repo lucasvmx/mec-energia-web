@@ -1,5 +1,4 @@
 import {
-  Alert,
   Box,
   Button,
   FormControlLabel,
@@ -30,13 +29,13 @@ import { NumericFormat } from "react-number-format";
 import FormWarningDialog from '../../ConsumerUnit/Form/WarningDialog'
 import { CreateAndEditEnergyBillForm, EditEnergyBillRequestPayload, PostEnergyBillRequestPayload } from '@/types/energyBill'
 import InsightsIcon from '@mui/icons-material/Insights';
-import TaskAltIcon from '@mui/icons-material/TaskAlt';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { useEditInvoiceMutation, useGetConsumerUnitQuery, useGetContractQuery, useGetCurrentInvoiceQuery, useGetDistributorsQuery, usePostInvoiceMutation } from '@/api'
 import { skipToken } from '@reduxjs/toolkit/dist/query'
 import { useSession } from 'next-auth/react'
 import { DistributorPropsTariffs } from '@/types/distributor'
 import { sendFormattedDate } from '@/utils/date'
+import { FormErrorsAlert } from '@/components/Form/FormErrorsAlert'
+import { SubmitButton } from '@/components/Form/SubmitButton'
 
 const defaultValues: CreateAndEditEnergyBillForm = {
   date: new Date(),
@@ -55,8 +54,8 @@ const CreateEditEnergyBillForm = () => {
   const { month, year, id: currentInvoiceId } = useSelector(selectEnergyBillParams)
   const activeConsumerUnitId = useSelector(selectActiveConsumerUnitId)
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
-  const [postInvoice, { isError: isPostInvoiceError, isSuccess: isPostInvoiceSuccess }] = usePostInvoiceMutation()
-  const [editInvoice, { isError: isEditInvoiceError, isSuccess: isEditInvoiceSucess }] = useEditInvoiceMutation()
+  const [postInvoice, { isError: isPostInvoiceError, isSuccess: isPostInvoiceSuccess, isLoading: isPostInvoiceLoading }] = usePostInvoiceMutation()
+  const [editInvoice, { isError: isEditInvoiceError, isSuccess: isEditInvoiceSuccess, isLoading: isEditInvoiceLoading }] = useEditInvoiceMutation()
   const { data: consumerUnit } = useGetConsumerUnitQuery(activeConsumerUnitId || skipToken)
   const { data: contract } = useGetContractQuery(activeConsumerUnitId || skipToken)
   const { data: distributors } = useGetDistributorsQuery(session.data?.user.universityId || skipToken)
@@ -154,7 +153,6 @@ const CreateEditEnergyBillForm = () => {
   }
 
   const onSubmitHandler: SubmitHandler<CreateAndEditEnergyBillForm> = async (data) => {
-    console.log(data);
     const {
       date,
       isIncludedInAnalysis,
@@ -200,7 +198,7 @@ const CreateEditEnergyBillForm = () => {
         }))
     }
     else if (isEditEnergyBillFormOpen) {
-      if (isEditInvoiceSucess) {
+      if (isEditInvoiceSuccess) {
         dispatch(setIsSucessNotificationOpen({
           isOpen: true,
           text: "Fatura modificada com sucesso!"
@@ -214,7 +212,7 @@ const CreateEditEnergyBillForm = () => {
           text: "Erro ao modificar fatura!"
         }))
     }
-  }, [dispatch, isCreateEnergyBillFormOpen, isEditEnergyBillFormOpen, isEditInvoiceError, isEditInvoiceSucess, isPostInvoiceError, isPostInvoiceSuccess, reset])
+  }, [dispatch, isCreateEnergyBillFormOpen, isEditEnergyBillFormOpen, isEditInvoiceError, isEditInvoiceSuccess, isPostInvoiceError, isPostInvoiceSuccess, reset])
 
   useEffect(() => {
     handleNotification()
@@ -542,20 +540,11 @@ const CreateEditEnergyBillForm = () => {
                 />
               </Grid>
             </Grid>
-            {Object.keys(errors).length !== 0 &&
-              <Grid item xs={8}>
-                <Box mt={3} mb={3}>
-                  <Alert icon={<ErrorOutlineIcon fontSize="inherit" />} severity="error">Corrija os erros acima antes de gravar</Alert>
-                </Box>
-              </Grid>
-            }
+
+            <FormErrorsAlert hasErrors={Object.keys(errors).length > 0 ? true : false} />
+
             <Grid item xs={8}>
-              <Button type="submit" variant="contained">
-                <Box display='flex' justifyContent='space-around' alignItems='center'>
-                  <TaskAltIcon />
-                  Gravar
-                </Box>
-              </Button>
+              <SubmitButton isLoading={isPostInvoiceLoading || isEditInvoiceLoading} />
 
               <Button variant="text" onClick={handleCancelEdition}>
                 Cancelar

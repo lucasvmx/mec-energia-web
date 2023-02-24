@@ -9,13 +9,13 @@ import {
   Controller, FormProvider, SubmitHandler, useForm,
 } from "react-hook-form";
 import { Box, Button, FormControlLabel, FormGroup, FormHelperText, Grid, Switch, TextField, Typography } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
-import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import FlashOnIcon from '@mui/icons-material/FlashOn';
 import FormWarningDialog from '../../ConsumerUnit/Form/WarningDialog';
 import { useEditDistributorMutation, useGetDistributorQuery } from '@/api';
 import { useSession } from 'next-auth/react';
 import { skipToken } from '@reduxjs/toolkit/dist/query';
+import { SubmitButton } from '@/components/Form/SubmitButton';
+import { FormErrorsAlert } from '@/components/Form/FormErrorsAlert';
 
 
 const defaultValues: EditDistributorForm = {
@@ -39,7 +39,7 @@ const DistributorEditForm = () => {
     handleSubmit,
     watch,
     setValue,
-    formState: { isDirty },
+    formState: { isDirty, errors },
   } = form;
 
   const handleCancelEdition = () => {
@@ -62,7 +62,6 @@ const DistributorEditForm = () => {
   }, [distributor, isEditFormOpen, setValue])
 
   useEffect(() => {
-    console.log("Ativo?", isActive)
     setValue("isActive", isActive)
   }, [isActive, setValue])
 
@@ -226,25 +225,15 @@ const DistributorEditForm = () => {
               />
             </Grid>
 
-            <Grid item xs={3}>
-              <LoadingButton
-                type="submit"
-                variant="contained"
-                size='large'
-                loading={isLoading}
-                startIcon={<TaskAltIcon />}
-                loadingPosition="start"
-              >
-                {isLoading ? 'Gravando' : 'Gravar'}
-              </LoadingButton>
-            </Grid>
+            <FormErrorsAlert hasErrors={Object.keys(errors).length > 0 ? true : false} />
 
-            <Grid item xs={2}>
+            <Grid item xs={12}>
+              <SubmitButton isLoading={isLoading} />
+
               <Button variant="text" onClick={handleCancelEdition} size='large'>
                 <Typography pl={3} pr={3}>Cancelar</Typography>
               </Button>
             </Grid>
-
           </Grid>
 
           <FormWarningDialog

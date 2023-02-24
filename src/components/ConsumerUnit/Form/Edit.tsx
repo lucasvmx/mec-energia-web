@@ -44,11 +44,12 @@ import { useEditConsumerUnitMutation, useGetConsumerUnitQuery, useGetContractQue
 import { useSession } from "next-auth/react";
 import { DistributorPropsTariffs } from "@/types/distributor";
 import DistributorCreateFormDialog from "@/components/Distributor/Form/CreateForm";
-import { Subgroup } from "@/types/subgroups";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { sendFormattedDate } from "@/utils/date";
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { getSubgroupsText } from "@/utils/get-subgroup-text";
+import { isInSomeSubgroups } from "@/utils/validations/form-validations";
+import { SubmitButton } from "@/components/Form/SubmitButton";
+import { FormErrorsAlert } from "../../Form/FormErrorsAlert";
 
 const defaultValues: EditConsumerUnitForm = {
   isActive: true,
@@ -76,7 +77,7 @@ const ConsumerUnitEditForm = () => {
   const { data: distributorList } = useGetDistributorsQuery(session?.user?.universityId || skipToken)
   const { data: contract } = useGetContractQuery(activeConsumerUnit || skipToken)
   const { data: consumerUnit } = useGetConsumerUnitQuery(activeConsumerUnit || skipToken)
-  const [editConsumerUnit, { isError, isSuccess }] = useEditConsumerUnitMutation()
+  const [editConsumerUnit, { isError, isSuccess, isLoading }] = useEditConsumerUnitMutation()
 
 
 
@@ -148,17 +149,6 @@ const ConsumerUnitEditForm = () => {
 
     return true;
   };
-
-  const isInSomeSugroups = (supplied: EditConsumerUnitForm['supplyVoltage']) => {
-    const subgroups = subgroupsList?.subgroups;
-    if (!subgroups) return true
-    const isValidValue = subgroups?.some((subgroup: Subgroup) => supplied >= subgroup.min && supplied <= subgroup.max)
-    const isGreatherMax = supplied >= subgroups[subgroups?.length - 1].min
-    if (!isValidValue && !isGreatherMax) {
-      return "Insira um valor conforme os intervalos ao lado"
-    }
-    return true
-  }
 
   const hasEnoughCaracteresLength = (value: EditConsumerUnitForm['code'] | EditConsumerUnitForm['name']) => {
     if (value.length < 3) return "Insira ao menos 3 caracteres"
@@ -449,7 +439,7 @@ const ConsumerUnitEditForm = () => {
                   name={"supplyVoltage"}
                   rules={{
                     required: "Preencha este campo",
-                    validate: isInSomeSugroups
+                    validate: v => isInSomeSubgroups(v, subgroupsList?.subgroups || [])
                   }}
                   render={({
                     field: { onChange, onBlur, value },
@@ -458,7 +448,7 @@ const ConsumerUnitEditForm = () => {
                     <NumericFormat
                       value={value}
                       customInput={TextField}
-                      label="Tensão constratada *"
+                      label="Tensão contratada *"
                       helperText={error?.message ?? "Se preciso, converta a tensão de V para kV dividindo o valor por 1.000."}
                       error={!!error}
                       fullWidth
@@ -639,17 +629,10 @@ const ConsumerUnitEditForm = () => {
               </>
             )}
 
-            {Object.keys(errors).length !== 0 &&
-              <Grid item xs={8}>
-                <Box mt={3} mb={3}>
-                  <Alert icon={<ErrorOutlineIcon fontSize="inherit" />} severity="error">Corrija os erros acima antes de gravar</Alert>
-                </Box>
-              </Grid>
-            }
+            <FormErrorsAlert hasErrors={Object.keys(errors).length > 0 ? true : false} />
+
             <Grid item xs={12}>
-              <Button type="submit" variant="contained">
-                Gravar
-              </Button>
+              <SubmitButton isLoading={isLoading} />
 
               <Button variant="text" onClick={handleCancelEdition}>
                 Cancelar

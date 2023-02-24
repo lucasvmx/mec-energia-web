@@ -14,6 +14,7 @@ const DistributorCardGrid = () => {
           key={distributor.id}
           id={distributor.id}
           name={distributor.name}
+          cnpj={distributor.cnpj}
           isActive={distributor.isActive}
           tariffs={distributor.tariffs}
           consumerUnits={distributor.consumerUnits}

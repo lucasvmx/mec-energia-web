@@ -11,7 +11,6 @@ import {
 import { NumericFormat } from "react-number-format";
 
 import {
-  Alert,
   Box,
   Button,
   FormControl,
@@ -43,13 +42,14 @@ import FormDrawer from "@/components/Form/Drawer";
 import FormWarningDialog from "@/components/ConsumerUnit/Form/WarningDialog";
 import { useGetConsumerUnitQuery, useGetDistributorsQuery, useGetSubgroupsQuery, useRenewContractMutation } from "@/api";
 import { useSession } from "next-auth/react";
-import { Subgroup } from "@/types/subgroups";
 import { DistributorPropsTariffs } from "@/types/distributor";
 import DistributorCreateFormDialog from "@/components/Distributor/Form/CreateForm";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { sendFormattedDate } from "@/utils/date";
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { getSubgroupsText } from "@/utils/get-subgroup-text";
+import { isInSomeSubgroups } from "@/utils/validations/form-validations";
+import { FormErrorsAlert } from "../../Form/FormErrorsAlert";
+import { SubmitButton } from "@/components/Form/SubmitButton";
 
 const defaultValues: RenewContractForm = {
   code: '',
@@ -76,7 +76,7 @@ const ConsumerUnitRenewContractForm = () => {
   //Requisições Redux Query
   const { data: subgroupsList } = useGetSubgroupsQuery()
   const { data: distributorList } = useGetDistributorsQuery(session?.user?.universityId || skipToken)
-  const [renewContract, { isError, isSuccess }] = useRenewContractMutation()
+  const [renewContract, { isError, isSuccess, isLoading }] = useRenewContractMutation()
   const { data: consumerUnit } = useGetConsumerUnitQuery(activeConsumerUnit || skipToken)
 
   //Estados
@@ -105,7 +105,7 @@ const ConsumerUnitRenewContractForm = () => {
   }, [consumerUnit?.code, setValue, tariffFlag]);
 
 
-  // Validações de Formulário  
+  // Validações de Formulário
   const isValidDate = (date: RenewContractForm["startDate"]) => {
     if (!date || !isValid(date)) {
       return "Data inválida";
@@ -121,17 +121,6 @@ const ConsumerUnitRenewContractForm = () => {
 
     return true;
   };
-
-  const isInSomeSugroups = (supplied: RenewContractForm['supplyVoltage']) => {
-    const subgroups = subgroupsList?.subgroups;
-    if (!subgroups) return true
-    const isValidValue = subgroups?.some((subgroup: Subgroup) => supplied >= subgroup.min && supplied <= subgroup.max)
-    const isGreatherMax = supplied >= subgroups[subgroups?.length - 1].min
-    if (!isValidValue && !isGreatherMax) {
-      return "Insira um valor conforme os intervalos ao lado"
-    }
-    return true
-  }
 
   const hasEnoughCaracteresLength = (value: RenewContractForm['code']) => {
     if (value.length < 3) return "Insira ao menos 3 caracteres"
@@ -358,7 +347,7 @@ const ConsumerUnitRenewContractForm = () => {
                   name={"supplyVoltage"}
                   rules={{
                     required: "Preencha este campo",
-                    validate: isInSomeSugroups
+                    validate: v => isInSomeSubgroups(v, subgroupsList?.subgroups || [])
                   }}
                   render={({
                     field: { onChange, onBlur, value },
@@ -368,7 +357,7 @@ const ConsumerUnitRenewContractForm = () => {
                     <NumericFormat
                       value={value}
                       customInput={TextField}
-                      label="Tensão constratada *"
+                      label="Tensão contratada *"
                       helperText={error?.message ?? "Se preciso, converta a tensão de V para kV dividindo o valor por 1.000."}
                       error={!!error}
                       fullWidth
@@ -556,18 +545,10 @@ const ConsumerUnitRenewContractForm = () => {
               </Box>
             )}
 
-            {Object.keys(errors).length !== 0 &&
-              <Grid item xs={8}>
-                <Box mt={3} mb={3}>
-                  <Alert icon={<ErrorOutlineIcon fontSize="inherit" />} severity="error">Corrija os erros acima antes de gravar</Alert>
-                </Box>
-              </Grid>
-            }
+            <FormErrorsAlert hasErrors={Object.keys(errors).length > 0 ? true : false} />
 
             <Grid item xs={12}>
-              <Button type="submit" variant="contained">
-                Gravar
-              </Button>
+              <SubmitButton isLoading={isLoading} />
 
               <Button variant="text" onClick={handleCancelEdition}>
                 Cancelar
