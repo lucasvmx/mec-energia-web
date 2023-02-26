@@ -24,7 +24,7 @@ const initialState: AppState = {
     activeFilter: "all",
   },
   consumerUnit: {
-    activeId: 1,
+    activeId: null,
     isCreateFormOpen: false,
     isEditFormOpen: false,
     isRenewContractFormOpen: false,
@@ -36,7 +36,7 @@ const initialState: AppState = {
     },
   },
   distributor: {
-    activeId: 1,
+    activeId: null,
     isCreateFormOpen: false,
     isEditFormOpen: false,
   },

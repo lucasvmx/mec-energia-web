@@ -37,7 +37,7 @@ const DistributorCreateFormDialog = (props: DistributorCreateFormDialogProps) =>
   const user = session?.user
 
   // REQUISIÇÕES
-  const [createDistributor, { isError, isSuccess, isLoading }] = useCreateDistributorMutation()
+  const [createDistributor, { isError, isSuccess, isLoading, reset: resetMutation }] = useCreateDistributorMutation()
 
   // ESTADOS
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
@@ -90,14 +90,17 @@ const DistributorCreateFormDialog = (props: DistributorCreateFormDialogProps) =>
         text: "Distribuidora adicionada com sucesso!"
       }))
       reset();
+      resetMutation()
       handleDiscardForm();
     }
-    else if (isError)
+    else if (isError) {
       dispatch(setIsErrorNotificationOpen({
         isOpen: true,
         text: "Erro ao adicionar distribuidora."
       }))
-  }, [dispatch, handleDiscardForm, isError, isSuccess, reset])
+      resetMutation()
+    }
+  }, [dispatch, handleDiscardForm, isError, isSuccess, reset, resetMutation])
 
   useEffect(() => {
     handleNotification()

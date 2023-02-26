@@ -125,15 +125,16 @@ const TariffCreateEditForm = () => {
           text: "Tarifas adicionadas com sucesso!"
         }))
         reset();
-        dispatch(setIsTariffCreateFormOpen(false))
+        resetMutation()
+        setTimeout(() => dispatch(setIsTariffCreateFormOpen(false)), 500)
       }
       else if (isCreateTariffError) {
         dispatch(setIsErrorNotificationOpen({
           isOpen: true,
           text: "Erro ao adicionar tarifas!"
         }))
+        resetMutation()
       }
-      resetMutation()
     }
     else if (isEditTariffFormOpen) { }
   }, [dispatch, isCreateTariffError, isCreateTariffFormOpen, isCreateTariffSuccess, isEditTariffFormOpen, reset, resetMutation])

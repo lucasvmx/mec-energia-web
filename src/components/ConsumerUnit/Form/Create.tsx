@@ -71,7 +71,7 @@ const ConsumerUnitCreateForm = () => {
   //Requisições Redux Query
   const { data: subgroupsList } = useGetSubgroupsQuery()
   const { data: distributorList } = useGetDistributorsQuery(session?.user?.universityId || skipToken)
-  const [createConsumerUnit, { status, isError, isSuccess, isLoading }] = useCreateConsumerUnitMutation()
+  const [createConsumerUnit, { status, isError, isSuccess, isLoading, reset: resetMutation }] = useCreateConsumerUnitMutation()
 
   //Estados
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
@@ -179,14 +179,17 @@ const ConsumerUnitCreateForm = () => {
         text: "Unidade consumidora adicionada com sucesso!"
       }))
       reset();
+      resetMutation()
       dispatch(setIsConsumerUnitCreateFormOpen(false))
     }
-    else if (isError)
+    else if (isError) {
       dispatch(setIsErrorNotificationOpen({
         isOpen: true,
         text: "Erro ao adicionar unidade consumidora. Verifique se já existe uma unidade com  nome ou código"
       }))
-  }, [dispatch, isError, isSuccess, reset])
+      resetMutation()
+    }
+  }, [dispatch, isError, isSuccess, reset, resetMutation])
 
   useEffect(() => {
     handleNotification()

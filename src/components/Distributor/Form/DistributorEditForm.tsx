@@ -30,7 +30,7 @@ const DistributorEditForm = () => {
   const activeDistributor = useSelector(selectActiveDistributorId);
   const isEditFormOpen = useSelector(selectIsDistributorEditFormOpen);
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
-  const [editDistributor, { isError, isSuccess, isLoading }] = useEditDistributorMutation()
+  const [editDistributor, { isError, isSuccess, isLoading, reset: resetMutation }] = useEditDistributorMutation()
   const { data: distributor } = useGetDistributorQuery(activeDistributor || skipToken)
   const form = useForm({ defaultValues });
   const {
@@ -96,14 +96,17 @@ const DistributorEditForm = () => {
         text: "Distribuidora modificada com sucesso!"
       }))
       reset();
+      resetMutation();
       dispatch(setIsDistributorEditFormOpen(false))
     }
-    else if (isError)
+    else if (isError) {
       dispatch(setIsErrorNotificationOpen({
         isOpen: true,
         text: "Erro ao editar distribuidora."
       }))
-  }, [dispatch, isError, isSuccess, reset])
+      resetMutation()
+    }
+  }, [dispatch, isError, isSuccess, reset, resetMutation])
 
   useEffect(() => {
     handleNotification()

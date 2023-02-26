@@ -76,7 +76,7 @@ const ConsumerUnitRenewContractForm = () => {
   //Requisições Redux Query
   const { data: subgroupsList } = useGetSubgroupsQuery()
   const { data: distributorList } = useGetDistributorsQuery(session?.user?.universityId || skipToken)
-  const [renewContract, { isError, isSuccess, isLoading }] = useRenewContractMutation()
+  const [renewContract, { isError, isSuccess, isLoading, reset: resetMutation }] = useRenewContractMutation()
   const { data: consumerUnit } = useGetConsumerUnitQuery(activeConsumerUnit || skipToken)
 
   //Estados
@@ -181,14 +181,17 @@ const ConsumerUnitRenewContractForm = () => {
         text: "Contrato renovado com sucesso!"
       }))
       reset();
+      resetMutation()
       dispatch(setIsRenewContractFormOpen(false))
     }
-    else if (isError)
+    else if (isError) {
       dispatch(setIsErrorNotificationOpen({
         isOpen: true,
         text: "Erro ao renovar contrato"
       }))
-  }, [dispatch, isError, isSuccess, reset])
+      resetMutation()
+    }
+  }, [dispatch, isError, isSuccess, reset, resetMutation])
 
   useEffect(() => {
     handleNotification()

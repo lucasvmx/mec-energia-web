@@ -77,7 +77,7 @@ const ConsumerUnitEditForm = () => {
   const { data: distributorList } = useGetDistributorsQuery(session?.user?.universityId || skipToken)
   const { data: contract } = useGetContractQuery(activeConsumerUnit || skipToken)
   const { data: consumerUnit } = useGetConsumerUnitQuery(activeConsumerUnit || skipToken)
-  const [editConsumerUnit, { isError, isSuccess, isLoading }] = useEditConsumerUnitMutation()
+  const [editConsumerUnit, { isError, isSuccess, isLoading, reset: resetMutation }] = useEditConsumerUnitMutation()
 
 
 
@@ -213,14 +213,17 @@ const ConsumerUnitEditForm = () => {
         text: "Unidade consumidora modificada com sucesso!"
       }))
       reset();
+      resetMutation()
       dispatch(setIsConsumerUnitEditFormOpen(false))
     }
-    else if (isError)
+    else if (isError) {
       dispatch(setIsErrorNotificationOpen({
         isOpen: true,
         text: "Erro ao editar unidade consumidora. Verifique se já existe uma unidade com o mesmo nome ou código"
       }))
-  }, [dispatch, isError, isSuccess, reset])
+      resetMutation()
+    }
+  }, [dispatch, isError, isSuccess, reset, resetMutation])
 
   useEffect(() => {
     handleNotification()

@@ -54,8 +54,8 @@ const CreateEditEnergyBillForm = () => {
   const { month, year, id: currentInvoiceId } = useSelector(selectEnergyBillParams)
   const activeConsumerUnitId = useSelector(selectActiveConsumerUnitId)
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
-  const [postInvoice, { isError: isPostInvoiceError, isSuccess: isPostInvoiceSuccess, isLoading: isPostInvoiceLoading }] = usePostInvoiceMutation()
-  const [editInvoice, { isError: isEditInvoiceError, isSuccess: isEditInvoiceSuccess, isLoading: isEditInvoiceLoading }] = useEditInvoiceMutation()
+  const [postInvoice, { isError: isPostInvoiceError, isSuccess: isPostInvoiceSuccess, isLoading: isPostInvoiceLoading, reset: resetPostMutation }] = usePostInvoiceMutation()
+  const [editInvoice, { isError: isEditInvoiceError, isSuccess: isEditInvoiceSuccess, isLoading: isEditInvoiceLoading, reset: resetEditMutation }] = useEditInvoiceMutation()
   const { data: consumerUnit } = useGetConsumerUnitQuery(activeConsumerUnitId || skipToken)
   const { data: contract } = useGetContractQuery(activeConsumerUnitId || skipToken)
   const { data: distributors } = useGetDistributorsQuery(session.data?.user.universityId || skipToken)
@@ -189,13 +189,16 @@ const CreateEditEnergyBillForm = () => {
           text: "Fatura lançada com sucesso!"
         }))
         reset();
+        resetPostMutation()
         dispatch(setIsEnergyBillCreateFormOpen(false))
       }
-      else if (isPostInvoiceError)
+      else if (isPostInvoiceError) {
         dispatch(setIsErrorNotificationOpen({
           isOpen: true,
           text: "Erro ao lançar fatura!"
         }))
+        resetPostMutation()
+      }
     }
     else if (isEditEnergyBillFormOpen) {
       if (isEditInvoiceSuccess) {
@@ -204,15 +207,18 @@ const CreateEditEnergyBillForm = () => {
           text: "Fatura modificada com sucesso!"
         }))
         reset();
+        resetEditMutation()
         dispatch(setIsEnergyBillEdiFormOpen(false))
       }
-      else if (isEditInvoiceError)
+      else if (isEditInvoiceError) {
         dispatch(setIsErrorNotificationOpen({
           isOpen: true,
           text: "Erro ao modificar fatura!"
         }))
+        resetEditMutation()
+      }
     }
-  }, [dispatch, isCreateEnergyBillFormOpen, isEditEnergyBillFormOpen, isEditInvoiceError, isEditInvoiceSuccess, isPostInvoiceError, isPostInvoiceSuccess, reset])
+  }, [dispatch, isCreateEnergyBillFormOpen, isEditEnergyBillFormOpen, isEditInvoiceError, isEditInvoiceSuccess, isPostInvoiceError, isPostInvoiceSuccess, reset, resetEditMutation, resetPostMutation])
 
   useEffect(() => {
     handleNotification()

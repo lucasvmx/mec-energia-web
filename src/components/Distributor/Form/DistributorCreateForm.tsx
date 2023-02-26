@@ -26,7 +26,7 @@ const DistributorCreateForm = () => {
   const user = session?.user
   const isCreateFormOpen = useSelector(selectIsDistributorCreateFormOpen);
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
-  const [createDistributor, { isError, isSuccess, isLoading }] = useCreateDistributorMutation()
+  const [createDistributor, { isError, isSuccess, isLoading, reset: resetMutation }] = useCreateDistributorMutation()
   const form = useForm({ defaultValues });
   const {
     control,
@@ -72,14 +72,17 @@ const DistributorCreateForm = () => {
         text: "Distribuidora adicionada com sucesso!"
       }))
       reset();
+      resetMutation();
       dispatch(setIsDistributorCreateFormOpen(false))
     }
-    else if (isError)
+    else if (isError) {
       dispatch(setIsErrorNotificationOpen({
         isOpen: true,
         text: "Erro ao adicionar distribuidora."
       }))
-  }, [dispatch, isError, isSuccess, reset])
+      resetMutation()
+    }
+  }, [dispatch, isError, isSuccess, reset, resetMutation])
 
   useEffect(() => {
     handleNotification()
