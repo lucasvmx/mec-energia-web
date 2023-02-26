@@ -183,7 +183,7 @@ const DistributorCreateFormDialog = (props: DistributorCreateFormDialogProps) =>
                   <SubmitButton isLoading={isLoading} />
                 </Box>
 
-                <Button variant="text" onClick={handleCancelEdition}>
+                <Button variant="text" onClick={handleCancelEdition} size='large'>
                   Cancelar
                 </Button>
               </Grid>

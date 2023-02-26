@@ -8,7 +8,7 @@ export const FormErrorsAlert = (props: FormErrorsAlertProps) => {
   if (!hasErrors) return <></>;
 
   return (
-    <Grid item xs={8}>
+    <Grid item xs={12}>
       <Box mt={3} mb={3}>
         <Alert icon={<ErrorOutlineIcon fontSize="inherit" />} severity="error">Corrija os erros acima antes de gravar</Alert>
       </Box>

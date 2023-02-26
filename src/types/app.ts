@@ -53,7 +53,7 @@ export type AppState = {
     params: EnergyBillEdiFormParams;
   };
   notifications: {
-    sucess: NotificationProps;
+    success: NotificationProps;
     error: NotificationProps;
   };
 };

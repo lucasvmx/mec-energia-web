@@ -97,12 +97,14 @@ const ConsumerUnitRenewContractForm = () => {
   const tariffFlag = watch("tariffFlag");
 
   useEffect(() => {
-    const { contracted, peakContractedDemandInKw, offPeakContractedDemandInKw } = defaultValues;
-    setValue('code', consumerUnit?.code as string)
-    setValue("contracted", contracted);
-    setValue("peakContractedDemandInKw", peakContractedDemandInKw);
-    setValue("offPeakContractedDemandInKw", offPeakContractedDemandInKw);
-  }, [consumerUnit?.code, setValue, tariffFlag]);
+    if (isRenewContractFormOpen) {
+      const { contracted, peakContractedDemandInKw, offPeakContractedDemandInKw } = defaultValues;
+      setValue('code', consumerUnit?.code as string)
+      setValue("contracted", contracted);
+      setValue("peakContractedDemandInKw", peakContractedDemandInKw);
+      setValue("offPeakContractedDemandInKw", offPeakContractedDemandInKw);
+    }
+  }, [consumerUnit?.code, isRenewContractFormOpen, setValue, tariffFlag]);
 
 
   // Validações de Formulário

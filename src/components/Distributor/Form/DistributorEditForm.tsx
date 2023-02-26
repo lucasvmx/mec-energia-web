@@ -147,7 +147,6 @@ const DistributorEditForm = () => {
                     ref={ref}
                     value={value}
                     label="Nome"
-                    required
                     error={Boolean(error)}
                     helperText={error?.message ?? " "}
                     fullWidth
@@ -178,7 +177,6 @@ const DistributorEditForm = () => {
                     customInput={TextField}
                     label="CNPJ"
                     format='##.###.###/####-##'
-                    required
                     error={Boolean(error)}
                     helperText={error?.message ?? " "}
                     fullWidth
@@ -227,9 +225,10 @@ const DistributorEditForm = () => {
 
             <FormErrorsAlert hasErrors={Object.keys(errors).length > 0 ? true : false} />
 
-            <Grid item xs={12}>
+            <Grid item xs={3}>
               <SubmitButton isLoading={isLoading} />
-
+            </Grid>
+            <Grid item xs={3}>
               <Button variant="text" onClick={handleCancelEdition} size='large'>
                 <Typography pl={3} pr={3}>Cancelar</Typography>
               </Button>

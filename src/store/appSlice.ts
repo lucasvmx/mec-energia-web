@@ -24,7 +24,7 @@ const initialState: AppState = {
     activeFilter: "all",
   },
   consumerUnit: {
-    activeId: null,
+    activeId: 1,
     isCreateFormOpen: false,
     isEditFormOpen: false,
     isRenewContractFormOpen: false,
@@ -36,7 +36,7 @@ const initialState: AppState = {
     },
   },
   distributor: {
-    activeId: null,
+    activeId: 1,
     isCreateFormOpen: false,
     isEditFormOpen: false,
   },
@@ -75,7 +75,7 @@ const initialState: AppState = {
     },
   },
   notifications: {
-    sucess: {
+    success: {
       isOpen: false,
       text: "",
     },
@@ -173,7 +173,7 @@ export const appSlice = createSlice({
         state.tariff.isCreateFormOpen = !action.payload;
       }
     },
-    setCurrenTariff: (state, action: PayloadAction<Tariff>) => {
+    setCurrentTariff: (state, action: PayloadAction<Tariff>) => {
       state.tariff.currentTariff = action.payload;
     },
     setIsEnergyBillCreateFormOpen: (state, action: PayloadAction<boolean>) => {
@@ -194,11 +194,11 @@ export const appSlice = createSlice({
     ) => {
       state.energyBill.params = action.payload;
     },
-    setIsSucessNotificationOpen: (
+    setIsSuccessNotificationOpen: (
       state,
       action: PayloadAction<NotificationProps>
     ) => {
-      state.notifications.sucess = action.payload;
+      state.notifications.success = action.payload;
     },
     setIsErrorNotificationOpen: (
       state,
@@ -237,11 +237,11 @@ export const {
   setIsDistributorEditFormOpen,
   setIsTariffCreateFormOpen,
   setIsTariffEdiFormOpen,
-  setCurrenTariff,
+  setCurrentTariff,
   setIsEnergyBillCreateFormOpen,
   setIsEnergyBillEdiFormOpen,
   setEnergyBillEdiFormParams,
-  setIsSucessNotificationOpen,
+  setIsSuccessNotificationOpen,
   setIsErrorNotificationOpen,
 } = appSlice.actions;
 
@@ -349,8 +349,8 @@ export const selectEnergyBillParams = (state: RootState) => {
   return state.app.energyBill.params;
 };
 
-export const selectSucessNotification = (state: RootState) => {
-  return state.app.notifications.sucess;
+export const selectSuccessNotification = (state: RootState) => {
+  return state.app.notifications.success;
 };
 
 export const selectErrorNotification = (state: RootState) => {
