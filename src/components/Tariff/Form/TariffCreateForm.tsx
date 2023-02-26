@@ -2,15 +2,15 @@ import { Alert, Box, Button, Grid, InputAdornment, TextField, Typography } from 
 import React, { useCallback, useEffect, useState } from 'react'
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
-import { selectActiveDistributorId, selectIsTariffCreateFormOpen, selectIsTariffEditFormOpen, setIsErrorNotificationOpen, setIsSuccessNotificationOpen as setIsSuccessNotificationOpen, setIsTariffCreateFormOpen, setIsTariffEdiFormOpen } from '../../../store/appSlice'
-import { CreateAndEditTariffForm, CreateTariffRequestPayload } from '../../../types/tariffs'
+import { selectActiveDistributorId, selectCurrentTariff, selectIsTariffCreateFormOpen, selectIsTariffEditFormOpen, setIsErrorNotificationOpen, setIsSuccessNotificationOpen as setIsSuccessNotificationOpen, setIsTariffCreateFormOpen, setIsTariffEdiFormOpen } from '../../../store/appSlice'
+import { CreateAndEditTariffForm, CreateTariffRequestPayload, EditTariffRequestPayload } from '../../../types/tariffs'
 import FormDrawer from '../../Form/Drawer'
 import { DatePicker } from '@mui/x-date-pickers'
 import { isAfter, isFuture, isValid } from "date-fns";
 import { NumericFormat } from "react-number-format";
 import FormWarningDialog from '../../ConsumerUnit/Form/WarningDialog'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import { useCreateTariffMutation, useGetDistributorQuery } from '@/api'
+import { useCreateTariffMutation, useEditTariffMutation, useGetDistributorQuery } from '@/api'
 import { sendFormattedDate } from '@/utils/date'
 import { skipToken } from '@reduxjs/toolkit/dist/query'
 import { SubmitButton } from '@/components/Form/SubmitButton'
@@ -20,19 +20,19 @@ const defaultValues: CreateAndEditTariffForm = {
   start_date: new Date(),
   end_date: new Date(),
   blue: {
-    peakTusdInReaisPerKw: undefined,
-    peakTusdInReaisPerMwh: undefined,
-    peakTeInReaisPerMwh: undefined,
-    offPeakTusdInReaisPerKw: undefined,
-    offPeakTusdInReaisPerMwh: undefined,
-    offPeakTeInReaisPerMwh: undefined,
+    peakTusdInReaisPerKw: "",
+    peakTusdInReaisPerMwh: "",
+    peakTeInReaisPerMwh: "",
+    offPeakTusdInReaisPerKw: "",
+    offPeakTusdInReaisPerMwh: "",
+    offPeakTeInReaisPerMwh: "",
   },
   green: {
-    peakTusdInReaisPerMwh: undefined,
-    peakTeInReaisPerMwh: undefined,
-    offPeakTusdInReaisPerMwh: undefined,
-    offPeakTeInReaisPerMwh: undefined,
-    naTusdInReaisPerKw: undefined,
+    peakTusdInReaisPerMwh: "",
+    peakTeInReaisPerMwh: "",
+    offPeakTusdInReaisPerMwh: "",
+    offPeakTeInReaisPerMwh: "",
+    naTusdInReaisPerKw: "",
   }
 }
 
@@ -40,7 +40,9 @@ const TariffCreateEditForm = () => {
   const dispatch = useDispatch();
   const isCreateTariffFormOpen = useSelector(selectIsTariffCreateFormOpen);
   const isEditTariffFormOpen = useSelector(selectIsTariffEditFormOpen)
-  const [createTariff, { isError: isCreateTariffError, isSuccess: isCreateTariffSuccess, isLoading: isCreateTariffLoading, reset: resetMutation }] = useCreateTariffMutation()
+  const currentTariff = useSelector(selectCurrentTariff);
+  const [createTariff, { isError: isCreateTariffError, isSuccess: isCreateTariffSuccess, isLoading: isCreateTariffLoading, reset: resetCreateMutation }] = useCreateTariffMutation()
+  const [editTariff, { isError: isEditTariffError, isSuccess: isEditTariffSuccess, isLoading: isEditTariffLoading, reset: resetEditMutation }] = useEditTariffMutation()
   const activeDistributor = useSelector(selectActiveDistributorId);
   const distributor = useGetDistributorQuery(activeDistributor || skipToken)
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
@@ -50,8 +52,81 @@ const TariffCreateEditForm = () => {
     control,
     reset,
     handleSubmit,
+    setValue,
+    watch,
     formState: { isDirty, errors }
   } = form;
+
+  const blue = watch('blue');
+  const green = watch('green');
+
+  useEffect(() => {
+    if (isEditTariffFormOpen) {
+      setValue('blue.offPeakTeInReaisPerMwh', currentTariff.blue.offPeakTeInReaisPerMwh);
+      setValue('blue.offPeakTusdInReaisPerKw', currentTariff.blue.offPeakTusdInReaisPerKw);
+      setValue('blue.offPeakTusdInReaisPerMwh', currentTariff.blue.offPeakTusdInReaisPerMwh);
+      setValue('blue.peakTeInReaisPerMwh', currentTariff.blue.peakTeInReaisPerMwh);
+      setValue('blue.peakTusdInReaisPerKw', currentTariff.blue.peakTusdInReaisPerKw);
+      setValue('blue.peakTusdInReaisPerMwh', currentTariff.blue.peakTusdInReaisPerMwh);
+      setValue('green.naTusdInReaisPerKw', currentTariff.green.naTusdInReaisPerKw);
+      setValue('green.offPeakTeInReaisPerMwh', currentTariff.green.offPeakTeInReaisPerMwh);
+      setValue('green.offPeakTusdInReaisPerMwh', currentTariff.green.offPeakTusdInReaisPerMwh);
+      setValue('green.peakTeInReaisPerMwh', currentTariff.green.peakTeInReaisPerMwh);
+      setValue('green.peakTusdInReaisPerMwh', currentTariff.green.peakTusdInReaisPerMwh);
+      setValue('end_date', new Date(currentTariff.endDate));
+      setValue('start_date', new Date(currentTariff.startDate));
+    }
+  }, [currentTariff.blue.offPeakTeInReaisPerMwh, currentTariff.blue.offPeakTusdInReaisPerKw, currentTariff.blue.offPeakTusdInReaisPerMwh, currentTariff.blue.peakTeInReaisPerMwh, currentTariff.blue.peakTusdInReaisPerKw, currentTariff.blue.peakTusdInReaisPerMwh, currentTariff.endDate, currentTariff.green.naTusdInReaisPerKw, currentTariff.green.offPeakTeInReaisPerMwh, currentTariff.green.offPeakTusdInReaisPerMwh, currentTariff.green.peakTeInReaisPerMwh, currentTariff.green.peakTusdInReaisPerMwh, currentTariff.startDate, isEditTariffFormOpen, setValue])
+
+  useEffect(() => {
+    if (isEditTariffFormOpen) {
+      if (blue.offPeakTeInReaisPerMwh === undefined) {
+        setValue('blue.offPeakTeInReaisPerMwh', '')
+        return;
+      }
+      if (blue.offPeakTusdInReaisPerKw === undefined) {
+        setValue('blue.offPeakTusdInReaisPerKw', '')
+        return;
+      }
+      if (blue.offPeakTusdInReaisPerMwh === undefined) {
+        setValue('blue.offPeakTusdInReaisPerMwh', '')
+        return;
+      }
+      if (blue.peakTeInReaisPerMwh === undefined) {
+        setValue('blue.peakTeInReaisPerMwh', '')
+        return;
+      }
+      if (blue.peakTusdInReaisPerKw === undefined) {
+        setValue('blue.peakTusdInReaisPerKw', '')
+        return;
+      }
+      if (blue.peakTusdInReaisPerMwh === undefined) {
+        setValue('blue.peakTusdInReaisPerMwh', '')
+        return;
+      }
+
+      if (green.offPeakTeInReaisPerMwh === undefined) {
+        setValue('green.offPeakTeInReaisPerMwh', '')
+        return;
+      }
+      if (green.offPeakTusdInReaisPerMwh === undefined) {
+        setValue('green.offPeakTusdInReaisPerMwh', '')
+        return;
+      }
+      if (green.peakTeInReaisPerMwh === undefined) {
+        setValue('green.peakTeInReaisPerMwh', '')
+        return;
+      }
+      if (green.peakTusdInReaisPerMwh === undefined) {
+        setValue('green.peakTusdInReaisPerMwh', '')
+        return;
+      }
+      if (green.naTusdInReaisPerKw === undefined) {
+        setValue('green.naTusdInReaisPerKw', '')
+      }
+
+    }
+  })
 
   const handleCancelEdition = () => {
     if (isDirty) {
@@ -105,7 +180,7 @@ const TariffCreateEditForm = () => {
   const onSubmitHandler: SubmitHandler<CreateAndEditTariffForm> = async (data: CreateAndEditTariffForm) => {
     const { start_date, end_date, blue, green } = data;
 
-    const body: CreateTariffRequestPayload = {
+    let body: CreateTariffRequestPayload | EditTariffRequestPayload = {
       startDate: sendFormattedDate(start_date),
       endDate: sendFormattedDate(end_date),
       blue: blue,
@@ -114,7 +189,10 @@ const TariffCreateEditForm = () => {
       distributor: activeDistributor as number,
     }
 
+    if (isEditTariffFormOpen) body = { ...body, id: currentTariff?.id }
+
     if (isCreateTariffFormOpen) await createTariff(body);
+    if (isEditTariffFormOpen) await editTariff(body as EditTariffRequestPayload);
   }
 
   const handleNotification = useCallback(() => {
@@ -125,7 +203,7 @@ const TariffCreateEditForm = () => {
           text: "Tarifas adicionadas com sucesso!"
         }))
         reset();
-        resetMutation()
+        resetCreateMutation()
         setTimeout(() => dispatch(setIsTariffCreateFormOpen(false)), 500)
       }
       else if (isCreateTariffError) {
@@ -133,11 +211,28 @@ const TariffCreateEditForm = () => {
           isOpen: true,
           text: "Erro ao adicionar tarifas!"
         }))
-        resetMutation()
+        resetCreateMutation()
       }
     }
-    else if (isEditTariffFormOpen) { }
-  }, [dispatch, isCreateTariffError, isCreateTariffFormOpen, isCreateTariffSuccess, isEditTariffFormOpen, reset, resetMutation])
+    else if (isEditTariffFormOpen) {
+      if (isEditTariffSuccess) {
+        dispatch(setIsSuccessNotificationOpen({
+          isOpen: true,
+          text: "Tarifas atualizadas com sucesso"
+        }))
+        reset();
+        resetEditMutation()
+        setTimeout(() => dispatch(setIsTariffEdiFormOpen(false)), 500)
+      }
+      else if (isEditTariffError) {
+        dispatch(setIsErrorNotificationOpen({
+          isOpen: true,
+          text: "Erro ao editar tarifa"
+        }))
+        resetEditMutation()
+      }
+    }
+  }, [dispatch, isCreateTariffError, isCreateTariffFormOpen, isCreateTariffSuccess, isEditTariffError, isEditTariffFormOpen, isEditTariffSuccess, reset, resetCreateMutation, resetEditMutation])
 
   useEffect(() => {
     handleNotification()
@@ -719,7 +814,7 @@ const TariffCreateEditForm = () => {
 
             <Grid container spacing={2}>
               <Grid item xs={3}>
-                <SubmitButton isLoading={isCreateTariffLoading} />
+                <SubmitButton isLoading={isCreateTariffLoading || isEditTariffLoading} />
               </Grid>
 
               <Grid item xs={3}>

@@ -7,7 +7,7 @@ import { Recommendation, RecommendationSettings } from "@/types/recommendation";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { getSession } from "next-auth/react";
 import { ConsumerUnit, ConsumerUnitsPayload } from "@/types/consumerUnit";
-import { CreateTariffResponsePayload } from "@/types/tariffs";
+import { CreateTariffRequestPayload, CreateTariffResponsePayload, EditTariffRequestPayload, EditTariffResponsePayload } from "@/types/tariffs";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -123,10 +123,18 @@ export const mecEnergiaApi = createApi({
           ? [{ type: 'Invoices', arg }, 'Invoices', "Recommendation"]
           : ['Invoices', "Recommendation"]
     }),
-    createTariff: builder.mutation<CreateTariffResponsePayload, CreateTariffResponsePayload>({
+    createTariff: builder.mutation<CreateTariffResponsePayload, CreateTariffRequestPayload>({
       query: (body) => ({
         url: '/tariffs/',
         method: 'POST',
+        body
+      }),
+      invalidatesTags: ['Tariffs', 'Recommendation']
+    }),
+    editTariff: builder.mutation<EditTariffResponsePayload, EditTariffRequestPayload>({
+      query: (body) => ({
+        url: `/tariffs/${body.id}`,
+        method: 'PUT',
         body
       }),
       invalidatesTags: ['Tariffs', 'Recommendation']
@@ -160,6 +168,7 @@ export const {
   useGetConsumerUnitQuery,
   useFetchInvoicesQuery,
   useCreateTariffMutation,
+  useEditTariffMutation,
   useRecommendationQuery,
   useRecommendationSettingsQuery,
 } = mecEnergiaApi;

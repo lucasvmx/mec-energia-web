@@ -4,6 +4,7 @@ export interface SubGroup {
 }
 
 export interface Tariff {
+  id?: number;
   startDate: string;
   endDate: string;
   subgroup: string;
@@ -41,19 +42,38 @@ export interface CreateTariffResponsePayload {
   green: Green;
 }
 
+export interface EditTariffRequestPayload {
+  id: number;
+  startDate: string;
+  endDate: string;
+  subgroup: string;
+  distributor: number;
+  blue: Blue;
+  green: Green;
+}
+
+export interface EditTariffResponsePayload {
+  startDate: string;
+  endDate: string;
+  subgroup: string;
+  distributor: number;
+  blue: Blue;
+  green: Green;
+}
+
 export interface Blue {
-  peakTusdInReaisPerKw?: number;
-  peakTusdInReaisPerMwh?: number;
-  peakTeInReaisPerMwh?: number;
-  offPeakTusdInReaisPerKw?: number;
-  offPeakTusdInReaisPerMwh?: number;
-  offPeakTeInReaisPerMwh?: number;
+  peakTusdInReaisPerKw?: number | "";
+  peakTusdInReaisPerMwh?: number | "";
+  peakTeInReaisPerMwh?: number | "";
+  offPeakTusdInReaisPerKw?: number | "";
+  offPeakTusdInReaisPerMwh?: number | "";
+  offPeakTeInReaisPerMwh?: number | "";
 }
 
 export interface Green {
-  peakTusdInReaisPerMwh?: number;
-  peakTeInReaisPerMwh?: number;
-  offPeakTusdInReaisPerMwh?: number;
-  offPeakTeInReaisPerMwh?: number;
-  naTusdInReaisPerKw?: number;
+  peakTusdInReaisPerMwh?: number | "";
+  peakTeInReaisPerMwh?: number | "";
+  offPeakTusdInReaisPerMwh?: number | "";
+  offPeakTeInReaisPerMwh?: number | "";
+  naTusdInReaisPerKw?: number | "";
 }
