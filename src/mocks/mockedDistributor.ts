@@ -10,14 +10,14 @@ export const mockedDistributor: Array<DistributorPropsTariffs> = [
     cnpj: "07.523.555/0001-67",
     isActive: true,
     consumerUnits: 1,
-    university:1,
+    university: 1,
     tariffs: [
       {
         startDate: "",
         endDate: "",
         subgroup: "A4",
         overdue: true,
-        distributor:1,
+        distributor: 1,
         blue: {
           peakTusdInReaisPerKw: 0,
           peakTusdInReaisPerMwh: 0,

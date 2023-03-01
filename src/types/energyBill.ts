@@ -1,72 +1,72 @@
 export interface CreateAndEditEnergyBillForm {
-  date:                       Date;
-  invoiceInReais?:            number | "";
-  isIncludedInAnalysis:       boolean;
-  peakMeasuredDemandInKw?:    number | "";
+  date: Date;
+  invoiceInReais?: number | "";
+  isIncludedInAnalysis: boolean;
+  peakMeasuredDemandInKw?: number | "";
   offPeakMeasuredDemandInKw?: number | "";
-  peakConsumptionInKwh?:      number | "";
-  offPeakConsumptionInKwh?:   number | "";
+  peakConsumptionInKwh?: number | "";
+  offPeakConsumptionInKwh?: number | "";
 }
 
 export interface PostEnergyBillRequestPayload {
-  date:                     string;
-  invoiceInReais?:          number;
-  isAtypical:               boolean;
-  peakMeasuredDemandInKw?:  number;
-  offPeakMeasuredDemandInKw	:number;
-  peakConsumptionInKwh?:    number;
+  date: string;
+  invoiceInReais?: number;
+  isAtypical: boolean;
+  peakMeasuredDemandInKw?: number;
+  offPeakMeasuredDemandInKw: number;
+  peakConsumptionInKwh?: number;
   offPeakConsumptionInKwh?: number;
-  contract:                 number;
-  consumerUnit:             number;
+  contract: number;
+  consumerUnit: number;
 }
 export interface EditEnergyBillRequestPayload {
-  id:                       number;
-  date:                     string;
-  invoiceInReais?:          number;
-  isAtypical:               boolean;
-  peakMeasuredDemandInKw?:  number;
-  offPeakMeasuredDemandInKw	:number;
-  peakConsumptionInKwh?:    number;
+  id: number;
+  date: string;
+  invoiceInReais?: number;
+  isAtypical: boolean;
+  peakMeasuredDemandInKw?: number;
+  offPeakMeasuredDemandInKw: number;
+  peakConsumptionInKwh?: number;
   offPeakConsumptionInKwh?: number;
-  contract:                 number;
-  consumerUnit:             number;
+  contract: number;
+  consumerUnit: number;
 }
 
 export interface PostEnergyBillResponsePayload {
-  id:                        number;
-  date:	                     Date;
-  invoiceInReais:            number;
-  isAtypical:                boolean;
-  peakConsumptionInKwh:	     number;
-  offPeakConsumptionInKwh:	 number;
-  peakMeasuredDemandInKw:	   number;
-  offPeakMeasuredDemandInKw	:number;
-  contract:                  string;
-  consumerUnit:              string;
+  id: number;
+  date: Date;
+  invoiceInReais: number;
+  isAtypical: boolean;
+  peakConsumptionInKwh: number;
+  offPeakConsumptionInKwh: number;
+  peakMeasuredDemandInKw: number;
+  offPeakMeasuredDemandInKw: number;
+  contract: string;
+  consumerUnit: string;
 }
 
 export interface EditEnergyBillResponsePayload {
-  id:                        number;
-  date:	                     Date;
-  invoiceInReais:            number;
-  isAtypical:                boolean;
-  peakConsumptionInKwh:	     number;
-  offPeakConsumptionInKwh:	 number;
-  peakMeasuredDemandInKw:	   number;
+  id: number;
+  date: Date;
+  invoiceInReais: number;
+  isAtypical: boolean;
+  peakConsumptionInKwh: number;
+  offPeakConsumptionInKwh: number;
+  peakMeasuredDemandInKw: number;
   offPeakMeasuredDemandInKw: number;
-  contract:                  string;
-  consumerUnit:              string;
+  contract: string;
+  consumerUnit: string;
 }
 
 export interface CurrentEneryBillResponsePayload {
-  id:                        number;
-  contract:                  number;
-  consumerUnit:              number;
-  date:                      Date;
-  invoiceInReais:            number;
-  isAtypical:                boolean;
-  peakConsumptionInKwh:      number;
-  offPeakConsumptionInKwh:   number;
-  peakMeasuredDemandInKw:    number;
+  id: number;
+  contract: number;
+  consumerUnit: number;
+  date: Date;
+  invoiceInReais: number;
+  isAtypical: boolean;
+  peakConsumptionInKwh: number;
+  offPeakConsumptionInKwh: number;
+  peakMeasuredDemandInKw: number;
   offPeakMeasuredDemandInKw: number;
 }

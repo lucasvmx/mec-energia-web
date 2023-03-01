@@ -37,10 +37,18 @@ import {
   setIsErrorNotificationOpen,
   setIsSuccessNotificationOpen,
 } from "@/store/appSlice";
-import { RenewContractForm, RenewContractRequestPayload } from "@/types/contract";
+import {
+  RenewContractForm,
+  RenewContractRequestPayload,
+} from "@/types/contract";
 import FormDrawer from "@/components/Form/Drawer";
 import FormWarningDialog from "@/components/ConsumerUnit/Form/WarningDialog";
-import { useGetConsumerUnitQuery, useGetDistributorsQuery, useGetSubgroupsQuery, useRenewContractMutation } from "@/api";
+import {
+  useGetConsumerUnitQuery,
+  useGetDistributorsQuery,
+  useGetSubgroupsQuery,
+  useRenewContractMutation,
+} from "@/api";
 import { useSession } from "next-auth/react";
 import { DistributorPropsTariffs } from "@/types/distributor";
 import DistributorCreateFormDialog from "@/components/Distributor/Form/CreateForm";
@@ -52,7 +60,7 @@ import { FormErrorsAlert } from "../../Form/FormErrorsAlert";
 import { SubmitButton } from "@/components/Form/SubmitButton";
 
 const defaultValues: RenewContractForm = {
-  code: '',
+  code: "",
   distributor: "",
   startDate: null,
   supplyVoltage: "",
@@ -64,24 +72,32 @@ const defaultValues: RenewContractForm = {
 
 const ConsumerUnitRenewContractForm = () => {
   //Sessão
-  const { data: session } = useSession()
+  const { data: session } = useSession();
 
   // Redux
   const dispatch = useDispatch();
   const isRenewContractFormOpen = useSelector(
     selectIsConsumerUnitRenewContractFormOpen
   );
-  const activeConsumerUnit = useSelector(selectActiveConsumerUnitId)
+  const activeConsumerUnit = useSelector(selectActiveConsumerUnitId);
 
   //Requisições Redux Query
-  const { data: subgroupsList } = useGetSubgroupsQuery()
-  const { data: distributorList } = useGetDistributorsQuery(session?.user?.universityId || skipToken)
-  const [renewContract, { isError, isSuccess, isLoading, reset: resetMutation }] = useRenewContractMutation()
-  const { data: consumerUnit } = useGetConsumerUnitQuery(activeConsumerUnit || skipToken)
+  const { data: subgroupsList } = useGetSubgroupsQuery();
+  const { data: distributorList } = useGetDistributorsQuery(
+    session?.user?.universityId || skipToken
+  );
+  const [
+    renewContract,
+    { isError, isSuccess, isLoading, reset: resetMutation },
+  ] = useRenewContractMutation();
+  const { data: consumerUnit } = useGetConsumerUnitQuery(
+    activeConsumerUnit || skipToken
+  );
 
   //Estados
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
-  const [shouldShowDistributorFormDialog, setShouldShowDistributorFormDialog] = useState(false);
+  const [shouldShowDistributorFormDialog, setShouldShowDistributorFormDialog] =
+    useState(false);
 
   const form = useForm({ mode: "all", defaultValues });
 
@@ -98,14 +114,17 @@ const ConsumerUnitRenewContractForm = () => {
 
   useEffect(() => {
     if (isRenewContractFormOpen) {
-      const { contracted, peakContractedDemandInKw, offPeakContractedDemandInKw } = defaultValues;
-      setValue('code', consumerUnit?.code as string)
+      const {
+        contracted,
+        peakContractedDemandInKw,
+        offPeakContractedDemandInKw,
+      } = defaultValues;
+      setValue("code", consumerUnit?.code as string);
       setValue("contracted", contracted);
       setValue("peakContractedDemandInKw", peakContractedDemandInKw);
       setValue("offPeakContractedDemandInKw", offPeakContractedDemandInKw);
     }
   }, [consumerUnit?.code, isRenewContractFormOpen, setValue, tariffFlag]);
-
 
   // Validações de Formulário
   const isValidDate = (date: RenewContractForm["startDate"]) => {
@@ -124,14 +143,18 @@ const ConsumerUnitRenewContractForm = () => {
     return true;
   };
 
-  const hasEnoughCaracteresLength = (value: RenewContractForm['code']) => {
-    if (value.length < 3) return "Insira ao menos 3 caracteres"
-    return true
-  }
+  const hasEnoughCaracteresLength = (value: RenewContractForm["code"]) => {
+    if (value.length < 3) return "Insira ao menos 3 caracteres";
+    return true;
+  };
 
-  const isValueGreaterThenZero = (value: RenewContractForm['peakContractedDemandInKw'] | RenewContractForm['offPeakContractedDemandInKw']) => {
-    if (value <= 0) return 'Insira um valor maior que 0'
-  }
+  const isValueGreaterThenZero = (
+    value:
+      | RenewContractForm["peakContractedDemandInKw"]
+      | RenewContractForm["offPeakContractedDemandInKw"]
+  ) => {
+    if (value <= 0) return "Insira um valor maior que 0";
+  };
 
   const handleCloseDialog = () => {
     setShouldShowCancelDialog(false);
@@ -152,14 +175,12 @@ const ConsumerUnitRenewContractForm = () => {
     dispatch(setIsRenewContractFormOpen(false));
   };
 
-  const onSubmitHandler: SubmitHandler<RenewContractForm> = async (
-    data
-  ) => {
-    if (data.tariffFlag === 'G') {
+  const onSubmitHandler: SubmitHandler<RenewContractForm> = async (data) => {
+    if (data.tariffFlag === "G") {
       data.offPeakContractedDemandInKw = data.contracted;
       data.peakContractedDemandInKw = data.contracted;
     }
-    const formattedDate = sendFormattedDate(data.startDate as Date)
+    const formattedDate = sendFormattedDate(data.startDate as Date);
     const body: RenewContractRequestPayload = {
       consumerUnit: activeConsumerUnit as number,
       code: data.code,
@@ -169,37 +190,40 @@ const ConsumerUnitRenewContractForm = () => {
       peakContractedDemandInKw: data.peakContractedDemandInKw as number,
       offPeakContractedDemandInKw: data.offPeakContractedDemandInKw as number,
       supplyVoltage: data.supplyVoltage as number,
-    }
-    await renewContract(body)
+    };
+    await renewContract(body);
   };
 
   // Notificações
   const handleNotification = useCallback(() => {
     if (isSuccess) {
-      dispatch(setIsSuccessNotificationOpen({
-        isOpen: true,
-        text: "Contrato renovado com sucesso!"
-      }))
+      dispatch(
+        setIsSuccessNotificationOpen({
+          isOpen: true,
+          text: "Contrato renovado com sucesso!",
+        })
+      );
       reset();
-      resetMutation()
-      dispatch(setIsRenewContractFormOpen(false))
+      resetMutation();
+      dispatch(setIsRenewContractFormOpen(false));
+    } else if (isError) {
+      dispatch(
+        setIsErrorNotificationOpen({
+          isOpen: true,
+          text: "Erro ao renovar contrato",
+        })
+      );
+      resetMutation();
     }
-    else if (isError) {
-      dispatch(setIsErrorNotificationOpen({
-        isOpen: true,
-        text: "Erro ao renovar contrato"
-      }))
-      resetMutation()
-    }
-  }, [dispatch, isError, isSuccess, reset, resetMutation])
+  }, [dispatch, isError, isSuccess, reset, resetMutation]);
 
   useEffect(() => {
-    handleNotification()
-  }, [handleNotification, isSuccess, isError])
+    handleNotification();
+  }, [handleNotification, isSuccess, isError]);
 
   const handleCloseDistributorFormDialog = () => {
-    setShouldShowDistributorFormDialog(false)
-  }
+    setShouldShowDistributorFormDialog(false);
+  };
 
   return (
     <FormDrawer
@@ -229,7 +253,7 @@ const ConsumerUnitRenewContractForm = () => {
                 name="code"
                 rules={{
                   required: "Preencha este campo",
-                  validate: hasEnoughCaracteresLength
+                  validate: hasEnoughCaracteresLength,
                 }}
                 render={({
                   field: { onChange, onBlur, value, ref },
@@ -241,7 +265,10 @@ const ConsumerUnitRenewContractForm = () => {
                     label="Número da Unidade *"
                     placeholder="Número da Unidade Consumidora conforme a fatura"
                     error={Boolean(error)}
-                    helperText={error?.message ?? "Nº ou código da Unidade Consumidora conforme a fatura"}
+                    helperText={
+                      error?.message ??
+                      "Nº ou código da Unidade Consumidora conforme a fatura"
+                    }
                     fullWidth
                     onChange={onChange}
                     onBlur={onBlur}
@@ -283,14 +310,24 @@ const ConsumerUnitRenewContractForm = () => {
                       onChange={onChange}
                       onBlur={onBlur}
                     >
-                      {distributorList?.map((distributor: DistributorPropsTariffs) => {
-                        return (
-                          <MenuItem key={distributor.id} value={distributor.id}>{distributor.name}</MenuItem>
-                        )
-                      })}
+                      {distributorList?.map(
+                        (distributor: DistributorPropsTariffs) => {
+                          return (
+                            <MenuItem
+                              key={distributor.id}
+                              value={distributor.id}
+                            >
+                              {distributor.name}
+                            </MenuItem>
+                          );
+                        }
+                      )}
                       <MenuItem>
                         <Button
-                          onClick={() => setShouldShowDistributorFormDialog(true)}>
+                          onClick={() =>
+                            setShouldShowDistributorFormDialog(true)
+                          }
+                        >
                           Adicionar
                         </Button>
                       </MenuItem>
@@ -324,7 +361,7 @@ const ConsumerUnitRenewContractForm = () => {
                         {...params}
                         inputProps={{
                           ...params.inputProps,
-                          placeholder: "dd/mm/aaaa"
+                          placeholder: "dd/mm/aaaa",
                         }}
                         helperText={error?.message ?? " "}
                         error={!!error}
@@ -338,13 +375,15 @@ const ConsumerUnitRenewContractForm = () => {
 
             <Tooltip
               title={
-                <div style={{ whiteSpace: 'pre-line' }}>
-                  {subgroupsList ? getSubgroupsText(subgroupsList?.subgroups) : ''}
+                <div style={{ whiteSpace: "pre-line" }}>
+                  {subgroupsList
+                    ? getSubgroupsText(subgroupsList?.subgroups)
+                    : ""}
                 </div>
               }
               arrow
               placement="right"
-              sx={{ color: 'red' }}
+              sx={{ color: "red" }}
             >
               <Grid item xs={8} sm={6}>
                 <Controller
@@ -352,18 +391,21 @@ const ConsumerUnitRenewContractForm = () => {
                   name={"supplyVoltage"}
                   rules={{
                     required: "Preencha este campo",
-                    validate: v => isInSomeSubgroups(v, subgroupsList?.subgroups || [])
+                    validate: (v) =>
+                      isInSomeSubgroups(v, subgroupsList?.subgroups || []),
                   }}
                   render={({
                     field: { onChange, onBlur, value },
                     fieldState: { error },
                   }) => (
-
                     <NumericFormat
                       value={value}
                       customInput={TextField}
                       label="Tensão contratada *"
-                      helperText={error?.message ?? "Se preciso, converta a tensão de V para kV dividindo o valor por 1.000."}
+                      helperText={
+                        error?.message ??
+                        "Se preciso, converta a tensão de V para kV dividindo o valor por 1.000."
+                      }
                       error={!!error}
                       fullWidth
                       InputProps={{
@@ -382,7 +424,6 @@ const ConsumerUnitRenewContractForm = () => {
                       onValueChange={(values) => onChange(values.floatValue)}
                       onBlur={onBlur}
                     />
-
                   )}
                 />
               </Grid>
@@ -405,7 +446,11 @@ const ConsumerUnitRenewContractForm = () => {
                     <FormLabel>Modalidade tarifária *</FormLabel>
 
                     <RadioGroup value={value} onChange={onChange}>
-                      <Box display={"flex"} justifyContent='flex-start' alignItems='center'>
+                      <Box
+                        display={"flex"}
+                        justifyContent="flex-start"
+                        alignItems="center"
+                      >
                         <FormControlLabel
                           value="G"
                           control={<Radio />}
@@ -413,13 +458,19 @@ const ConsumerUnitRenewContractForm = () => {
                         />
                         <FormHelperText>(Demanda única)</FormHelperText>
                       </Box>
-                      <Box display={"flex"} justifyContent='flex-start' alignItems='center'>
+                      <Box
+                        display={"flex"}
+                        justifyContent="flex-start"
+                        alignItems="center"
+                      >
                         <FormControlLabel
                           value="B"
                           control={<Radio />}
                           label="Azul"
                         />
-                        <FormHelperText>(Demanda de ponta e fora ponta)</FormHelperText>
+                        <FormHelperText>
+                          (Demanda de ponta e fora ponta)
+                        </FormHelperText>
                       </Box>
                     </RadioGroup>
 
@@ -436,7 +487,7 @@ const ConsumerUnitRenewContractForm = () => {
                   name="contracted"
                   rules={{
                     required: "Preencha este campo",
-                    validate: isValueGreaterThenZero
+                    validate: isValueGreaterThenZero,
                   }}
                   render={({
                     field: { onChange, onBlur, value },
@@ -476,7 +527,7 @@ const ConsumerUnitRenewContractForm = () => {
                     name="peakContractedDemandInKw"
                     rules={{
                       required: "Preencha este campo",
-                      validate: isValueGreaterThenZero
+                      validate: isValueGreaterThenZero,
                     }}
                     render={({
                       field: { onChange, onBlur, value },
@@ -515,7 +566,7 @@ const ConsumerUnitRenewContractForm = () => {
                     name="offPeakContractedDemandInKw"
                     rules={{
                       required: "Preencha este campo",
-                      validate: isValueGreaterThenZero
+                      validate: isValueGreaterThenZero,
                     }}
                     render={({
                       field: { onChange, onBlur, value },
@@ -550,7 +601,9 @@ const ConsumerUnitRenewContractForm = () => {
               </Box>
             )}
 
-            <FormErrorsAlert hasErrors={Object.keys(errors).length > 0 ? true : false} />
+            <FormErrorsAlert
+              hasErrors={Object.keys(errors).length > 0 ? true : false}
+            />
 
             <Grid item xs={12}>
               <SubmitButton isLoading={isLoading} />
@@ -574,7 +627,7 @@ const ConsumerUnitRenewContractForm = () => {
           />
         </Box>
       </FormProvider>
-    </FormDrawer >
+    </FormDrawer>
   );
 };
 

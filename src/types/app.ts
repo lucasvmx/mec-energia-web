@@ -52,6 +52,11 @@ export type AppState = {
     isEditFormOpen: boolean;
     params: EnergyBillEdiFormParams;
   };
+  institution: {
+    activeId: number | null;
+    isCreateFormOpen: boolean;
+    isEditFormOpen: boolean;
+  };
   notifications: {
     success: NotificationProps;
     error: NotificationProps;

@@ -1,13 +1,44 @@
-import { CreateConsumerUnitRequestPayload, EditConsumerUnitRequestPayload, InvoicesPayload } from "@/types/consumerUnit";
-import { GetContractsResponsePayload, RenewContractRequestPayload, RenewContractResponsePayload } from "@/types/contract";
-import { CreateDistributorRequestPayload, CreateDistributorResponsePayload, DistributorPropsTariffs, EditDistributorRequestPayload, EditDistributorResponsePayload } from "@/types/distributor";
-import { CurrentEneryBillResponsePayload, EditEnergyBillRequestPayload, EditEnergyBillResponsePayload, PostEnergyBillRequestPayload, PostEnergyBillResponsePayload } from "@/types/energyBill";
+import {
+  CreateConsumerUnitRequestPayload,
+  EditConsumerUnitRequestPayload,
+  InvoicesPayload,
+} from "@/types/consumerUnit";
+import {
+  GetContractsResponsePayload,
+  RenewContractRequestPayload,
+  RenewContractResponsePayload,
+} from "@/types/contract";
+import {
+  CreateDistributorRequestPayload,
+  CreateDistributorResponsePayload,
+  DistributorPropsTariffs,
+  EditDistributorRequestPayload,
+  EditDistributorResponsePayload,
+} from "@/types/distributor";
+import {
+  CurrentEneryBillResponsePayload,
+  EditEnergyBillRequestPayload,
+  EditEnergyBillResponsePayload,
+  PostEnergyBillRequestPayload,
+  PostEnergyBillResponsePayload,
+} from "@/types/energyBill";
 import { GetSubgroupsResponsePayload } from "@/types/subgroups";
 import { Recommendation, RecommendationSettings } from "@/types/recommendation";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { getSession } from "next-auth/react";
 import { ConsumerUnit, ConsumerUnitsPayload } from "@/types/consumerUnit";
-import { CreateTariffRequestPayload, CreateTariffResponsePayload, EditTariffRequestPayload, EditTariffResponsePayload } from "@/types/tariffs";
+import {
+  CreateTariffRequestPayload,
+  CreateTariffResponsePayload,
+  EditTariffRequestPayload,
+  EditTariffResponsePayload,
+} from "@/types/tariffs";
+import {
+  CreateInstitutionRequestPayload,
+  CreateInstitutionResponsePayload,
+  EditInstitutionRequestPayload,
+  EditInstitutionResponsePayload,
+} from "@/types/institution";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -27,129 +58,190 @@ const baseQuery = fetchBaseQuery({
 export const mecEnergiaApi = createApi({
   reducerPath: "mecEnergiaApi",
   baseQuery,
-  tagTypes: ['Distributors', 'ConsumerUnit', 'Subgroups', 'CurrentContract', "Invoices", "Recommendation", 'Tariffs'],
+  tagTypes: [
+    "Distributors",
+    "ConsumerUnit",
+    "Subgroups",
+    "CurrentContract",
+    "Invoices",
+    "Recommendation",
+    "Tariffs",
+    "Institution",
+    "Person",
+  ],
   endpoints: (builder) => ({
     fetchConsumerUnits: builder.query<ConsumerUnitsPayload, number>({
       query: (universityId) => `consumer-units?university_id=${universityId}`,
     }),
     getConsumerUnit: builder.query<ConsumerUnit, number>({
       query: (consumerUnitId) => `consumer-units/${consumerUnitId}`,
-      providesTags: ['ConsumerUnit']
+      providesTags: ["ConsumerUnit"],
     }),
     fetchInvoices: builder.query<InvoicesPayload, number>({
       query: (consumerUnitId) =>
         `energy-bills?consumer_unit_id=${consumerUnitId}`,
-      providesTags: ['Invoices']
+      providesTags: ["Invoices"],
     }),
     getSubgroups: builder.query<GetSubgroupsResponsePayload, void>({
       query: () => "/contracts/list-subgroups/",
-      providesTags: ['Subgroups']
+      providesTags: ["Subgroups"],
     }),
     getDistributors: builder.query<Array<DistributorPropsTariffs>, number>({
       query: (universityId) => `distributors/?university_id=${universityId}`,
-      providesTags: ["Distributors"]
+      providesTags: ["Distributors"],
     }),
     getDistributor: builder.query<DistributorPropsTariffs, number>({
       query: (distributorId) => `distributors/${distributorId}/`,
-      providesTags: ["Distributors"]
+      providesTags: ["Distributors"],
     }),
-    createDistributor: builder.mutation<CreateDistributorResponsePayload, CreateDistributorRequestPayload>({
+    createDistributor: builder.mutation<
+      CreateDistributorResponsePayload,
+      CreateDistributorRequestPayload
+    >({
       query: (body) => ({
         url: "distributors/",
         method: "POST",
-        body
+        body,
       }),
-      invalidatesTags: ["Distributors"]
+      invalidatesTags: ["Distributors"],
     }),
-    editDistributor: builder.mutation<EditDistributorResponsePayload, EditDistributorRequestPayload>({
+    editDistributor: builder.mutation<
+      EditDistributorResponsePayload,
+      EditDistributorRequestPayload
+    >({
       query: (body) => ({
         url: `distributors/${body.id}/`,
-        method: 'PUT',
-        body
+        method: "PUT",
+        body,
       }),
-      invalidatesTags: ["Distributors"]
+      invalidatesTags: ["Distributors"],
     }),
-    createConsumerUnit: builder.mutation<string, CreateConsumerUnitRequestPayload>({
+    createConsumerUnit: builder.mutation<
+      string,
+      CreateConsumerUnitRequestPayload
+    >({
       query: (body) => ({
         url: "consumer-units/create_consumer_unit_and_contract/",
         method: "POST",
-        body
+        body,
       }),
-      invalidatesTags: ["ConsumerUnit", "CurrentContract"]
+      invalidatesTags: ["ConsumerUnit", "CurrentContract"],
     }),
     editConsumerUnit: builder.mutation<string, EditConsumerUnitRequestPayload>({
       query: (body) => ({
         url: "consumer-units/edit_consumer_unit_and_contract/",
         method: "POST",
-        body
+        body,
       }),
-      invalidatesTags: ["ConsumerUnit", "CurrentContract"]
+      invalidatesTags: ["ConsumerUnit", "CurrentContract"],
     }),
     getContract: builder.query<GetContractsResponsePayload, number>({
-      query: (consumerunitId) => `contracts/get-current-contract-of-consumer-unit/?consumer_unit_id=${consumerunitId}`,
+      query: (consumerunitId) =>
+        `contracts/get-current-contract-of-consumer-unit/?consumer_unit_id=${consumerunitId}`,
       providesTags: (result, error, arg) =>
         result
-          ? [{ type: 'CurrentContract', arg }, 'CurrentContract', "Recommendation"]
-          : ['CurrentContract', "Recommendation"]
+          ? [
+              { type: "CurrentContract", arg },
+              "CurrentContract",
+              "Recommendation",
+            ]
+          : ["CurrentContract", "Recommendation"],
     }),
-    renewContract: builder.mutation<RenewContractResponsePayload, RenewContractRequestPayload>({
+    renewContract: builder.mutation<
+      RenewContractResponsePayload,
+      RenewContractRequestPayload
+    >({
       query: (body) => ({
         url: "contracts/",
         method: "POST",
-        body
+        body,
       }),
-      invalidatesTags: ["CurrentContract", "Recommendation"]
+      invalidatesTags: ["CurrentContract", "Recommendation"],
     }),
-    postInvoice: builder.mutation<PostEnergyBillResponsePayload, PostEnergyBillRequestPayload>({
+    postInvoice: builder.mutation<
+      PostEnergyBillResponsePayload,
+      PostEnergyBillRequestPayload
+    >({
       query: (body) => ({
         url: "/energy-bills/",
         method: "POST",
-        body
+        body,
       }),
-      invalidatesTags: ["Invoices", "Recommendation"]
+      invalidatesTags: ["Invoices", "Recommendation"],
     }),
-    editInvoice: builder.mutation<EditEnergyBillResponsePayload, EditEnergyBillRequestPayload>({
+    editInvoice: builder.mutation<
+      EditEnergyBillResponsePayload,
+      EditEnergyBillRequestPayload
+    >({
       query: (body) => ({
         url: `/energy-bills/${body.id}/`,
         method: "PUT",
-        body
+        body,
       }),
-      invalidatesTags: ["Invoices", "Recommendation"]
+      invalidatesTags: ["Invoices", "Recommendation"],
     }),
     getCurrentInvoice: builder.query<CurrentEneryBillResponsePayload, number>({
       query: (energyBillId) => `energy-bills/${energyBillId}/`,
       providesTags: (result, error, arg) =>
         result
-          ? [{ type: 'Invoices', arg }, 'Invoices', "Recommendation"]
-          : ['Invoices', "Recommendation"]
+          ? [{ type: "Invoices", arg }, "Invoices", "Recommendation"]
+          : ["Invoices", "Recommendation"],
     }),
-    createTariff: builder.mutation<CreateTariffResponsePayload, CreateTariffRequestPayload>({
+    createTariff: builder.mutation<
+      CreateTariffResponsePayload,
+      CreateTariffRequestPayload
+    >({
       query: (body) => ({
-        url: '/tariffs/',
-        method: 'POST',
-        body
+        url: "/tariffs/",
+        method: "POST",
+        body,
       }),
-      invalidatesTags: ['Tariffs', 'Recommendation']
+      invalidatesTags: ["Tariffs", "Recommendation"],
     }),
-    editTariff: builder.mutation<EditTariffResponsePayload, EditTariffRequestPayload>({
+    editTariff: builder.mutation<
+      EditTariffResponsePayload,
+      EditTariffRequestPayload
+    >({
       query: (body) => ({
         url: `/tariffs/${body.id}`,
-        method: 'PUT',
-        body
+        method: "PUT",
+        body,
       }),
-      invalidatesTags: ['Tariffs', 'Recommendation']
+      invalidatesTags: ["Tariffs", "Recommendation"],
+    }),
+    createInstitution: builder.mutation<
+      CreateInstitutionResponsePayload,
+      CreateInstitutionRequestPayload
+    >({
+      query: (body) => ({
+        url: "universities/",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Institution"],
+    }),
+    editInstitution: builder.mutation<
+      EditInstitutionResponsePayload,
+      EditInstitutionRequestPayload
+    >({
+      query: (body) => ({
+        url: `universities/${body.id}/`,
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: ["Institution"],
     }),
     recommendation: builder.query<Recommendation, number>({
       query: (consumerUnitId) => `recommendation/${consumerUnitId}`,
-      providesTags: ["Recommendation"]
+      providesTags: ["Recommendation"],
     }),
     recommendationSettings: builder.query<RecommendationSettings, void>({
       query: () => "recommendation-settings",
       keepUnusedDataFor: 120,
-      providesTags: ["Recommendation"]
+      providesTags: ["Recommendation"],
     }),
-  })
-})
+  }),
+});
 
 export const {
   useGetSubgroupsQuery,
@@ -169,6 +261,8 @@ export const {
   useFetchInvoicesQuery,
   useCreateTariffMutation,
   useEditTariffMutation,
+  useCreateInstitutionMutation,
+  useEditInstitutionMutation,
   useRecommendationQuery,
   useRecommendationSettingsQuery,
 } = mecEnergiaApi;

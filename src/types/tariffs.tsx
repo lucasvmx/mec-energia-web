@@ -9,7 +9,7 @@ export interface Tariff {
   endDate: string;
   subgroup: string;
   distributor: number;
-  overdue: boolean,
+  overdue: boolean;
   blue: Blue;
   green: Green;
 }
@@ -22,7 +22,6 @@ export interface CreateAndEditTariffForm {
 }
 
 export type TariffFlag = "G" | "B";
-
 
 export interface CreateTariffRequestPayload {
   startDate: string;

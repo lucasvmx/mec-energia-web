@@ -35,12 +35,21 @@ import {
   setIsConsumerUnitEditFormOpen,
   selectActiveConsumerUnitId,
   setIsSuccessNotificationOpen,
-  setIsErrorNotificationOpen
+  setIsErrorNotificationOpen,
 } from "@/store/appSlice";
 import FormDrawer from "@/components/Form/Drawer";
-import { EditConsumerUnitForm, EditConsumerUnitRequestPayload } from "@/types/consumerUnit";
+import {
+  EditConsumerUnitForm,
+  EditConsumerUnitRequestPayload,
+} from "@/types/consumerUnit";
 import FormWarningDialog from "@/components/ConsumerUnit/Form/WarningDialog";
-import { useEditConsumerUnitMutation, useGetConsumerUnitQuery, useGetContractQuery, useGetDistributorsQuery, useGetSubgroupsQuery } from "@/api";
+import {
+  useEditConsumerUnitMutation,
+  useGetConsumerUnitQuery,
+  useGetContractQuery,
+  useGetDistributorsQuery,
+  useGetSubgroupsQuery,
+} from "@/api";
 import { useSession } from "next-auth/react";
 import { DistributorPropsTariffs } from "@/types/distributor";
 import DistributorCreateFormDialog from "@/components/Distributor/Form/CreateForm";
@@ -63,23 +72,29 @@ const defaultValues: EditConsumerUnitForm = {
   offPeakContractedDemandInKw: "",
 };
 
-
 const ConsumerUnitEditForm = () => {
-
   const dispatch = useDispatch();
   const isEditFormOpen = useSelector(selectIsConsumerUnitEditFormOpen);
-  const activeConsumerUnit = useSelector(selectActiveConsumerUnitId)
-  const [shouldShowDistributorFormDialog, setShouldShowDistributorFormDialog] = useState(false);
+  const activeConsumerUnit = useSelector(selectActiveConsumerUnitId);
+  const [shouldShowDistributorFormDialog, setShouldShowDistributorFormDialog] =
+    useState(false);
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
 
-  const { data: session } = useSession()
-  const { data: subgroupsList } = useGetSubgroupsQuery()
-  const { data: distributorList } = useGetDistributorsQuery(session?.user?.universityId || skipToken)
-  const { data: contract } = useGetContractQuery(activeConsumerUnit || skipToken)
-  const { data: consumerUnit } = useGetConsumerUnitQuery(activeConsumerUnit || skipToken)
-  const [editConsumerUnit, { isError, isSuccess, isLoading, reset: resetMutation }] = useEditConsumerUnitMutation()
-
-
+  const { data: session } = useSession();
+  const { data: subgroupsList } = useGetSubgroupsQuery();
+  const { data: distributorList } = useGetDistributorsQuery(
+    session?.user?.universityId || skipToken
+  );
+  const { data: contract } = useGetContractQuery(
+    activeConsumerUnit || skipToken
+  );
+  const { data: consumerUnit } = useGetConsumerUnitQuery(
+    activeConsumerUnit || skipToken
+  );
+  const [
+    editConsumerUnit,
+    { isError, isSuccess, isLoading, reset: resetMutation },
+  ] = useEditConsumerUnitMutation();
 
   const form = useForm({ mode: "all", defaultValues });
 
@@ -96,41 +111,48 @@ const ConsumerUnitEditForm = () => {
   const supplyVoltage = watch("supplyVoltage");
   const peakContractedDemandInKw = watch("peakContractedDemandInKw");
   const offPeakContractedDemandInKw = watch("offPeakContractedDemandInKw");
-  const isActive = watch("isActive")
+  const isActive = watch("isActive");
 
   useEffect(() => {
     if (isEditFormOpen && consumerUnit && contract) {
-      setValue("name", consumerUnit?.name)
-      setValue("isActive", true)
+      setValue("name", consumerUnit?.name);
+      setValue("isActive", true);
       setValue("code", consumerUnit?.code);
-      setValue("distributor", contract?.distributor)
-      setValue("supplyVoltage", contract?.supplyVoltage)
+      setValue("distributor", contract?.distributor);
+      setValue("supplyVoltage", contract?.supplyVoltage);
       setValue("peakContractedDemandInKw", contract?.peakContractedDemandInKw);
-      setValue("offPeakContractedDemandInKw", contract?.offPeakContractedDemandInKw);
+      setValue(
+        "offPeakContractedDemandInKw",
+        contract?.offPeakContractedDemandInKw
+      );
 
-      const currentDate = new Date(contract?.startDate)
-      currentDate.setDate(currentDate.getDate() + 1)
-      setValue("startDate", currentDate)
-
+      const currentDate = new Date(contract?.startDate);
+      currentDate.setDate(currentDate.getDate() + 1);
+      setValue("startDate", currentDate);
     }
   }, [isEditFormOpen, consumerUnit, contract, setValue]);
 
   useEffect(() => {
-    setValue("isActive", isActive)
+    setValue("isActive", isActive);
     if (supplyVoltage === undefined) {
-      setValue("supplyVoltage", "")
-      return
+      setValue("supplyVoltage", "");
+      return;
     }
     if (peakContractedDemandInKw === undefined) {
-      setValue("peakContractedDemandInKw", "")
-      return
+      setValue("peakContractedDemandInKw", "");
+      return;
     }
     if (offPeakContractedDemandInKw === undefined) {
-      setValue("offPeakContractedDemandInKw", "")
-      return
+      setValue("offPeakContractedDemandInKw", "");
+      return;
     }
-  }, [isActive, offPeakContractedDemandInKw, peakContractedDemandInKw, setValue, supplyVoltage])
-
+  }, [
+    isActive,
+    offPeakContractedDemandInKw,
+    peakContractedDemandInKw,
+    setValue,
+    supplyVoltage,
+  ]);
 
   // Validações
 
@@ -150,14 +172,20 @@ const ConsumerUnitEditForm = () => {
     return true;
   };
 
-  const hasEnoughCaracteresLength = (value: EditConsumerUnitForm['code'] | EditConsumerUnitForm['name']) => {
-    if (value.length < 3) return "Insira ao menos 3 caracteres"
-    return true
-  }
+  const hasEnoughCaracteresLength = (
+    value: EditConsumerUnitForm["code"] | EditConsumerUnitForm["name"]
+  ) => {
+    if (value.length < 3) return "Insira ao menos 3 caracteres";
+    return true;
+  };
 
-  const isValueGreaterThenZero = (value: EditConsumerUnitForm['peakContractedDemandInKw'] | EditConsumerUnitForm['offPeakContractedDemandInKw']) => {
-    if (value <= 0) return 'Insira um valor maior que 0'
-  }
+  const isValueGreaterThenZero = (
+    value:
+      | EditConsumerUnitForm["peakContractedDemandInKw"]
+      | EditConsumerUnitForm["offPeakContractedDemandInKw"]
+  ) => {
+    if (value <= 0) return "Insira um valor maior que 0";
+  };
 
   const handleCloseDialog = () => {
     setShouldShowCancelDialog(false);
@@ -178,60 +206,72 @@ const ConsumerUnitEditForm = () => {
     dispatch(setIsConsumerUnitEditFormOpen(false));
   };
 
-  const onSubmitHandler: SubmitHandler<EditConsumerUnitForm> = useCallback(async (data) => {
-    if (data.tariffFlag === 'G') {
-      data.offPeakContractedDemandInKw = data.peakContractedDemandInKw
-    }
-
-    const body: EditConsumerUnitRequestPayload = {
-      consumerUnit: {
-        consumerUnitId: activeConsumerUnit as number,
-        name: data.name,
-        code: data.code,
-        isActive: data.isActive,
-        university: session?.user.universityId || 0
-      },
-      contract: {
-        contractId: contract?.id as number,
-        startDate: data.startDate ? sendFormattedDate(data.startDate) : '',
-        tariffFlag: data.tariffFlag,
-        peakContractedDemandInKw: data.peakContractedDemandInKw as number,
-        offPeakContractedDemandInKw: data.offPeakContractedDemandInKw as number,
-        supplyVoltage: data.supplyVoltage as number,
-        distributor: data.distributor as number,
+  const onSubmitHandler: SubmitHandler<EditConsumerUnitForm> = useCallback(
+    async (data) => {
+      if (data.tariffFlag === "G") {
+        data.offPeakContractedDemandInKw = data.peakContractedDemandInKw;
       }
-    }
-    await editConsumerUnit(body)
-  }, [activeConsumerUnit, contract?.id, editConsumerUnit, session?.user.universityId]);
+
+      const body: EditConsumerUnitRequestPayload = {
+        consumerUnit: {
+          consumerUnitId: activeConsumerUnit as number,
+          name: data.name,
+          code: data.code,
+          isActive: data.isActive,
+          university: session?.user.universityId || 0,
+        },
+        contract: {
+          contractId: contract?.id as number,
+          startDate: data.startDate ? sendFormattedDate(data.startDate) : "",
+          tariffFlag: data.tariffFlag,
+          peakContractedDemandInKw: data.peakContractedDemandInKw as number,
+          offPeakContractedDemandInKw:
+            data.offPeakContractedDemandInKw as number,
+          supplyVoltage: data.supplyVoltage as number,
+          distributor: data.distributor as number,
+        },
+      };
+      await editConsumerUnit(body);
+    },
+    [
+      activeConsumerUnit,
+      contract?.id,
+      editConsumerUnit,
+      session?.user.universityId,
+    ]
+  );
 
   //Notificações
 
   const handleNotification = useCallback(() => {
     if (isSuccess) {
-      dispatch(setIsSuccessNotificationOpen({
-        isOpen: true,
-        text: "Unidade consumidora modificada com sucesso!"
-      }))
+      dispatch(
+        setIsSuccessNotificationOpen({
+          isOpen: true,
+          text: "Unidade consumidora modificada com sucesso!",
+        })
+      );
       reset();
-      resetMutation()
-      dispatch(setIsConsumerUnitEditFormOpen(false))
+      resetMutation();
+      dispatch(setIsConsumerUnitEditFormOpen(false));
+    } else if (isError) {
+      dispatch(
+        setIsErrorNotificationOpen({
+          isOpen: true,
+          text: "Erro ao editar unidade consumidora. Verifique se já existe uma unidade com o mesmo nome ou código",
+        })
+      );
+      resetMutation();
     }
-    else if (isError) {
-      dispatch(setIsErrorNotificationOpen({
-        isOpen: true,
-        text: "Erro ao editar unidade consumidora. Verifique se já existe uma unidade com o mesmo nome ou código"
-      }))
-      resetMutation()
-    }
-  }, [dispatch, isError, isSuccess, reset, resetMutation])
+  }, [dispatch, isError, isSuccess, reset, resetMutation]);
 
   useEffect(() => {
-    handleNotification()
-  }, [handleNotification])
+    handleNotification();
+  }, [handleNotification]);
 
   const handleCloseDistributorFormDialog = () => {
-    setShouldShowDistributorFormDialog(false)
-  }
+    setShouldShowDistributorFormDialog(false);
+  };
 
   return (
     <FormDrawer open={isEditFormOpen} handleCloseDrawer={handleCancelEdition}>
@@ -283,7 +323,7 @@ const ConsumerUnitEditForm = () => {
                 name="name"
                 rules={{
                   required: "Preencha este campo",
-                  validate: hasEnoughCaracteresLength
+                  validate: hasEnoughCaracteresLength,
                 }}
                 render={({
                   field: { onChange, onBlur, value, ref },
@@ -322,7 +362,7 @@ const ConsumerUnitEditForm = () => {
                 name="code"
                 rules={{
                   required: "Preencha este campo",
-                  validate: hasEnoughCaracteresLength
+                  validate: hasEnoughCaracteresLength,
                 }}
                 render={({
                   field: { onChange, onBlur, value, ref },
@@ -334,7 +374,10 @@ const ConsumerUnitEditForm = () => {
                     label="Número da Unidade *"
                     placeholder="Número da Unidade Consumidora conforme a fatura"
                     error={Boolean(error)}
-                    helperText={error?.message ?? "Nº ou código da Unidade Consumidora conforme a fatura"}
+                    helperText={
+                      error?.message ??
+                      "Nº ou código da Unidade Consumidora conforme a fatura"
+                    }
                     fullWidth
                     onChange={onChange}
                     onBlur={onBlur}
@@ -375,14 +418,24 @@ const ConsumerUnitEditForm = () => {
                       onChange={onChange}
                       onBlur={onBlur}
                     >
-                      {distributorList?.map((distributor: DistributorPropsTariffs) => {
-                        return (
-                          <MenuItem key={distributor.id} value={distributor.id}>{distributor.name}</MenuItem>
-                        )
-                      })}
+                      {distributorList?.map(
+                        (distributor: DistributorPropsTariffs) => {
+                          return (
+                            <MenuItem
+                              key={distributor.id}
+                              value={distributor.id}
+                            >
+                              {distributor.name}
+                            </MenuItem>
+                          );
+                        }
+                      )}
                       <MenuItem>
                         <Button
-                          onClick={() => setShouldShowDistributorFormDialog(true)}>
+                          onClick={() =>
+                            setShouldShowDistributorFormDialog(true)
+                          }
+                        >
                           Adicionar
                         </Button>
                       </MenuItem>
@@ -415,7 +468,7 @@ const ConsumerUnitEditForm = () => {
                         {...params}
                         inputProps={{
                           ...params.inputProps,
-                          placeholder: "dd/mm/aaaa"
+                          placeholder: "dd/mm/aaaa",
                         }}
                         helperText={error?.message ?? " "}
                         error={!!error}
@@ -428,13 +481,15 @@ const ConsumerUnitEditForm = () => {
             </Grid>
             <Tooltip
               title={
-                <div style={{ whiteSpace: 'pre-line' }}>
-                  {subgroupsList ? getSubgroupsText(subgroupsList?.subgroups) : ''}
+                <div style={{ whiteSpace: "pre-line" }}>
+                  {subgroupsList
+                    ? getSubgroupsText(subgroupsList?.subgroups)
+                    : ""}
                 </div>
               }
               arrow
               placement="right"
-              sx={{ color: 'red' }}
+              sx={{ color: "red" }}
             >
               <Grid item xs={8} sm={6}>
                 <Controller
@@ -442,7 +497,8 @@ const ConsumerUnitEditForm = () => {
                   name={"supplyVoltage"}
                   rules={{
                     required: "Preencha este campo",
-                    validate: v => isInSomeSubgroups(v, subgroupsList?.subgroups || [])
+                    validate: (v) =>
+                      isInSomeSubgroups(v, subgroupsList?.subgroups || []),
                   }}
                   render={({
                     field: { onChange, onBlur, value },
@@ -452,7 +508,10 @@ const ConsumerUnitEditForm = () => {
                       value={value}
                       customInput={TextField}
                       label="Tensão contratada *"
-                      helperText={error?.message ?? "Se preciso, converta a tensão de V para kV dividindo o valor por 1.000."}
+                      helperText={
+                        error?.message ??
+                        "Se preciso, converta a tensão de V para kV dividindo o valor por 1.000."
+                      }
                       error={!!error}
                       fullWidth
                       InputProps={{
@@ -488,7 +547,11 @@ const ConsumerUnitEditForm = () => {
                     <FormLabel>Modalidade tarifária *</FormLabel>
 
                     <RadioGroup value={value} onChange={onChange}>
-                      <Box display={"flex"} justifyContent='flex-start' alignItems='center'>
+                      <Box
+                        display={"flex"}
+                        justifyContent="flex-start"
+                        alignItems="center"
+                      >
                         <FormControlLabel
                           value="G"
                           control={<Radio />}
@@ -496,13 +559,19 @@ const ConsumerUnitEditForm = () => {
                         />
                         <FormHelperText>(Demanda única)</FormHelperText>
                       </Box>
-                      <Box display={"flex"} justifyContent='flex-start' alignItems='center'>
+                      <Box
+                        display={"flex"}
+                        justifyContent="flex-start"
+                        alignItems="center"
+                      >
                         <FormControlLabel
                           value="B"
                           control={<Radio />}
                           label="Azul"
                         />
-                        <FormHelperText>(Demanda de ponta e fora ponta)</FormHelperText>
+                        <FormHelperText>
+                          (Demanda de ponta e fora ponta)
+                        </FormHelperText>
                       </Box>
                     </RadioGroup>
 
@@ -518,7 +587,7 @@ const ConsumerUnitEditForm = () => {
                   name="peakContractedDemandInKw"
                   rules={{
                     required: "Preencha este campo",
-                    validate: isValueGreaterThenZero
+                    validate: isValueGreaterThenZero,
                   }}
                   render={({
                     field: { onChange, onBlur, value },
@@ -558,7 +627,7 @@ const ConsumerUnitEditForm = () => {
                     name="peakContractedDemandInKw"
                     rules={{
                       required: "Preencha este campo",
-                      validate: isValueGreaterThenZero
+                      validate: isValueGreaterThenZero,
                     }}
                     render={({
                       field: { onChange, onBlur, value },
@@ -597,7 +666,7 @@ const ConsumerUnitEditForm = () => {
                     name="offPeakContractedDemandInKw"
                     rules={{
                       required: "Preencha este campo",
-                      validate: isValueGreaterThenZero
+                      validate: isValueGreaterThenZero,
                     }}
                     render={({
                       field: { onChange, onBlur, value },
@@ -632,7 +701,9 @@ const ConsumerUnitEditForm = () => {
               </>
             )}
 
-            <FormErrorsAlert hasErrors={Object.keys(errors).length > 0 ? true : false} />
+            <FormErrorsAlert
+              hasErrors={Object.keys(errors).length > 0 ? true : false}
+            />
 
             <Grid item xs={12}>
               <SubmitButton isLoading={isLoading} />
@@ -647,7 +718,7 @@ const ConsumerUnitEditForm = () => {
             open={shouldShowCancelDialog}
             onClose={handleCloseDialog}
             onDiscard={handleDiscardForm}
-            entity={'unidade consumidora'}
+            entity={"unidade consumidora"}
           />
 
           <DistributorCreateFormDialog
@@ -656,7 +727,7 @@ const ConsumerUnitEditForm = () => {
           />
         </Box>
       </FormProvider>
-    </FormDrawer >
+    </FormDrawer>
   );
 };
 
