@@ -38,6 +38,7 @@ import TariffCreateEditForm from "../../components/Tariff/Form/TariffCreateForm"
 import SuccessNotification from "@/components/Notification/SuccessNotification";
 import ErrorNotification from "@/components/Notification/FailNotification";
 import CreateInstitutionForm from "@/components/Institution/Form/CreateInstitutionForm";
+import EditInstitutionForm from "@/components/Institution/Form/EditInstitutionForm";
 
 const DistributorPage: NextPage = () => {
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
@@ -255,7 +256,9 @@ const DistributorPage: NextPage = () => {
         <SuccessNotification />
         <ErrorNotification />
 
+        {/*TODO Remover esses formulários daqui quando tiver a página de sysAdmin*/}
         <CreateInstitutionForm />
+        <EditInstitutionForm />
       </Box>
     </DefaultTemplate>
   );

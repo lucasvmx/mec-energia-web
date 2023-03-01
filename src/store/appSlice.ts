@@ -76,7 +76,7 @@ const initialState: AppState = {
   },
   institution: {
     activeId: null,
-    isCreateFormOpen: true,
+    isCreateFormOpen: false,
     isEditFormOpen: false,
   },
   notifications: {

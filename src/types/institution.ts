@@ -4,19 +4,27 @@ export interface CreateInstitutionForm {
   cnpj: string;
 }
 
+export interface EditInstitutionForm {
+  acronym: string;
+  name: string;
+  cnpj: string;
+}
+
 export interface CreateInstitutionRequestPayload {
   name: string;
   cnpj: string;
   acronym?: string;
 }
 
-export interface CreateInstitutionResponsePayload {
+export interface GetInstitutionResponsePayload {
   id: number;
   name: string;
   cnpj: string;
   acronym?: string;
   createdOn: Date;
 }
+
+export type CreateInstitutionResponsePayload = GetInstitutionResponsePayload;
 
 export interface EditInstitutionRequestPayload {
   name: string;
@@ -25,10 +33,4 @@ export interface EditInstitutionRequestPayload {
   id: number;
 }
 
-export interface EditInstitutionResponsePayload {
-  id: number;
-  name: string;
-  cnpj: string;
-  acronym?: string;
-  createdOn: Date;
-}
+export type EditInstitutionResponsePayload = GetInstitutionResponsePayload;

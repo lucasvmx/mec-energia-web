@@ -38,6 +38,7 @@ import {
   CreateInstitutionResponsePayload,
   EditInstitutionRequestPayload,
   EditInstitutionResponsePayload,
+  GetInstitutionResponsePayload,
 } from "@/types/institution";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -209,6 +210,10 @@ export const mecEnergiaApi = createApi({
       }),
       invalidatesTags: ["Tariffs", "Recommendation"],
     }),
+    getInstitution: builder.query<GetInstitutionResponsePayload, number>({
+      query: (institutionId) => `universities/${institutionId}/`,
+      providesTags: ["Institution"],
+    }),
     createInstitution: builder.mutation<
       CreateInstitutionResponsePayload,
       CreateInstitutionRequestPayload
@@ -261,6 +266,7 @@ export const {
   useFetchInvoicesQuery,
   useCreateTariffMutation,
   useEditTariffMutation,
+  useGetInstitutionQuery,
   useCreateInstitutionMutation,
   useEditInstitutionMutation,
   useRecommendationQuery,
