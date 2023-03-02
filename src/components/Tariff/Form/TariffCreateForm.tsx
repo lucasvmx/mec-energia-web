@@ -70,6 +70,8 @@ const TariffCreateEditForm = () => {
   const dispatch = useDispatch();
   const isCreateTariffFormOpen = useSelector(selectIsTariffCreateFormOpen);
   const isEditTariffFormOpen = useSelector(selectIsTariffEditFormOpen);
+  //const activeDistributorId = useSelector(selectActiveDistributorId);
+  //const activSubgroup = useSelector(selectActiveSubgroup);
   const currentTariff = useSelector(selectCurrentTariff);
   const [
     createTariff,
@@ -106,7 +108,7 @@ const TariffCreateEditForm = () => {
   const blue = watch("blue");
   const green = watch("green");
 
-  useEffect(() => {
+  /*   useEffect(() => {
     if (isEditTariffFormOpen) {
       setValue(
         "blue.offPeakTeInReaisPerMwh",
@@ -171,7 +173,7 @@ const TariffCreateEditForm = () => {
     currentTariff.startDate,
     isEditTariffFormOpen,
     setValue,
-  ]);
+  ]); */
 
   useEffect(() => {
     if (isEditTariffFormOpen) {

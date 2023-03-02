@@ -15,3 +15,9 @@ export const isInSomeSubgroups = (
   }
   return true;
 };
+
+export const isValidEmail = (email: string) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) return "Insira um e-mail válido";
+  return true;
+};

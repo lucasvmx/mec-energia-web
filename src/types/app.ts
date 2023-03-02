@@ -39,6 +39,7 @@ export type AppState = {
   };
   distributor: {
     activeId: number | null;
+    activeSubgroup: string | null;
     isCreateFormOpen: boolean;
     isEditFormOpen: boolean;
   };
@@ -53,6 +54,11 @@ export type AppState = {
     params: EnergyBillEdiFormParams;
   };
   institution: {
+    activeId: number | null;
+    isCreateFormOpen: boolean;
+    isEditFormOpen: boolean;
+  };
+  person: {
     activeId: number | null;
     isCreateFormOpen: boolean;
     isEditFormOpen: boolean;

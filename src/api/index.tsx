@@ -40,6 +40,13 @@ import {
   EditInstitutionResponsePayload,
   GetInstitutionResponsePayload,
 } from "@/types/institution";
+import {
+  CreatePersonRequestPayload,
+  CreatePersonResponsePayload,
+  EditPersonRequestPayload,
+  EditPersonResponsePayload,
+  GetPersonResponsePayload,
+} from "@/types/person";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -236,6 +243,32 @@ export const mecEnergiaApi = createApi({
       }),
       invalidatesTags: ["Institution"],
     }),
+    getPerson: builder.query<GetPersonResponsePayload, number>({
+      query: (personId) => `university-user/${personId}/`,
+      providesTags: ["Person"],
+    }),
+    createPerson: builder.mutation<
+      CreatePersonResponsePayload,
+      CreatePersonRequestPayload
+    >({
+      query: (body) => ({
+        url: "university-user/",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Person"],
+    }),
+    editPerson: builder.mutation<
+      EditPersonResponsePayload,
+      EditPersonRequestPayload
+    >({
+      query: (body) => ({
+        url: `university-user/${body.id}/`,
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: ["Person"],
+    }),
     recommendation: builder.query<Recommendation, number>({
       query: (consumerUnitId) => `recommendation/${consumerUnitId}`,
       providesTags: ["Recommendation"],
@@ -269,6 +302,9 @@ export const {
   useGetInstitutionQuery,
   useCreateInstitutionMutation,
   useEditInstitutionMutation,
+  useGetPersonQuery,
+  useCreatePersonMutation,
+  useEditPersonMutation,
   useRecommendationQuery,
   useRecommendationSettingsQuery,
 } = mecEnergiaApi;

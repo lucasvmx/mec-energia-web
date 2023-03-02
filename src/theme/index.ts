@@ -74,8 +74,8 @@ const theme = createTheme(
             color: "#FFFFFF",
           },
           standardInfo: {
-            backgroundColor: "#0E438C",
-            color: "#FFFFFF",
+            backgroundColor: "#E8EFF9",
+            color: "#0F294D",
           },
           icon: {
             color: "#FFFFFF",

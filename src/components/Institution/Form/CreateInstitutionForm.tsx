@@ -168,7 +168,7 @@ const CreateInstitutionForm = () => {
                     ref={ref}
                     value={value}
                     label="Nome *"
-                    placeholder="Ex.: Univerdade Federal de ..."
+                    placeholder="Ex.: Universidade Federal de ..."
                     error={Boolean(error)}
                     helperText={error?.message ?? " "}
                     fullWidth

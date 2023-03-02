@@ -37,9 +37,9 @@ const EditInstitutionForm = () => {
   const dispatch = useDispatch();
   const isEditFormOpen = useSelector(selectIsInstitutionEditFormOpen);
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
-  const currentInstitutiionId = useSelector(selectActiveInstitutionId);
-  const { data: currentInstitutiion } = useGetInstitutionQuery(
-    currentInstitutiionId || skipToken
+  const currentInstitutionId = useSelector(selectActiveInstitutionId);
+  const { data: currentInstitution } = useGetInstitutionQuery(
+    currentInstitutionId || skipToken
   );
   const [
     editInstitution,
@@ -55,11 +55,11 @@ const EditInstitutionForm = () => {
   } = form;
 
   useEffect(() => {
-    if (!currentInstitutiion) return;
-    setValue("acronym", currentInstitutiion.acronym ?? "");
-    setValue("name", currentInstitutiion.name ?? "");
-    setValue("cnpj", currentInstitutiion.cnpj ?? "");
-  }, [currentInstitutiion, setValue]);
+    if (!currentInstitution) return;
+    setValue("acronym", currentInstitution.acronym ?? "");
+    setValue("name", currentInstitution.name ?? "");
+    setValue("cnpj", currentInstitution.cnpj ?? "");
+  }, [currentInstitution, setValue]);
 
   const handleCancelEdition = () => {
     if (isDirty) {
@@ -82,12 +82,12 @@ const EditInstitutionForm = () => {
   const onSubmitHandler: SubmitHandler<EditInstitutionForm> = async (data) => {
     const cnpjSemMascara = data.cnpj.replace(/[\/.-]/g, "");
     data.cnpj = cnpjSemMascara;
-    if (!currentInstitutiionId) return;
+    if (!currentInstitutionId) return;
     const body: EditInstitutionRequestPayload = {
       name: data.name,
       cnpj: data.cnpj,
       acronym: data.acronym,
-      id: currentInstitutiionId,
+      id: currentInstitutionId,
     };
     await editInstitution(body);
   };
@@ -183,7 +183,7 @@ const EditInstitutionForm = () => {
                     ref={ref}
                     value={value}
                     label="Nome *"
-                    placeholder="Ex.: Univerdade Federal de ..."
+                    placeholder="Ex.: Universidade Federal de ..."
                     error={Boolean(error)}
                     helperText={error?.message ?? " "}
                     fullWidth

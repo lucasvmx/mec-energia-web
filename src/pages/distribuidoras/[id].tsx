@@ -39,6 +39,7 @@ import SuccessNotification from "@/components/Notification/SuccessNotification";
 import ErrorNotification from "@/components/Notification/FailNotification";
 import CreateInstitutionForm from "@/components/Institution/Form/CreateInstitutionForm";
 import EditInstitutionForm from "@/components/Institution/Form/EditInstitutionForm";
+import CreatePersonForm from "@/components/Person/Form/CreatePersonForm";
 
 const DistributorPage: NextPage = () => {
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
@@ -259,6 +260,8 @@ const DistributorPage: NextPage = () => {
         {/*TODO Remover esses formulários daqui quando tiver a página de sysAdmin*/}
         <CreateInstitutionForm />
         <EditInstitutionForm />
+
+        <CreatePersonForm />
       </Box>
     </DefaultTemplate>
   );

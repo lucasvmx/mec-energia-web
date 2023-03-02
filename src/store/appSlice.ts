@@ -36,7 +36,8 @@ const initialState: AppState = {
     },
   },
   distributor: {
-    activeId: null,
+    activeId: 1,
+    activeSubgroup: "A4",
     isCreateFormOpen: false,
     isEditFormOpen: false,
   },
@@ -77,6 +78,11 @@ const initialState: AppState = {
   institution: {
     activeId: null,
     isCreateFormOpen: false,
+    isEditFormOpen: false,
+  },
+  person: {
+    activeId: null,
+    isCreateFormOpen: true,
     isEditFormOpen: false,
   },
   notifications: {
@@ -160,6 +166,12 @@ export const appSlice = createSlice({
     ) => {
       state.distributor.activeId = action.payload;
     },
+    setActiveSubgroup: (
+      state,
+      action: PayloadAction<AppState["distributor"]["activeSubgroup"]>
+    ) => {
+      state.distributor.activeSubgroup = action.payload;
+    },
     setIsDistributorCreateFormOpen: (state, action: PayloadAction<boolean>) => {
       state.distributor.isCreateFormOpen = action.payload;
     },
@@ -211,6 +223,18 @@ export const appSlice = createSlice({
     setIsInstitutionEditFormOpen: (state, action: PayloadAction<boolean>) => {
       state.institution.isEditFormOpen = action.payload;
     },
+    setActivePersonId: (
+      state,
+      action: PayloadAction<AppState["person"]["activeId"]>
+    ) => {
+      state.person.activeId = action.payload;
+    },
+    setIsPersonCreateFormOpen: (state, action: PayloadAction<boolean>) => {
+      state.person.isCreateFormOpen = action.payload;
+    },
+    setIsPersonEditFormOpen: (state, action: PayloadAction<boolean>) => {
+      state.person.isEditFormOpen = action.payload;
+    },
     setIsSuccessNotificationOpen: (
       state,
       action: PayloadAction<NotificationProps>
@@ -250,6 +274,7 @@ export const {
   setIsConsumerUnitRenewContractFormOpen,
 
   setActiveDistributorId,
+  setActiveSubgroup,
   setIsDistributorCreateFormOpen,
   setIsDistributorEditFormOpen,
   setIsTariffCreateFormOpen,
@@ -262,6 +287,9 @@ export const {
   setIsInstitutionCreateFormOpen,
   setIsInstitutionEditFormOpen,
   setActiveInstitutionId,
+  setActivePersonId,
+  setIsPersonCreateFormOpen,
+  setIsPersonEditFormOpen,
 
   setIsSuccessNotificationOpen,
   setIsErrorNotificationOpen,
@@ -342,6 +370,10 @@ export const selectActiveDistributorId = (state: RootState) => {
   return state.app.distributor.activeId;
 };
 
+export const selectActiveSubgroup = (state: RootState) => {
+  return state.app.distributor.activeSubgroup;
+};
+
 export const selectIsDistributorCreateFormOpen = (state: RootState) => {
   return state.app.distributor.isCreateFormOpen;
 };
@@ -385,6 +417,18 @@ export const selectIsInstitutionCreateFormOpen = (state: RootState) => {
 
 export const selectIsInstitutionEditFormOpen = (state: RootState) => {
   return state.app.institution.isEditFormOpen;
+};
+
+export const selectActivePersonId = (state: RootState) => {
+  return state.app.person.activeId;
+};
+
+export const selectIsPersonCreateFormOpen = (state: RootState) => {
+  return state.app.person.isCreateFormOpen;
+};
+
+export const selectIsPersonEditFormOpen = (state: RootState) => {
+  return state.app.person.isEditFormOpen;
 };
 
 //Notification
