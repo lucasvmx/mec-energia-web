@@ -13,11 +13,13 @@ import { TariffTable } from "../Tariff/TariffTable";
 import { mockedDistributor } from "../../mocks/mockedDistributor";
 import { mockedDistributorComsumerUnit } from "../../mocks/mockedDistributor";
 import {
-  selectCurrentTariff,
+  selectActiveDistributorId,
+  selectActiveSubgroup,
   setIsTariffCreateFormOpen,
   setIsTariffEdiFormOpen,
 } from "../../store/appSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { useGetTariffQuery } from "@/api";
 
 export const DistributorInfo = () => {
   const router = useRouter();
@@ -28,10 +30,15 @@ export const DistributorInfo = () => {
   const [currentConsumerUnitList, setCurrentConsumerUnitList] =
     useState<DistributorConsumerUnits>();
   const [titleTariffs, setTitleTariffs] = useState("Tarifas");
-  const [isOverdue, setisOverdue] = useState(false);
+  const [isOverdue, setIsOverdue] = useState(false);
   const [isPendingTariffAddition, setIsPendingTariffAddition] = useState(false);
   const dispatch = useDispatch();
-  const currentTariff = useSelector(selectCurrentTariff);
+  const activeDistributorId = useSelector(selectActiveDistributorId);
+  const activeSubgroup = useSelector(selectActiveSubgroup);
+  const { data: currentTariff } = useGetTariffQuery({
+    distributor: activeDistributorId || 0,
+    subgroup: activeSubgroup || "",
+  });
 
   const createTitleTariffs = useCallback(() => {
     if (currentDist?.tariffs.length === 0) setTitleTariffs("");
@@ -55,7 +62,7 @@ export const DistributorInfo = () => {
     setCurrentConsumerUnitList(mockedDistributorComsumerUnit[Number(id) - 1]);
 
     const overdue = currentTariff?.overdue;
-    if (overdue !== undefined) setisOverdue(overdue);
+    if (overdue !== undefined) setIsOverdue(overdue);
     const hasConsumerUnit =
       mockedDistributor[Number(id) - 1]?.consumerUnits > 0 ? true : false;
     const needAddTariff = mockedDistributor[Number(id) - 1]?.tariffs.find(

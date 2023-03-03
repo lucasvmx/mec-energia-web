@@ -4,7 +4,6 @@ export interface SubGroup {
 }
 
 export interface Tariff {
-  id?: number;
   startDate: string;
   endDate: string;
   subgroup: string;
@@ -14,14 +13,10 @@ export interface Tariff {
   green: Green;
 }
 
-export interface CreateAndEditTariffForm {
-  start_date: Date;
-  end_date: Date;
-  blue: Blue;
-  green: Green;
+export interface GetTariffRequestPayload {
+  subgroup: string;
+  distributor: number;
 }
-
-export type TariffFlag = "G" | "B";
 
 export interface CreateTariffRequestPayload {
   startDate: string;
@@ -31,7 +26,6 @@ export interface CreateTariffRequestPayload {
   blue: Blue;
   green: Green;
 }
-
 export interface CreateTariffResponsePayload {
   startDate: string;
   endDate: string;
@@ -41,24 +35,18 @@ export interface CreateTariffResponsePayload {
   green: Green;
 }
 
-export interface EditTariffRequestPayload {
-  id: number;
-  startDate: string;
-  endDate: string;
-  subgroup: string;
-  distributor: number;
+export type EditTariffResponsePayload = CreateTariffResponsePayload;
+
+export type EditTariffRequestPayload = CreateTariffResponsePayload;
+
+export interface CreateAndEditTariffForm {
+  startDate: Date;
+  endDate: Date;
   blue: Blue;
   green: Green;
 }
 
-export interface EditTariffResponsePayload {
-  startDate: string;
-  endDate: string;
-  subgroup: string;
-  distributor: number;
-  blue: Blue;
-  green: Green;
-}
+export type TariffFlag = "G" | "B";
 
 export interface Blue {
   peakTusdInReaisPerKw?: number | "";

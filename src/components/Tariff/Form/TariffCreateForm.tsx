@@ -17,7 +17,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectActiveDistributorId,
-  selectCurrentTariff,
+  selectActiveSubgroup,
   selectIsTariffCreateFormOpen,
   selectIsTariffEditFormOpen,
   setIsErrorNotificationOpen,
@@ -28,7 +28,6 @@ import {
 import {
   CreateAndEditTariffForm,
   CreateTariffRequestPayload,
-  EditTariffRequestPayload,
 } from "../../../types/tariffs";
 import FormDrawer from "../../Form/Drawer";
 import { DatePicker } from "@mui/x-date-pickers";
@@ -40,6 +39,7 @@ import {
   useCreateTariffMutation,
   useEditTariffMutation,
   useGetDistributorQuery,
+  useGetTariffQuery,
 } from "@/api";
 import { sendFormattedDate } from "@/utils/date";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
@@ -47,8 +47,8 @@ import { SubmitButton } from "@/components/Form/SubmitButton";
 import { FormErrorsAlert } from "@/components/Form/FormErrorsAlert";
 
 const defaultValues: CreateAndEditTariffForm = {
-  start_date: new Date(),
-  end_date: new Date(),
+  startDate: new Date(),
+  endDate: new Date(),
   blue: {
     peakTusdInReaisPerKw: "",
     peakTusdInReaisPerMwh: "",
@@ -70,9 +70,12 @@ const TariffCreateEditForm = () => {
   const dispatch = useDispatch();
   const isCreateTariffFormOpen = useSelector(selectIsTariffCreateFormOpen);
   const isEditTariffFormOpen = useSelector(selectIsTariffEditFormOpen);
-  //const activeDistributorId = useSelector(selectActiveDistributorId);
-  //const activSubgroup = useSelector(selectActiveSubgroup);
-  const currentTariff = useSelector(selectCurrentTariff);
+  const activeDistributorId = useSelector(selectActiveDistributorId);
+  const activeSubgroup = useSelector(selectActiveSubgroup);
+  const { data: currentTariff } = useGetTariffQuery({
+    distributor: activeDistributorId ?? 0,
+    subgroup: activeSubgroup ?? "",
+  });
   const [
     createTariff,
     {
@@ -101,15 +104,12 @@ const TariffCreateEditForm = () => {
     reset,
     handleSubmit,
     setValue,
-    watch,
     formState: { isDirty, errors },
   } = form;
 
-  const blue = watch("blue");
-  const green = watch("green");
-
-  /*   useEffect(() => {
+  useEffect(() => {
     if (isEditTariffFormOpen) {
+      if (!currentTariff) return;
       setValue(
         "blue.offPeakTeInReaisPerMwh",
         currentTariff.blue.offPeakTeInReaisPerMwh
@@ -154,75 +154,10 @@ const TariffCreateEditForm = () => {
         "green.peakTusdInReaisPerMwh",
         currentTariff.green.peakTusdInReaisPerMwh
       );
-      setValue("end_date", new Date(currentTariff.endDate));
-      setValue("start_date", new Date(currentTariff.startDate));
+      setValue("endDate", new Date(currentTariff.endDate));
+      setValue("startDate", new Date(currentTariff.startDate));
     }
-  }, [
-    currentTariff.blue.offPeakTeInReaisPerMwh,
-    currentTariff.blue.offPeakTusdInReaisPerKw,
-    currentTariff.blue.offPeakTusdInReaisPerMwh,
-    currentTariff.blue.peakTeInReaisPerMwh,
-    currentTariff.blue.peakTusdInReaisPerKw,
-    currentTariff.blue.peakTusdInReaisPerMwh,
-    currentTariff.endDate,
-    currentTariff.green.naTusdInReaisPerKw,
-    currentTariff.green.offPeakTeInReaisPerMwh,
-    currentTariff.green.offPeakTusdInReaisPerMwh,
-    currentTariff.green.peakTeInReaisPerMwh,
-    currentTariff.green.peakTusdInReaisPerMwh,
-    currentTariff.startDate,
-    isEditTariffFormOpen,
-    setValue,
-  ]); */
-
-  useEffect(() => {
-    if (isEditTariffFormOpen) {
-      if (blue.offPeakTeInReaisPerMwh === undefined) {
-        setValue("blue.offPeakTeInReaisPerMwh", "");
-        return;
-      }
-      if (blue.offPeakTusdInReaisPerKw === undefined) {
-        setValue("blue.offPeakTusdInReaisPerKw", "");
-        return;
-      }
-      if (blue.offPeakTusdInReaisPerMwh === undefined) {
-        setValue("blue.offPeakTusdInReaisPerMwh", "");
-        return;
-      }
-      if (blue.peakTeInReaisPerMwh === undefined) {
-        setValue("blue.peakTeInReaisPerMwh", "");
-        return;
-      }
-      if (blue.peakTusdInReaisPerKw === undefined) {
-        setValue("blue.peakTusdInReaisPerKw", "");
-        return;
-      }
-      if (blue.peakTusdInReaisPerMwh === undefined) {
-        setValue("blue.peakTusdInReaisPerMwh", "");
-        return;
-      }
-
-      if (green.offPeakTeInReaisPerMwh === undefined) {
-        setValue("green.offPeakTeInReaisPerMwh", "");
-        return;
-      }
-      if (green.offPeakTusdInReaisPerMwh === undefined) {
-        setValue("green.offPeakTusdInReaisPerMwh", "");
-        return;
-      }
-      if (green.peakTeInReaisPerMwh === undefined) {
-        setValue("green.peakTeInReaisPerMwh", "");
-        return;
-      }
-      if (green.peakTusdInReaisPerMwh === undefined) {
-        setValue("green.peakTusdInReaisPerMwh", "");
-        return;
-      }
-      if (green.naTusdInReaisPerKw === undefined) {
-        setValue("green.naTusdInReaisPerKw", "");
-      }
-    }
-  });
+  }, [currentTariff, isEditTariffFormOpen, setValue]);
 
   const handleCancelEdition = () => {
     if (isDirty) {
@@ -243,7 +178,7 @@ const TariffCreateEditForm = () => {
     setShouldShowCancelDialog(false);
   };
 
-  const isValidDate = (date: CreateAndEditTariffForm["start_date"]) => {
+  const isValidDate = (date: CreateAndEditTariffForm["startDate"]) => {
     if (!date || !isValid(date)) {
       return "Insira uma data válida no formato dd/mm/aaaa.";
     }
@@ -261,7 +196,7 @@ const TariffCreateEditForm = () => {
     return true;
   };
 
-  const isValidEndDate = (date: CreateAndEditTariffForm["end_date"]) => {
+  const isValidEndDate = (date: CreateAndEditTariffForm["endDate"]) => {
     if (!date || !isValid(date)) {
       return "Insira uma data válida no formato dd/mm/aaaa.";
     }
@@ -276,22 +211,22 @@ const TariffCreateEditForm = () => {
   const onSubmitHandler: SubmitHandler<CreateAndEditTariffForm> = async (
     data: CreateAndEditTariffForm
   ) => {
-    const { start_date, end_date, blue, green } = data;
+    const { startDate: start_date, endDate: end_date, blue, green } = data;
 
-    let body: CreateTariffRequestPayload | EditTariffRequestPayload = {
+    if (!activeDistributor) return;
+    if (!activeSubgroup) return;
+
+    const body: CreateTariffRequestPayload = {
       startDate: sendFormattedDate(start_date),
       endDate: sendFormattedDate(end_date),
       blue: blue,
       green: green,
-      subgroup: "A4", // TODO: colocar dinâmico,
-      distributor: activeDistributor as number,
+      subgroup: activeSubgroup,
+      distributor: activeDistributor,
     };
 
-    if (isEditTariffFormOpen) body = { ...body, id: currentTariff?.id };
-
     if (isCreateTariffFormOpen) await createTariff(body);
-    if (isEditTariffFormOpen)
-      await editTariff(body as EditTariffRequestPayload);
+    if (isEditTariffFormOpen) await editTariff(body);
   };
 
   const handleNotification = useCallback(() => {
@@ -383,7 +318,7 @@ const TariffCreateEditForm = () => {
             <Grid item xs={4.5}>
               <Controller
                 control={control}
-                name="start_date"
+                name="startDate"
                 rules={{
                   required: "Preencha este campo",
                   validate: isValidDate,
@@ -417,7 +352,7 @@ const TariffCreateEditForm = () => {
             <Grid item xs={4.5}>
               <Controller
                 control={control}
-                name="end_date"
+                name="endDate"
                 rules={{
                   required: "Preencha este campo",
                   validate: isValidEndDate,

@@ -16,7 +16,7 @@ import {
   EditDistributorResponsePayload,
 } from "@/types/distributor";
 import {
-  CurrentEneryBillResponsePayload,
+  CurrentEnergyBillResponsePayload,
   EditEnergyBillRequestPayload,
   EditEnergyBillResponsePayload,
   PostEnergyBillRequestPayload,
@@ -32,6 +32,8 @@ import {
   CreateTariffResponsePayload,
   EditTariffRequestPayload,
   EditTariffResponsePayload,
+  GetTariffRequestPayload,
+  Tariff,
 } from "@/types/tariffs";
 import {
   CreateInstitutionRequestPayload,
@@ -188,12 +190,20 @@ export const mecEnergiaApi = createApi({
       }),
       invalidatesTags: ["Invoices", "Recommendation"],
     }),
-    getCurrentInvoice: builder.query<CurrentEneryBillResponsePayload, number>({
+    getCurrentInvoice: builder.query<CurrentEnergyBillResponsePayload, number>({
       query: (energyBillId) => `energy-bills/${energyBillId}/`,
       providesTags: (result, error, arg) =>
         result
           ? [{ type: "Invoices", arg }, "Invoices", "Recommendation"]
           : ["Invoices", "Recommendation"],
+    }),
+    getTariff: builder.query<Tariff, GetTariffRequestPayload>({
+      query: (payload) =>
+        `distributors/${payload.distributor}/get-tariffs/?subgroup=${payload.subgroup}`,
+      providesTags: (result, error, arg) =>
+        result
+          ? [{ type: "Invoices", arg }, "Invoices", "Recommendation"]
+          : ["Tariffs"],
     }),
     createTariff: builder.mutation<
       CreateTariffResponsePayload,
@@ -211,7 +221,7 @@ export const mecEnergiaApi = createApi({
       EditTariffRequestPayload
     >({
       query: (body) => ({
-        url: `/tariffs/${body.id}`,
+        url: "/tariffs/1/",
         method: "PUT",
         body,
       }),
@@ -297,6 +307,7 @@ export const {
   useFetchConsumerUnitsQuery,
   useGetConsumerUnitQuery,
   useFetchInvoicesQuery,
+  useGetTariffQuery,
   useCreateTariffMutation,
   useEditTariffMutation,
   useGetInstitutionQuery,

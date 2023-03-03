@@ -14,13 +14,22 @@ import InfoIcon from "@mui/icons-material/Info";
 import React, { Fragment, useCallback, useEffect, useState } from "react";
 import { format } from "date-fns";
 import { useSelector } from "react-redux";
-import { selectCurrentTariff } from "@/store/appSlice";
+import {
+  selectActiveDistributorId,
+  selectActiveSubgroup,
+} from "@/store/appSlice";
+import { useGetTariffQuery } from "@/api";
 
 export const TariffTable = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [overdue, setOverdue] = useState(false);
-  const currentTariff = useSelector(selectCurrentTariff);
+  const activeDistributorId = useSelector(selectActiveDistributorId);
+  const activeSubgroup = useSelector(selectActiveSubgroup);
+  const { data: currentTariff } = useGetTariffQuery({
+    distributor: activeDistributorId ?? 0,
+    subgroup: activeSubgroup ?? "",
+  });
 
   const formatDate = useCallback(() => {
     if (currentTariff) {
@@ -47,6 +56,8 @@ export const TariffTable = () => {
   useEffect(() => {
     formatDate();
   }, [currentTariff, formatDate]);
+
+  if (!currentTariff) return <></>;
 
   return (
     <Box width={"100%"}>

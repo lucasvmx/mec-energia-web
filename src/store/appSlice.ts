@@ -15,7 +15,6 @@ import {
   STORE_HYDRATE,
 } from "@/types/app";
 import { InvoiceDataGridRow } from "@/types/consumerUnit";
-import { Tariff } from "@/types/tariffs";
 import { Routes } from "@/types/router";
 
 const initialState: AppState = {
@@ -43,29 +42,7 @@ const initialState: AppState = {
   },
   tariff: {
     isCreateFormOpen: false,
-    isEditFormOpen: false,
-    currentTariff: {
-      distributor: 1,
-      blue: {
-        offPeakTeInReaisPerMwh: 0,
-        offPeakTusdInReaisPerKw: 0,
-        offPeakTusdInReaisPerMwh: 0,
-        peakTeInReaisPerMwh: 0,
-        peakTusdInReaisPerKw: 0,
-        peakTusdInReaisPerMwh: 8,
-      },
-      endDate: "2010-1-1",
-      overdue: false,
-      startDate: "2010-1-1",
-      subgroup: "A0",
-      green: {
-        naTusdInReaisPerKw: 9,
-        offPeakTeInReaisPerMwh: 2,
-        offPeakTusdInReaisPerMwh: 8,
-        peakTeInReaisPerMwh: 6,
-        peakTusdInReaisPerMwh: 9,
-      },
-    },
+    isEditFormOpen: true,
   },
   energyBill: {
     isCreateFormOpen: false,
@@ -82,7 +59,7 @@ const initialState: AppState = {
   },
   person: {
     activeId: null,
-    isCreateFormOpen: true,
+    isCreateFormOpen: false,
     isEditFormOpen: false,
   },
   notifications: {
@@ -190,9 +167,6 @@ export const appSlice = createSlice({
         state.tariff.isCreateFormOpen = !action.payload;
       }
     },
-    setCurrentTariff: (state, action: PayloadAction<Tariff>) => {
-      state.tariff.currentTariff = action.payload;
-    },
     setIsEnergyBillCreateFormOpen: (state, action: PayloadAction<boolean>) => {
       state.energyBill.isCreateFormOpen = action.payload;
       if (action.payload) {
@@ -279,7 +253,6 @@ export const {
   setIsDistributorEditFormOpen,
   setIsTariffCreateFormOpen,
   setIsTariffEdiFormOpen,
-  setCurrentTariff,
   setIsEnergyBillCreateFormOpen,
   setIsEnergyBillEdiFormOpen,
   setEnergyBillEdiFormParams,
@@ -388,9 +361,6 @@ export const selectIsTariffCreateFormOpen = (state: RootState) => {
 
 export const selectIsTariffEditFormOpen = (state: RootState) => {
   return state.app.tariff.isEditFormOpen;
-};
-export const selectCurrentTariff = (state: RootState) => {
-  return state.app.tariff.currentTariff;
 };
 
 export const selectIsEnergyBillCreateFormOpen = (state: RootState) => {

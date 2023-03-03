@@ -4,7 +4,6 @@ import { HYDRATE } from "next-redux-wrapper";
 import { makeStore } from "@/store";
 import { IconButtonProps, SvgIconProps } from "@mui/material";
 import { InvoiceDataGridRow } from "./consumerUnit";
-import { Tariff } from "./tariffs";
 
 export const STORE_HYDRATE = createAction<RootState>(HYDRATE);
 
@@ -46,7 +45,6 @@ export type AppState = {
   tariff: {
     isCreateFormOpen: boolean;
     isEditFormOpen: boolean;
-    currentTariff: Tariff;
   };
   energyBill: {
     isCreateFormOpen: boolean;

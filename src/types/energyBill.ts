@@ -58,7 +58,7 @@ export interface EditEnergyBillResponsePayload {
   consumerUnit: string;
 }
 
-export interface CurrentEneryBillResponsePayload {
+export interface CurrentEnergyBillResponsePayload {
   id: number;
   contract: number;
   consumerUnit: number;

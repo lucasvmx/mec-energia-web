@@ -56,7 +56,6 @@ const CreatePersonForm = () => {
     control,
     reset,
     handleSubmit,
-    setValue,
     formState: { isDirty, errors },
   } = form;
   const handleCancelEdition = () => {
@@ -221,22 +220,28 @@ const CreatePersonForm = () => {
             </Grid>
 
             <Grid item xs={12}>
-              <Autocomplete
-                disablePortal
-                id="combo-box-demo"
-                options={[
-                  { label: "Universidade de Brasília", id: 1 },
-                  { label: "Universidade de Minas", id: 2 },
-                ]}
-                onChange={(event, newValue) => {
-                  setValue(
-                    "university",
-                    newValue as { label: string; id: number }
-                  );
-                }}
-                sx={{ width: 300 }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Instituição *" />
+              <Controller
+                control={control}
+                name="university"
+                rules={{ required: "Preencha este campo" }}
+                render={({ field, fieldState: { error } }) => (
+                  <Autocomplete
+                    {...field}
+                    id="combo-box-university"
+                    options={[
+                      { label: "Universidade de Brasília", id: 1 },
+                      { label: "Universidade de Minas", id: 2 },
+                    ]}
+                    sx={{ width: 300 }}
+                    getOptionLabel={(option) => option.label}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Instituição *"
+                        error={Boolean(error)}
+                      />
+                    )}
+                  />
                 )}
               />
             </Grid>
