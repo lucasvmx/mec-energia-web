@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  selectIsPersonCreateFormOpen,
+  selectActivePersonId,
+  selectIsPersonEditFormOpen,
   setIsErrorNotificationOpen,
-  setIsPersonCreateFormOpen,
+  setIsPersonEditFormOpen,
   setIsSuccessNotificationOpen,
 } from "../../../store/appSlice";
 import FormDrawer from "../../Form/Drawer";
@@ -30,33 +31,45 @@ import {
 import FormWarningDialog from "../../ConsumerUnit/Form/WarningDialog";
 import { SubmitButton } from "@/components/Form/SubmitButton";
 import { FormErrorsAlert } from "@/components/Form/FormErrorsAlert";
-import { EditPersonForm, CreatePersonRequestPayload } from "@/types/person";
-import { useCreatePersonMutation, useGetAllInstitutionQuery } from "@/api";
+import {
+  EditPersonForm,
+  EditPersonRequestPayload,
+  UserRole,
+} from "@/types/person";
+import {
+  useEditPersonMutation,
+  useGetAllInstitutionQuery,
+  useGetPersonQuery,
+} from "@/api";
 import { isValidEmail } from "@/utils/validations/form-validations";
 import { FormInfoAlert } from "@/components/Form/FormInfoAlert";
+import { skipToken } from "@reduxjs/toolkit/dist/query";
 
 const defaultValues: EditPersonForm = {
   email: "",
   firstName: "",
   lastName: "",
   university: null,
-  type: "university_user",
+  type: UserRole.UNIVERSITY_USER,
 };
 
 const EditPersonForm = () => {
   const dispatch = useDispatch();
-  const isCreateFormOpen = useSelector(selectIsPersonCreateFormOpen);
+  const isEditFormOpen = useSelector(selectIsPersonEditFormOpen);
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
   const { data: institutions } = useGetAllInstitutionQuery();
-  const [
-    createPerson,
-    { isError, isSuccess, isLoading, reset: resetMutation },
-  ] = useCreatePersonMutation();
+  const currentPersonId = useSelector(selectActivePersonId);
+  const { data: currentPerson } = useGetPersonQuery(
+    currentPersonId || skipToken
+  );
+  const [editPerson, { isError, isSuccess, isLoading, reset: resetMutation }] =
+    useEditPersonMutation();
   const form = useForm({ defaultValues });
   const {
     control,
     reset,
     handleSubmit,
+    setValue,
     formState: { isDirty, errors },
   } = form;
   const handleCancelEdition = () => {
@@ -74,10 +87,23 @@ const EditPersonForm = () => {
     }));
   }, [institutions]);
 
+  useEffect(() => {
+    if (!currentPerson) return;
+    const institution = institutionsOptions?.find(
+      (institution) => institution.id === currentPerson.university
+    );
+    if (!institution) return;
+    setValue("firstName", currentPerson.firstName);
+    setValue("lastName", currentPerson.lastName);
+    setValue("email", currentPerson.email);
+    setValue("type", currentPerson.type);
+    setValue("university", institution);
+  }, [currentPerson, institutionsOptions, setValue]);
+
   const handleDiscardForm = useCallback(() => {
     handleCloseDialog();
     reset();
-    dispatch(setIsPersonCreateFormOpen(false));
+    dispatch(setIsPersonEditFormOpen(false));
   }, [dispatch, reset]);
 
   const handleCloseDialog = () => {
@@ -86,15 +112,17 @@ const EditPersonForm = () => {
 
   const onSubmitHandler: SubmitHandler<EditPersonForm> = async (data) => {
     const { email, firstName, lastName, type, university } = data;
-    console.log("Data===>>>>", data);
-    const body: CreatePersonRequestPayload = {
+
+    if (!currentPerson?.id) return;
+    const body: EditPersonRequestPayload = {
       email,
       firstName,
       lastName,
       type,
       university: university?.id ?? 0,
+      id: currentPerson?.id,
     };
-    await createPerson(body);
+    await editPerson(body);
   };
 
   //Notificações
@@ -103,17 +131,17 @@ const EditPersonForm = () => {
       dispatch(
         setIsSuccessNotificationOpen({
           isOpen: true,
-          text: "Pessoa adicionada com sucesso!",
+          text: "Pessoa editada com sucesso!",
         })
       );
       reset();
       resetMutation();
-      dispatch(setIsPersonCreateFormOpen(false));
+      dispatch(setIsPersonEditFormOpen(false));
     } else if (isError) {
       dispatch(
         setIsErrorNotificationOpen({
           isOpen: true,
-          text: "Erro ao adicionar pessoa.",
+          text: "Erro ao editar pessoa.",
         })
       );
       resetMutation();
@@ -134,12 +162,12 @@ const EditPersonForm = () => {
   };
 
   return (
-    <FormDrawer open={isCreateFormOpen} handleCloseDrawer={handleCancelEdition}>
+    <FormDrawer open={isEditFormOpen} handleCloseDrawer={handleCancelEdition}>
       <FormProvider {...form}>
         <Box component="form" onSubmit={handleSubmit(onSubmitHandler)}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <Typography variant="h4">Adicionar pessoa</Typography>
+              <Typography variant="h4">Editar pessoa</Typography>
               <Typography>* campos obrigatórios</Typography>
             </Grid>
 
@@ -266,8 +294,6 @@ const EditPersonForm = () => {
                         {errors.university.message}
                       </Typography>
                     )}
-
-                    {console.log("Error", errors.university)}
                   </>
                 )}
               />

@@ -9,8 +9,8 @@ import { DistributorInfo } from "./DistributorInfo";
 import { SubGroup } from "../../types/tariffs";
 import { Badge } from "@mui/material";
 import { mockedDistributor } from "../../mocks/mockedDistributor";
-import { setCurrentTariff } from "@/store/appSlice";
 import { useDispatch } from "react-redux";
+import { setActiveSubgroup } from "@/store/appSlice";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -83,9 +83,9 @@ export default function DistributorContainer() {
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
-    const currentTariff = currentDist?.tariffs[newValue];
-    if (currentTariff) {
-      dispatch(setCurrentTariff(currentTariff));
+    const currentSubgroup = currentDist?.tariffs[newValue].subgroup;
+    if (currentSubgroup) {
+      dispatch(setActiveSubgroup(currentSubgroup));
     }
   };
 

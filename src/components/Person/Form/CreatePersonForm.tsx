@@ -30,7 +30,11 @@ import {
 import FormWarningDialog from "../../ConsumerUnit/Form/WarningDialog";
 import { SubmitButton } from "@/components/Form/SubmitButton";
 import { FormErrorsAlert } from "@/components/Form/FormErrorsAlert";
-import { CreatePersonForm, CreatePersonRequestPayload } from "@/types/person";
+import {
+  CreatePersonForm,
+  CreatePersonRequestPayload,
+  UserRole,
+} from "@/types/person";
 import { useCreatePersonMutation, useGetAllInstitutionQuery } from "@/api";
 import { isValidEmail } from "@/utils/validations/form-validations";
 import { FormInfoAlert } from "@/components/Form/FormInfoAlert";
@@ -40,7 +44,7 @@ const defaultValues: CreatePersonForm = {
   firstName: "",
   lastName: "",
   university: null,
-  type: "university_user",
+  type: UserRole.UNIVERSITY_USER,
 };
 
 const CreatePersonForm = () => {
@@ -86,7 +90,6 @@ const CreatePersonForm = () => {
 
   const onSubmitHandler: SubmitHandler<CreatePersonForm> = async (data) => {
     const { email, firstName, lastName, type, university } = data;
-    console.log("Data===>>>>", data);
     const body: CreatePersonRequestPayload = {
       email,
       firstName,
@@ -266,8 +269,6 @@ const CreatePersonForm = () => {
                         {errors.university.message}
                       </Typography>
                     )}
-
-                    {console.log("Error", errors.university)}
                   </>
                 )}
               />

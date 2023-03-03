@@ -40,6 +40,7 @@ import ErrorNotification from "@/components/Notification/FailNotification";
 import CreateInstitutionForm from "@/components/Institution/Form/CreateInstitutionForm";
 import EditInstitutionForm from "@/components/Institution/Form/EditInstitutionForm";
 import CreatePersonForm from "@/components/Person/Form/CreatePersonForm";
+import EditPersonForm from "@/components/Person/Form/EditPersonForm";
 
 const DistributorPage: NextPage = () => {
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
@@ -262,6 +263,7 @@ const DistributorPage: NextPage = () => {
         <EditInstitutionForm />
 
         <CreatePersonForm />
+        <EditPersonForm />
       </Box>
     </DefaultTemplate>
   );

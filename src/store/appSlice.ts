@@ -36,7 +36,7 @@ const initialState: AppState = {
   },
   distributor: {
     activeId: 1,
-    activeSubgroup: "A4",
+    activeSubgroup: null,
     isCreateFormOpen: false,
     isEditFormOpen: false,
   },
@@ -60,7 +60,7 @@ const initialState: AppState = {
   person: {
     activeId: null,
     isCreateFormOpen: false,
-    isEditFormOpen: true,
+    isEditFormOpen: false,
   },
   notifications: {
     success: {
