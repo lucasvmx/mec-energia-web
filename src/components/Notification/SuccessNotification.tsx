@@ -1,13 +1,13 @@
 import {
-  selectErrorNotification,
-  setIsErrorNotificationOpen,
+  selectSuccessNotification,
+  setIsSuccessNotificationOpen,
 } from "@/store/appSlice";
 import { Alert, Snackbar } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 
-const ErrorNotification = () => {
+const SuccessNotification = () => {
   const dispatch = useDispatch();
-  const notification = useSelector(selectErrorNotification);
+  const notificationProps = useSelector(selectSuccessNotification);
   const handleClose = (
     event?: React.SyntheticEvent | Event,
     reason?: string
@@ -16,23 +16,22 @@ const ErrorNotification = () => {
       return;
     }
     dispatch(
-      setIsErrorNotificationOpen({
+      setIsSuccessNotificationOpen({
         isOpen: false,
       })
     );
   };
-
   return (
     <Snackbar
-      open={notification.isOpen}
+      open={notificationProps.isOpen}
       autoHideDuration={6000}
       onClose={handleClose}
       anchorOrigin={{ horizontal: "center", vertical: "top" }}
     >
-      <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-        {notification.text}
+      <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
+        {notificationProps.text}
       </Alert>
     </Snackbar>
   );
 };
-export default ErrorNotification;
+export default SuccessNotification;

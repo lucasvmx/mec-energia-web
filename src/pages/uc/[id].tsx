@@ -11,7 +11,7 @@ import ConsumerUnitContent from "@/templates/ConsumerUnit/Content";
 import ConsumerUnitCreateForm from "@/components/ConsumerUnit/Form/Create";
 import ConsumerUnitEditForm from "@/components/ConsumerUnit/Form/Edit";
 import ConsumerUnitRenewContractForm from "@/components/ConsumerUnit/Form/RenewContract";
-import SucessNotification from "@/components/Notification/SucessNotification";
+import SuccessNotification from "@/components/Notification/SuccessNotification";
 import ErrorNotification from "@/components/Notification/FailNotification";
 import CreateEditEnergyBillForm from "@/components/ElectricityBill/Form/CreateEditElectricityBillForm";
 import ConsumerUnitContentHeader from "@/templates/ConsumerUnit/Content/Header";
@@ -61,7 +61,7 @@ const ConsumerUnitPage: NextPage = () => {
       <ConsumerUnitCreateForm />
       <ConsumerUnitEditForm />
       <ConsumerUnitRenewContractForm />
-      <SucessNotification />
+      <SuccessNotification />
       <ErrorNotification />
       <CreateEditEnergyBillForm />
     </DefaultTemplateV2>

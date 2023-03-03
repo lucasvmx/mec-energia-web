@@ -3,16 +3,16 @@ import { Tariff } from "./tariffs";
 export interface DistributorPropsTariffs {
   id: number;
   name: string;
-  cnpj?:string;
-  university:number;
+  cnpj: string;
+  university: number;
   isActive: boolean;
-  consumerUnits:number;
+  consumerUnits: number;
   tariffs: Array<Tariff>;
 }
 
-export interface DistributorConsumerUnits{
-  id:number;
-  subgroups:Array<ConsumerUnitSubgroup>;
+export interface DistributorConsumerUnits {
+  id: number;
+  subgroups: Array<ConsumerUnitSubgroup>;
 }
 
 export interface CreateDistributorForm {
@@ -21,33 +21,52 @@ export interface CreateDistributorForm {
 }
 
 export interface EditDistributorForm {
-  isActive:boolean;
+  isActive: boolean;
   name: string;
   cnpj: string;
 }
 
-export interface ConsumerUnitSubgroup{
+export interface ConsumerUnitSubgroup {
   subgroup: string;
-  consumer_units: Array<ConsumerUnit>
+  consumer_units: Array<ConsumerUnit>;
 }
-export interface ConsumerUnit{
-  name:string;
-  id:number;
+export interface ConsumerUnit {
+  name: string;
+  id: number;
 }
-export interface DistributorProps extends DistributorPropsTariffs , DistributorConsumerUnits{}
+export interface DistributorProps
+  extends DistributorPropsTariffs,
+    DistributorConsumerUnits {}
 
 export interface CreateDistributorRequestPayload {
-    university: number,
-    name: string,
-    cnpj: string,
-    isActive: boolean 
+  university: number;
+  name: string;
+  cnpj: string;
+  isActive: boolean;
 }
 
 export interface CreateDistributorResponsePayload {
-  id: number,
-  university: number,
-  tariffs: Array<Tariff>,
-  name: string,
-  cnpj: string,
-  isActive: boolean
+  id: number;
+  university: number;
+  tariffs: Array<Tariff>;
+  name: string;
+  cnpj: string;
+  isActive: boolean;
+}
+
+export interface EditDistributorRequestPayload {
+  university: number;
+  name: string;
+  cnpj: string;
+  isActive: boolean;
+  id: number;
+}
+
+export interface EditDistributorResponsePayload {
+  id: number;
+  university: number;
+  tariffs: Array<Tariff>;
+  name: string;
+  cnpj: string;
+  isActive: boolean;
 }

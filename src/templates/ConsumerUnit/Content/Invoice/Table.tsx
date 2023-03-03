@@ -202,44 +202,51 @@ const ConsumerUnitInvoiceContentTable = () => {
     dispatch(setConsumerUnitInvoiceDataGridRows(dataGridRows));
   }, [activeFilter, invoicesPayload, dispatch]);
 
-  const handleOpenAddEnergyBillForm = useCallback((month: number, year: number) => {
-    dispatch(setEnergyBillEdiFormParams({ month, year }))
-    dispatch(setIsEnergyBillCreateFormOpen(true))
-  }, [dispatch])
+  const handleOpenAddEnergyBillForm = useCallback(
+    (month: number, year: number) => {
+      dispatch(setEnergyBillEdiFormParams({ month, year }));
+      dispatch(setIsEnergyBillCreateFormOpen(true));
+    },
+    [dispatch]
+  );
 
-  const renderMonthCell = useCallback((invoiceRow: InvoiceDataGridRow) => {
-    const { activeFilter, isEnergyBillPending, month, year } = invoiceRow;
+  const renderMonthCell = useCallback(
+    (invoiceRow: InvoiceDataGridRow) => {
+      const { activeFilter, isEnergyBillPending, month, year } = invoiceRow;
 
-    const buttonLabel =
-      "Lançar " +
-      getMonthFromNumber(month) +
-      `${activeFilter === "pending" ? " — " + year : ""}`;
+      const buttonLabel =
+        "Lançar " +
+        getMonthFromNumber(month) +
+        `${activeFilter === "pending" ? " — " + year : ""}`;
 
-    if (isEnergyBillPending) {
-      return (
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={() => handleOpenAddEnergyBillForm(month, year)}
-          startIcon={<WarningRounded />}
-        >
-          {buttonLabel}
-        </Button>
-      );
-    }
+      if (isEnergyBillPending) {
+        return (
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => handleOpenAddEnergyBillForm(month, year)}
+            startIcon={<WarningRounded />}
+          >
+            {buttonLabel}
+          </Button>
+        );
+      }
 
-    const currentDate = new Date();
-    const currentMonth = currentDate.getMonth();
-    const currentYear = currentDate.getFullYear();
+      const currentDate = new Date();
+      const currentMonth = currentDate.getMonth();
+      const currentYear = currentDate.getFullYear();
 
-    const isCurrentMonthInvoice = year === currentYear && month === currentMonth;
+      const isCurrentMonthInvoice =
+        year === currentYear && month === currentMonth;
 
-    if (isCurrentMonthInvoice) {
-      return <Button variant="contained">{buttonLabel}</Button>;
-    }
+      if (isCurrentMonthInvoice) {
+        return <Button variant="contained">{buttonLabel}</Button>;
+      }
 
-    return getMonthFromNumber(month, true);
-  }, [handleOpenAddEnergyBillForm]);
+      return getMonthFromNumber(month, true);
+    },
+    [handleOpenAddEnergyBillForm]
+  );
 
   return (
     <DataGrid

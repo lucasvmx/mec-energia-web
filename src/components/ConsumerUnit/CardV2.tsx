@@ -60,8 +60,6 @@ const ConsumerUnitCardAction = ({
     MouseEventHandler<HTMLButtonElement>
   >((event) => {
     event.stopPropagation();
-
-    console.log("Lançar fatura");
   }, []);
 
   if (isCurrentEnergyBillFilled || dense) {

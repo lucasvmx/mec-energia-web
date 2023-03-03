@@ -1,16 +1,12 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  selectActiveDistributorId,
-  selectIsDistributorEditFormOpen,
-  setIsDistributorEditFormOpen,
+  selectActiveInstitutionId,
+  selectIsInstitutionEditFormOpen,
   setIsErrorNotificationOpen,
+  setIsInstitutionEditFormOpen,
   setIsSuccessNotificationOpen,
 } from "../../../store/appSlice";
-import {
-  EditDistributorForm,
-  EditDistributorRequestPayload,
-} from "../../../types/distributor";
 import FormDrawer from "../../Form/Drawer";
 import { PatternFormat } from "react-number-format";
 
@@ -20,53 +16,50 @@ import {
   SubmitHandler,
   useForm,
 } from "react-hook-form";
-import {
-  Box,
-  Button,
-  FormControlLabel,
-  FormGroup,
-  FormHelperText,
-  Grid,
-  Switch,
-  TextField,
-  Typography,
-} from "@mui/material";
-import FlashOnIcon from "@mui/icons-material/FlashOn";
+import { Box, Button, Grid, TextField, Typography } from "@mui/material";
 import FormWarningDialog from "../../ConsumerUnit/Form/WarningDialog";
-import { useEditDistributorMutation, useGetDistributorQuery } from "@/api";
-import { useSession } from "next-auth/react";
-import { skipToken } from "@reduxjs/toolkit/dist/query";
+import { useEditInstitutionMutation, useGetInstitutionQuery } from "@/api";
 import { SubmitButton } from "@/components/Form/SubmitButton";
 import { FormErrorsAlert } from "@/components/Form/FormErrorsAlert";
+import {
+  EditInstitutionForm,
+  EditInstitutionRequestPayload,
+} from "@/types/institution";
+import { skipToken } from "@reduxjs/toolkit/dist/query";
 
-const defaultValues: EditDistributorForm = {
-  isActive: true,
+const defaultValues: EditInstitutionForm = {
+  acronym: "",
   name: "",
   cnpj: "",
 };
 
-const DistributorEditForm = () => {
-  const user = useSession().data?.user;
+const EditInstitutionForm = () => {
   const dispatch = useDispatch();
-  const activeDistributor = useSelector(selectActiveDistributorId);
-  const isEditFormOpen = useSelector(selectIsDistributorEditFormOpen);
+  const isEditFormOpen = useSelector(selectIsInstitutionEditFormOpen);
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
-  const [
-    editDistributor,
-    { isError, isSuccess, isLoading, reset: resetMutation },
-  ] = useEditDistributorMutation();
-  const { data: distributor } = useGetDistributorQuery(
-    activeDistributor || skipToken
+  const currentInstitutionId = useSelector(selectActiveInstitutionId);
+  const { data: currentInstitution } = useGetInstitutionQuery(
+    currentInstitutionId || skipToken
   );
+  const [
+    editInstitution,
+    { isError, isSuccess, isLoading, reset: resetMutation },
+  ] = useEditInstitutionMutation();
   const form = useForm({ defaultValues });
   const {
     control,
     reset,
     handleSubmit,
-    watch,
     setValue,
     formState: { isDirty, errors },
   } = form;
+
+  useEffect(() => {
+    if (!currentInstitution) return;
+    setValue("acronym", currentInstitution.acronym ?? "");
+    setValue("name", currentInstitution.name ?? "");
+    setValue("cnpj", currentInstitution.cnpj ?? "");
+  }, [currentInstitution, setValue]);
 
   const handleCancelEdition = () => {
     if (isDirty) {
@@ -76,44 +69,27 @@ const DistributorEditForm = () => {
     handleDiscardForm();
   };
 
-  const isActive = watch("isActive");
-
-  useEffect(() => {
-    if (isEditFormOpen && distributor) {
-      const { name, isActive, cnpj } = distributor;
-      setValue("name", name);
-      setValue("cnpj", cnpj);
-      setValue("isActive", isActive);
-    }
-  }, [distributor, isEditFormOpen, setValue]);
-
-  useEffect(() => {
-    setValue("isActive", isActive);
-  }, [isActive, setValue]);
-
-  const handleDiscardForm = () => {
+  const handleDiscardForm = useCallback(() => {
     handleCloseDialog();
     reset();
-    dispatch(setIsDistributorEditFormOpen(false));
-  };
+    dispatch(setIsInstitutionEditFormOpen(false));
+  }, [dispatch, reset]);
 
   const handleCloseDialog = () => {
     setShouldShowCancelDialog(false);
   };
 
-  const onSubmitHandler: SubmitHandler<EditDistributorForm> = async (data) => {
+  const onSubmitHandler: SubmitHandler<EditInstitutionForm> = async (data) => {
     const cnpjSemMascara = data.cnpj.replace(/[\/.-]/g, "");
     data.cnpj = cnpjSemMascara;
-    if (!user?.universityId) return;
-    if (!activeDistributor) return;
-    const body: EditDistributorRequestPayload = {
-      id: activeDistributor,
+    if (!currentInstitutionId) return;
+    const body: EditInstitutionRequestPayload = {
       name: data.name,
       cnpj: data.cnpj,
-      isActive: data.isActive,
-      university: user?.universityId,
+      acronym: data.acronym,
+      id: currentInstitutionId,
     };
-    await editDistributor(body);
+    await editInstitution(body);
   };
 
   //Notificações
@@ -122,17 +98,17 @@ const DistributorEditForm = () => {
       dispatch(
         setIsSuccessNotificationOpen({
           isOpen: true,
-          text: "Distribuidora modificada com sucesso!",
+          text: "Instituição editada com sucesso!",
         })
       );
       reset();
       resetMutation();
-      dispatch(setIsDistributorEditFormOpen(false));
+      dispatch(setIsInstitutionEditFormOpen(false));
     } else if (isError) {
       dispatch(
         setIsErrorNotificationOpen({
           isOpen: true,
-          text: "Erro ao editar distribuidora.",
+          text: "Erro ao editada instituição.",
         })
       );
       resetMutation();
@@ -145,7 +121,7 @@ const DistributorEditForm = () => {
 
   //Validações
 
-  const hasEnoughCaracteresLength = (value: EditDistributorForm["name"]) => {
+  const hasEnoughCaracteresLength = (value: EditInstitutionForm["name"]) => {
     if (value.length < 3) return "Insira ao menos 3 caracteres";
     return true;
   };
@@ -156,16 +132,20 @@ const DistributorEditForm = () => {
         <Box component="form" onSubmit={handleSubmit(onSubmitHandler)}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <Typography variant="h4">Editar Distribuidora</Typography>
+              <Typography variant="h4">Adicionar Instituição</Typography>
               <Typography>* campos obrigatórios</Typography>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Typography variant="h5">Instituição</Typography>
             </Grid>
 
             <Grid item xs={12}>
               <Controller
                 control={control}
-                name="name"
+                name="acronym"
                 rules={{
-                  required: "Campo obrigatório",
+                  required: "Preencha este campo",
                   validate: hasEnoughCaracteresLength,
                 }}
                 render={({
@@ -175,7 +155,35 @@ const DistributorEditForm = () => {
                   <TextField
                     ref={ref}
                     value={value}
-                    label="Nome"
+                    label="Sigla *"
+                    placeholder="Ex.: UFX"
+                    error={Boolean(error)}
+                    helperText={error?.message ?? " "}
+                    fullWidth
+                    onChange={onChange}
+                    onBlur={onBlur}
+                  />
+                )}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <Controller
+                control={control}
+                name="name"
+                rules={{
+                  required: "Preencha este campo",
+                  validate: hasEnoughCaracteresLength,
+                }}
+                render={({
+                  field: { onChange, onBlur, value, ref },
+                  fieldState: { error },
+                }) => (
+                  <TextField
+                    ref={ref}
+                    value={value}
+                    label="Nome *"
+                    placeholder="Ex.: Universidade Federal de ..."
                     error={Boolean(error)}
                     helperText={error?.message ?? " "}
                     fullWidth
@@ -205,59 +213,15 @@ const DistributorEditForm = () => {
                   <PatternFormat
                     value={value}
                     customInput={TextField}
-                    label="CNPJ"
+                    label="CNPJ *"
                     format="##.###.###/####-##"
+                    placeholder="Ex.: 12345678000167"
                     error={Boolean(error)}
                     helperText={error?.message ?? " "}
                     fullWidth
                     onChange={onChange}
                     onBlur={onBlur}
                   />
-                )}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <Controller
-                name="isActive"
-                control={control}
-                render={({ field: { onChange, value } }) => (
-                  <FormGroup>
-                    <Box
-                      display="flex"
-                      justifyContent="flex-start"
-                      alignItems="center"
-                    >
-                      <FlashOnIcon color="primary" />
-                      {distributor && (
-                        <FormControlLabel
-                          label="Distribuidora ativa"
-                          labelPlacement="start"
-                          sx={{ width: "38%", margin: 0 }}
-                          control={
-                            <Box>
-                              <Switch
-                                value={value}
-                                defaultChecked={distributor.isActive}
-                                onChange={onChange}
-                              />
-                            </Box>
-                          }
-                        />
-                      )}
-                    </Box>
-
-                    <FormHelperText>
-                      <p>
-                        Só distribuidoras ativas permitem gerar recomendações
-                        para as unidades consumidoras relacionadas.
-                      </p>
-                      <p>
-                        Apenas as distribuidoras que não estão relacionadas à
-                        nenhuma unidade consumidora podem ser excluídas.
-                      </p>
-                    </FormHelperText>
-                  </FormGroup>
                 )}
               />
             </Grid>
@@ -269,7 +233,8 @@ const DistributorEditForm = () => {
             <Grid item xs={3}>
               <SubmitButton isLoading={isLoading} />
             </Grid>
-            <Grid item xs={3}>
+
+            <Grid item xs={2}>
               <Button variant="text" onClick={handleCancelEdition} size="large">
                 <Typography pl={3} pr={3}>
                   Cancelar
@@ -280,7 +245,7 @@ const DistributorEditForm = () => {
 
           <FormWarningDialog
             open={shouldShowCancelDialog}
-            entity={"distribuidora"}
+            entity={"instituição"}
             onClose={handleCloseDialog}
             onDiscard={handleDiscardForm}
           />
@@ -290,4 +255,4 @@ const DistributorEditForm = () => {
   );
 };
 
-export default DistributorEditForm;
+export default EditInstitutionForm;

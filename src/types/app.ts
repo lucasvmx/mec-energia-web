@@ -4,7 +4,6 @@ import { HYDRATE } from "next-redux-wrapper";
 import { makeStore } from "@/store";
 import { IconButtonProps, SvgIconProps } from "@mui/material";
 import { InvoiceDataGridRow } from "./consumerUnit";
-import { Tariff } from "./tariffs";
 
 export const STORE_HYDRATE = createAction<RootState>(HYDRATE);
 
@@ -38,21 +37,32 @@ export type AppState = {
     };
   };
   distributor: {
+    activeId: number | null;
+    activeSubgroup: string | null;
     isCreateFormOpen: boolean;
     isEditFormOpen: boolean;
   };
   tariff: {
     isCreateFormOpen: boolean;
     isEditFormOpen: boolean;
-    currentTariff: Tariff;
   };
   energyBill: {
     isCreateFormOpen: boolean;
     isEditFormOpen: boolean;
     params: EnergyBillEdiFormParams;
   };
+  institution: {
+    activeId: number | null;
+    isCreateFormOpen: boolean;
+    isEditFormOpen: boolean;
+  };
+  person: {
+    activeId: number | null;
+    isCreateFormOpen: boolean;
+    isEditFormOpen: boolean;
+  };
   notifications: {
-    sucess: NotificationProps;
+    success: NotificationProps;
     error: NotificationProps;
   };
 };

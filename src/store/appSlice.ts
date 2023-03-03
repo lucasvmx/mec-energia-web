@@ -15,7 +15,6 @@ import {
   STORE_HYDRATE,
 } from "@/types/app";
 import { InvoiceDataGridRow } from "@/types/consumerUnit";
-import { Tariff } from "@/types/tariffs";
 import { Routes } from "@/types/router";
 
 const initialState: AppState = {
@@ -36,34 +35,14 @@ const initialState: AppState = {
     },
   },
   distributor: {
+    activeId: 1,
+    activeSubgroup: "A4",
     isCreateFormOpen: false,
     isEditFormOpen: false,
   },
   tariff: {
     isCreateFormOpen: false,
     isEditFormOpen: false,
-    currentTariff: {
-      distributor: 1,
-      blue: {
-        offPeakTeInReaisPerMwh: 0,
-        offPeakTusdInReaisPerKw: 0,
-        offPeakTusdInReaisPerMwh: 0,
-        peakTeInReaisPerMwh: 0,
-        peakTusdInReaisPerKw: 0,
-        peakTusdInReaisPerMwh: 8,
-      },
-      endDate: "2010-1-1",
-      overdue: false,
-      startDate: "2010-1-1",
-      subgroup: "A0",
-      green: {
-        naTusdInReaisPerKw: 9,
-        offPeakTeInReaisPerMwh: 2,
-        offPeakTusdInReaisPerMwh: 8,
-        peakTeInReaisPerMwh: 6,
-        peakTusdInReaisPerMwh: 9,
-      },
-    },
   },
   energyBill: {
     isCreateFormOpen: false,
@@ -73,8 +52,18 @@ const initialState: AppState = {
       year: 0,
     },
   },
+  institution: {
+    activeId: null,
+    isCreateFormOpen: false,
+    isEditFormOpen: false,
+  },
+  person: {
+    activeId: null,
+    isCreateFormOpen: false,
+    isEditFormOpen: true,
+  },
   notifications: {
-    sucess: {
+    success: {
       isOpen: false,
       text: "",
     },
@@ -148,6 +137,18 @@ export const appSlice = createSlice({
     ) => {
       state.consumerUnit.isRenewContractFormOpen = action.payload;
     },
+    setActiveDistributorId: (
+      state,
+      action: PayloadAction<AppState["distributor"]["activeId"]>
+    ) => {
+      state.distributor.activeId = action.payload;
+    },
+    setActiveSubgroup: (
+      state,
+      action: PayloadAction<AppState["distributor"]["activeSubgroup"]>
+    ) => {
+      state.distributor.activeSubgroup = action.payload;
+    },
     setIsDistributorCreateFormOpen: (state, action: PayloadAction<boolean>) => {
       state.distributor.isCreateFormOpen = action.payload;
     },
@@ -165,9 +166,6 @@ export const appSlice = createSlice({
       if (action.payload) {
         state.tariff.isCreateFormOpen = !action.payload;
       }
-    },
-    setCurrenTariff: (state, action: PayloadAction<Tariff>) => {
-      state.tariff.currentTariff = action.payload;
     },
     setIsEnergyBillCreateFormOpen: (state, action: PayloadAction<boolean>) => {
       state.energyBill.isCreateFormOpen = action.payload;
@@ -187,11 +185,35 @@ export const appSlice = createSlice({
     ) => {
       state.energyBill.params = action.payload;
     },
-    setIsSucessNotificationOpen: (
+    setActiveInstitutionId: (
+      state,
+      action: PayloadAction<AppState["institution"]["activeId"]>
+    ) => {
+      state.institution.activeId = action.payload;
+    },
+    setIsInstitutionCreateFormOpen: (state, action: PayloadAction<boolean>) => {
+      state.institution.isCreateFormOpen = action.payload;
+    },
+    setIsInstitutionEditFormOpen: (state, action: PayloadAction<boolean>) => {
+      state.institution.isEditFormOpen = action.payload;
+    },
+    setActivePersonId: (
+      state,
+      action: PayloadAction<AppState["person"]["activeId"]>
+    ) => {
+      state.person.activeId = action.payload;
+    },
+    setIsPersonCreateFormOpen: (state, action: PayloadAction<boolean>) => {
+      state.person.isCreateFormOpen = action.payload;
+    },
+    setIsPersonEditFormOpen: (state, action: PayloadAction<boolean>) => {
+      state.person.isEditFormOpen = action.payload;
+    },
+    setIsSuccessNotificationOpen: (
       state,
       action: PayloadAction<NotificationProps>
     ) => {
-      state.notifications.sucess = action.payload;
+      state.notifications.success = action.payload;
     },
     setIsErrorNotificationOpen: (
       state,
@@ -225,15 +247,24 @@ export const {
   setIsConsumerUnitEditFormOpen,
   setIsConsumerUnitRenewContractFormOpen,
 
+  setActiveDistributorId,
+  setActiveSubgroup,
   setIsDistributorCreateFormOpen,
   setIsDistributorEditFormOpen,
   setIsTariffCreateFormOpen,
   setIsTariffEdiFormOpen,
-  setCurrenTariff,
   setIsEnergyBillCreateFormOpen,
   setIsEnergyBillEdiFormOpen,
   setEnergyBillEdiFormParams,
-  setIsSucessNotificationOpen,
+
+  setIsInstitutionCreateFormOpen,
+  setIsInstitutionEditFormOpen,
+  setActiveInstitutionId,
+  setActivePersonId,
+  setIsPersonCreateFormOpen,
+  setIsPersonEditFormOpen,
+
+  setIsSuccessNotificationOpen,
   setIsErrorNotificationOpen,
 } = appSlice.actions;
 
@@ -273,7 +304,7 @@ export const selectDashboardActiveFilter = (state: RootState) => {
   return state.app.dashboard.activeFilter;
 };
 
-// Consumer unit
+// Consumer unit Page
 export const selectActiveConsumerUnitId = (state: RootState) => {
   return state.app.consumerUnit.activeId;
 };
@@ -306,6 +337,16 @@ export const selectIsConsumerUnitRenewContractFormOpen = (state: RootState) => {
   return state.app.consumerUnit.isRenewContractFormOpen;
 };
 
+// Distributor Page
+
+export const selectActiveDistributorId = (state: RootState) => {
+  return state.app.distributor.activeId;
+};
+
+export const selectActiveSubgroup = (state: RootState) => {
+  return state.app.distributor.activeSubgroup;
+};
+
 export const selectIsDistributorCreateFormOpen = (state: RootState) => {
   return state.app.distributor.isCreateFormOpen;
 };
@@ -321,9 +362,6 @@ export const selectIsTariffCreateFormOpen = (state: RootState) => {
 export const selectIsTariffEditFormOpen = (state: RootState) => {
   return state.app.tariff.isEditFormOpen;
 };
-export const selectCurrentTariff = (state: RootState) => {
-  return state.app.tariff.currentTariff;
-};
 
 export const selectIsEnergyBillCreateFormOpen = (state: RootState) => {
   return state.app.energyBill.isCreateFormOpen;
@@ -337,8 +375,36 @@ export const selectEnergyBillParams = (state: RootState) => {
   return state.app.energyBill.params;
 };
 
-export const selectSucessNotification = (state: RootState) => {
-  return state.app.notifications.sucess;
+// System Admin Page
+
+export const selectActiveInstitutionId = (state: RootState) => {
+  return state.app.institution.activeId;
+};
+
+export const selectIsInstitutionCreateFormOpen = (state: RootState) => {
+  return state.app.institution.isCreateFormOpen;
+};
+
+export const selectIsInstitutionEditFormOpen = (state: RootState) => {
+  return state.app.institution.isEditFormOpen;
+};
+
+export const selectActivePersonId = (state: RootState) => {
+  return state.app.person.activeId;
+};
+
+export const selectIsPersonCreateFormOpen = (state: RootState) => {
+  return state.app.person.isCreateFormOpen;
+};
+
+export const selectIsPersonEditFormOpen = (state: RootState) => {
+  return state.app.person.isEditFormOpen;
+};
+
+//Notification
+
+export const selectSuccessNotification = (state: RootState) => {
+  return state.app.notifications.success;
 };
 
 export const selectErrorNotification = (state: RootState) => {
