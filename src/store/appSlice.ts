@@ -59,8 +59,8 @@ const initialState: AppState = {
   },
   person: {
     activeId: null,
-    isCreateFormOpen: true,
-    isEditFormOpen: false,
+    isCreateFormOpen: false,
+    isEditFormOpen: true,
   },
   notifications: {
     success: {

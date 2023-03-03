@@ -16,9 +16,7 @@ export interface GetPersonResponsePayload {
   university: number;
 }
 
-export interface EditPersonForm extends CreatePersonForm {
-  id: number;
-}
+export type EditPersonForm = CreatePersonForm;
 
 export interface CreatePersonRequestPayload {
   firstName: string;
