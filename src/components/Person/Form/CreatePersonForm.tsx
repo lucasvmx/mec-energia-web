@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectIsPersonCreateFormOpen,
@@ -31,7 +31,7 @@ import FormWarningDialog from "../../ConsumerUnit/Form/WarningDialog";
 import { SubmitButton } from "@/components/Form/SubmitButton";
 import { FormErrorsAlert } from "@/components/Form/FormErrorsAlert";
 import { CreatePersonForm, CreatePersonRequestPayload } from "@/types/person";
-import { useCreatePersonMutation } from "@/api";
+import { useCreatePersonMutation, useGetAllInstitutionQuery } from "@/api";
 import { isValidEmail } from "@/utils/validations/form-validations";
 import { FormInfoAlert } from "@/components/Form/FormInfoAlert";
 
@@ -39,7 +39,7 @@ const defaultValues: CreatePersonForm = {
   email: "",
   firstName: "",
   lastName: "",
-  university: { label: "", id: null },
+  university: null,
   type: "university_user",
 };
 
@@ -47,6 +47,7 @@ const CreatePersonForm = () => {
   const dispatch = useDispatch();
   const isCreateFormOpen = useSelector(selectIsPersonCreateFormOpen);
   const [shouldShowCancelDialog, setShouldShowCancelDialog] = useState(false);
+  const { data: institutions } = useGetAllInstitutionQuery();
   const [
     createPerson,
     { isError, isSuccess, isLoading, reset: resetMutation },
@@ -66,6 +67,13 @@ const CreatePersonForm = () => {
     handleDiscardForm();
   };
 
+  const institutionsOptions = useMemo(() => {
+    return institutions?.map((institution) => ({
+      label: institution.name,
+      id: institution.id,
+    }));
+  }, [institutions]);
+
   const handleDiscardForm = useCallback(() => {
     handleCloseDialog();
     reset();
@@ -84,7 +92,7 @@ const CreatePersonForm = () => {
       firstName,
       lastName,
       type,
-      university: university.id ?? 0,
+      university: university?.id ?? 0,
     };
     await createPerson(body);
   };
@@ -222,26 +230,45 @@ const CreatePersonForm = () => {
             <Grid item xs={12}>
               <Controller
                 control={control}
-                name="university"
-                rules={{ required: "Preencha este campo" }}
-                render={({ field, fieldState: { error } }) => (
-                  <Autocomplete
-                    {...field}
-                    id="combo-box-university"
-                    options={[
-                      { label: "Universidade de Brasília", id: 1 },
-                      { label: "Universidade de Minas", id: 2 },
-                    ]}
-                    sx={{ width: 300 }}
-                    getOptionLabel={(option) => option.label}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Instituição *"
-                        error={Boolean(error)}
-                      />
+                name={"university"}
+                rules={{ required: "Selecione alguma universidade" }}
+                render={({
+                  field: { onChange, onBlur, value },
+                  fieldState: { error },
+                }) => (
+                  <>
+                    <Autocomplete
+                      id="university-select"
+                      options={institutionsOptions || []}
+                      getOptionLabel={(option) => option.label}
+                      sx={{ width: 450 }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Instituição *"
+                          placeholder="Selecione uma instituição"
+                          error={!!error}
+                        />
+                      )}
+                      value={value}
+                      onBlur={onBlur}
+                      onChange={(_, data) => {
+                        onChange(data);
+                        return data;
+                      }}
+                    />
+                    {errors.university !== undefined && (
+                      <Typography
+                        mt={0.4}
+                        ml={2}
+                        sx={{ color: "error.main", fontSize: 13 }}
+                      >
+                        {errors.university.message}
+                      </Typography>
                     )}
-                  />
+
+                    {console.log("Error", errors.university)}
+                  </>
                 )}
               />
             </Grid>

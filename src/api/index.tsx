@@ -227,6 +227,10 @@ export const mecEnergiaApi = createApi({
       }),
       invalidatesTags: ["Tariffs", "Recommendation"],
     }),
+    getAllInstitution: builder.query<GetInstitutionResponsePayload[], void>({
+      query: () => "universities/",
+      providesTags: ["Institution"],
+    }),
     getInstitution: builder.query<GetInstitutionResponsePayload, number>({
       query: (institutionId) => `universities/${institutionId}/`,
       providesTags: ["Institution"],
@@ -310,6 +314,7 @@ export const {
   useGetTariffQuery,
   useCreateTariffMutation,
   useEditTariffMutation,
+  useGetAllInstitutionQuery,
   useGetInstitutionQuery,
   useCreateInstitutionMutation,
   useEditInstitutionMutation,

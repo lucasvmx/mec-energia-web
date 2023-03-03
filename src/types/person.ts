@@ -2,7 +2,7 @@ export interface CreatePersonForm {
   firstName: string;
   lastName: string;
   email: string;
-  university: { label: string; id: number | null };
+  university: { label: string; id: number | null } | null;
   type: "super_user" | "university_user" | "university_admin";
 }
 

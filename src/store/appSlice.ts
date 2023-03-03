@@ -42,7 +42,7 @@ const initialState: AppState = {
   },
   tariff: {
     isCreateFormOpen: false,
-    isEditFormOpen: true,
+    isEditFormOpen: false,
   },
   energyBill: {
     isCreateFormOpen: false,
@@ -59,7 +59,7 @@ const initialState: AppState = {
   },
   person: {
     activeId: null,
-    isCreateFormOpen: false,
+    isCreateFormOpen: true,
     isEditFormOpen: false,
   },
   notifications: {
