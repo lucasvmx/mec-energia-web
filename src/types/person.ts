@@ -1,9 +1,15 @@
+export enum UserRole {
+  SUPER_USER = "super_user",
+  UNIVERSITY_USER = "university_user",
+  UNIVERSITY_ADMIN = "university_admin",
+}
+
 export interface CreatePersonForm {
   firstName: string;
   lastName: string;
   email: string;
   university: { label: string; id: number | null } | null;
-  type: "super_user" | "university_user" | "university_admin";
+  type: UserRole;
 }
 
 export interface GetPersonResponsePayload {
@@ -11,7 +17,7 @@ export interface GetPersonResponsePayload {
   firstName: string;
   lastName: string;
   email: string;
-  type: string;
+  type: UserRole;
   createOn: Date;
   university: number;
 }
@@ -23,10 +29,12 @@ export interface CreatePersonRequestPayload {
   lastName: string;
   email: string;
   university: number;
-  type: "super_user" | "university_user" | "university_admin";
+  type: UserRole;
 }
 
-export type EditPersonRequestPayload = EditPersonForm;
+export interface EditPersonRequestPayload extends CreatePersonRequestPayload {
+  id: number;
+}
 
 export type CreatePersonResponsePayload = GetPersonResponsePayload;
 
