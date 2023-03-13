@@ -1,18 +1,27 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import { skipToken } from "@reduxjs/toolkit/dist/query";
+import { WarningAmberOutlined } from "@mui/icons-material";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Grid,
+  Typography,
+} from "@mui/material";
 import Alert from "@mui/material/Alert";
 import { useRecommendationQuery, useRecommendationSettingsQuery } from "@/api";
 
-import format from "date-fns/format";
-
-import { PlotBaseCostComparison } from "@/templates/Analysis/PlotBaseCostComparison";
-import { PlotMeasuredConsumption } from "@/templates/Analysis/PlotMeasuredConsumption";
-import { PlotMeasuredDemand } from "@/templates/Analysis/PlotMeasuredDemand";
-import { CardRecommendation } from "@/templates/Analysis/CardRecommendation";
+import { BaseCostComparisonCard } from "@/templates/Analysis/BaseCostComparisonCard";
+import { MeasuredConsumptionPlot } from "@/templates/Analysis/MeasuredConsumptionPlot";
+import { MeasuredDemandPlot } from "@/templates/Analysis/MeasuredDemandPlot";
+import { RecommendationCard } from "@/templates/Analysis/RecommendationCard";
 import { selectActiveConsumerUnitId } from "@/store/appSlice";
-import { useSelector } from "react-redux";
-import { skipToken } from "@reduxjs/toolkit/dist/query";
-import { parseISO } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { DetailedAnalysisDrawer } from "@/templates/Analysis/DetailedAnalysisDrawer";
+import { monthYearForPlot } from "@/utils/date";
+
+import "./configChartjs";
 
 export const AnalysisAndRecommendation = () => {
   const consumerUnitId = useSelector(selectActiveConsumerUnitId);
@@ -20,6 +29,7 @@ export const AnalysisAndRecommendation = () => {
     consumerUnitId ?? skipToken
   );
   const { data: recommendationSettings } = useRecommendationSettingsQuery();
+  const [isDetailedAnalysisOpen, setIsDetailedAnalysisOpen] = useState(false);
 
   if (isLoading || !recommendation || !recommendationSettings)
     return (
@@ -32,52 +42,52 @@ export const AnalysisAndRecommendation = () => {
       </Box>
     );
 
-  const dates = recommendation.plotConsumptionHistory.date.map((d) => {
-    const formatted = format(parseISO(d), "MMMM'-'yyyy", { locale: ptBR });
-    const [month, year] = formatted.split("-");
-    // MMM retorna o nome do mês com todas as letras em minúsculo. Capitalize
-    // a 1ª letra:
-    const monthFirstLetter = month[0].toUpperCase();
-    return [monthFirstLetter + month.slice(1, 3), year];
-  }) as string[][];
-
+  const dates = recommendation.dates.map((d) => monthYearForPlot(d));
   const hasErrors = !!recommendation && recommendation.errors.length > 0;
+  const hasWarnings = !!recommendation && recommendation.warnings.length > 0;
 
   const {
-    IDEAL_ENERGY_BILLS_FOR_RECOMMENDATION,
+    MINIMUM_ENERGY_BILLS_FOR_RECOMMENDATION,
     MINIMUM_PERCENTAGE_DIFFERENCE_FOR_CONTRACT_RENOVATION,
   } = recommendationSettings;
 
+  const hasMinimumEnergyBills =
+    recommendation.energyBillsCount >= MINIMUM_ENERGY_BILLS_FOR_RECOMMENDATION;
+
   return (
     <Box>
-      {hasErrors && (
-        <Grid container spacing={1} sx={{ my: 2 }}>
+      {(hasErrors || hasWarnings) && (
+        <Grid container spacing={1} sx={{ mb: 1 }}>
           {recommendation.errors.map((error, i) => (
             <Grid key={i} item xs={12}>
-              <Alert key={i} severity="warning">
+              <Alert
+                key={i}
+                severity="warning"
+                icon={<WarningAmberOutlined style={{ color: "#000" }} />}
+              >
                 {error}
+              </Alert>
+            </Grid>
+          ))}
+          {recommendation.warnings.map((warn, i) => (
+            <Grid key={i} item xs={12}>
+              <Alert severity="info" variant="outlined">
+                {warn}
               </Alert>
             </Grid>
           ))}
         </Grid>
       )}
 
-      {recommendation.energyBillsCount <
-        IDEAL_ENERGY_BILLS_FOR_RECOMMENDATION &&
-        !hasErrors && (
-          <>
-            <Grid container>
-              <Grid item>
-                <Alert variant="outlined" severity="info">
-                  Lance todas as faturas dos últimos 12 meses para aumentar a
-                  precisão da análise. Foram lançadas apenas{" "}
-                  {recommendation.energyBillsCount} faturas.
-                </Alert>
-              </Grid>
-            </Grid>
-            <br />
-          </>
-        )}
+      {hasMinimumEnergyBills && !hasErrors && (
+        <Button
+          sx={{ my: 1 }}
+          variant="contained"
+          onClick={() => setIsDetailedAnalysisOpen(true)}
+        >
+          Ver análise detalhada
+        </Button>
+      )}
 
       <Grid
         container
@@ -87,7 +97,7 @@ export const AnalysisAndRecommendation = () => {
         justifyContent="center"
       >
         <Grid item xs={6}>
-          <CardRecommendation
+          <RecommendationCard
             recommendation={recommendation}
             hasErrors={hasErrors}
             minimumPercentageForContractRenovation={
@@ -97,7 +107,7 @@ export const AnalysisAndRecommendation = () => {
         </Grid>
 
         <Grid item xs={6}>
-          <PlotBaseCostComparison
+          <BaseCostComparisonCard
             dates={dates}
             recommendation={recommendation}
             hasErrors={hasErrors}
@@ -105,15 +115,48 @@ export const AnalysisAndRecommendation = () => {
         </Grid>
 
         <Grid item xs={6}>
-          <PlotMeasuredConsumption
-            dates={dates}
-            recommendation={recommendation}
-          />
+          <Card>
+            <CardContent>
+              <Typography variant="h5">Consumo medido</Typography>
+              <Typography variant="body2" sx={{ color: "gray" }}>
+                Últimos 12 meses
+              </Typography>
+
+              <MeasuredConsumptionPlot
+                dates={dates}
+                recommendation={recommendation}
+              />
+            </CardContent>
+          </Card>
         </Grid>
+
         <Grid item xs={6}>
-          <PlotMeasuredDemand dates={dates} recommendation={recommendation} />
+          <Card>
+            <CardContent>
+              <Typography variant="h5">{"Demanda medida"}</Typography>
+              <Typography variant="body2" sx={{ color: "gray" }}>
+                Últimos 12 meses
+              </Typography>
+
+              <MeasuredDemandPlot
+                dates={dates}
+                recommendation={recommendation}
+                isGreen={recommendation.currentContract.tariffFlag === "G"}
+              />
+            </CardContent>
+          </Card>
         </Grid>
       </Grid>
+
+      {!hasErrors && hasMinimumEnergyBills && (
+        <DetailedAnalysisDrawer
+          open={isDetailedAnalysisOpen}
+          recommendation={recommendation}
+          dates={recommendation.dates}
+          recommendationSettings={recommendationSettings}
+          onClose={() => setIsDetailedAnalysisOpen(false)}
+        />
+      )}
     </Box>
   );
 };

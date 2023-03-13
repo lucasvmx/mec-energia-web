@@ -73,6 +73,15 @@ const theme = createTheme(
             backgroundColor: "#418026",
             color: "#FFFFFF",
           },
+          standardWarning: {
+            backgroundColor: "RGB(217, 138, 11)",
+            color: "#000",
+          },
+          outlinedInfo: {
+            backgroundColor: 'rgba(0, 0, 0, 0)',
+            borderColor: 'rgb(41, 109, 204)',
+            color: 'rgb(41, 109, 204)',
+          },
           standardInfo: {
             backgroundColor: "#E8EFF9",
             color: "#0F294D",

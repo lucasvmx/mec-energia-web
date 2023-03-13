@@ -3,6 +3,7 @@ import CardContent from "@mui/material/CardContent";
 
 import { Recommendation } from "@/types/recommendation";
 import { Box, Grid, Typography } from "@mui/material";
+import { tariffFlags } from "@/utils/tariff";
 
 interface Props {
   hasErrors: boolean;
@@ -10,12 +11,7 @@ interface Props {
   minimumPercentageForContractRenovation: number;
 }
 
-const tariffFlags = {
-  G: "Verde",
-  B: "Azul",
-};
-
-export const CardRecommendation = ({
+export const RecommendationCard = ({
   hasErrors,
   recommendation,
   minimumPercentageForContractRenovation,
@@ -44,7 +40,7 @@ export const CardRecommendation = ({
           {!!recommendation && recommendation?.shouldRenewContract ? (
             <>
               <Grid item>
-                <ColoredText text="Renove o contrato" highlighted />
+                <ColoredText text="Ajuste do contrato" highlighted />
               </Grid>
               <CardRecommendationItem
                 label="Modalidade tarifária"
@@ -58,20 +54,20 @@ export const CardRecommendation = ({
                 <>
                   <CardRecommendationItem
                     label="Demanda contratada ponta"
-                    current={`${recommendation.currentContract.peakContractedDemandInKw} kW`}
+                    current={`${recommendation.currentContract.peakDemandInKw} kW`}
                     recommended={`${recommendation.recommendedContract.peakDemandInKw} kW`}
                   />
 
                   <CardRecommendationItem
                     label="Demanda contratada fora ponta"
-                    current={`${recommendation.currentContract.offPeakContractedDemandInKw} kW`}
+                    current={`${recommendation.currentContract.offPeakDemandInKw} kW`}
                     recommended={`${recommendation.recommendedContract.offPeakDemandInKw} kW`}
                   />
                 </>
               ) : (
                 <CardRecommendationItem
                   label="Demanda contratada"
-                  current={`${recommendation.currentContract.offPeakContractedDemandInKw} kW`}
+                  current={`${recommendation.currentContract.offPeakDemandInKw} kW`}
                   recommended={`${recommendation.recommendedContract.offPeakDemandInKw} kW`}
                 />
               )}
