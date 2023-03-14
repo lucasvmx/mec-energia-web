@@ -1,3 +1,5 @@
+import { ConsumerUnit } from "./consumerUnit";
+
 export interface SubGroup {
   subgroup: string;
   pending?: boolean;
@@ -47,6 +49,12 @@ export interface CreateAndEditTariffForm {
 }
 
 export type TariffFlag = "G" | "B";
+
+export interface DistributorSubgroup {
+  subgroup: string;
+  pending: boolean;
+  consumerUnits: ConsumerUnit[];
+}
 
 export interface Blue {
   peakTusdInReaisPerKw?: number | "";

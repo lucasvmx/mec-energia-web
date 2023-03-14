@@ -11,10 +11,13 @@ import {
 import {
   CreateDistributorRequestPayload,
   CreateDistributorResponsePayload,
+  Distributor,
   DistributorPropsTariffs,
+  DistributorResponsePayload,
   EditDistributorRequestPayload,
   EditDistributorResponsePayload,
 } from "@/types/distributor";
+
 import {
   CurrentEnergyBillResponsePayload,
   EditEnergyBillRequestPayload,
@@ -27,6 +30,7 @@ import { Recommendation, RecommendationSettings } from "@/types/recommendation";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { getSession } from "next-auth/react";
 import { ConsumerUnit, ConsumerUnitsPayload } from "@/types/consumerUnit";
+import { DistributorSubgroup } from "@/types/tariffs";
 import {
   CreateTariffRequestPayload,
   CreateTariffResponsePayload,
@@ -87,6 +91,10 @@ export const mecEnergiaApi = createApi({
       query: (consumerUnitId) => `consumer-units/${consumerUnitId}`,
       providesTags: ["ConsumerUnit"],
     }),
+    getDistributorSubgroups: builder.query<DistributorSubgroup[], number>({
+      query: (distributorId) =>
+        `/distributors/${distributorId}/consumer-units-by-subgroup/`,
+    }),
     fetchInvoices: builder.query<InvoicesPayload, number>({
       query: (consumerUnitId) =>
         `energy-bills?consumer_unit_id=${consumerUnitId}`,
@@ -99,6 +107,23 @@ export const mecEnergiaApi = createApi({
     getDistributors: builder.query<Array<DistributorPropsTariffs>, number>({
       query: (universityId) => `distributors/?university_id=${universityId}`,
       providesTags: ["Distributors"],
+    }),
+    fetchDistributors: builder.query<Distributor[], number>({
+      query: (universityId) => `distributors?university_id=${universityId}`,
+      transformResponse: (distributors: DistributorResponsePayload[]) => {
+        // Sorts alphabetically by default
+        return distributors.sort((a, b) => {
+          if (a.name.toLowerCase() < b.name.toLowerCase()) {
+            return -1;
+          }
+
+          if (a.name.toLowerCase() > b.name.toLowerCase()) {
+            return 1;
+          }
+
+          return 0;
+        });
+      },
     }),
     getDistributor: builder.query<DistributorPropsTariffs, number>({
       query: (distributorId) => `distributors/${distributorId}/`,
@@ -300,6 +325,7 @@ export const {
   useGetDistributorsQuery,
   useGetDistributorQuery,
   useCreateDistributorMutation,
+  useFetchDistributorsQuery,
   useEditDistributorMutation,
   useEditConsumerUnitMutation,
   useCreateConsumerUnitMutation,
@@ -323,4 +349,5 @@ export const {
   useEditPersonMutation,
   useRecommendationQuery,
   useRecommendationSettingsQuery,
+  useGetDistributorSubgroupsQuery,
 } = mecEnergiaApi;

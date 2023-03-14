@@ -1,7 +1,11 @@
 import { ComponentType } from "react";
 import { SvgIconProps } from "@mui/material";
 
-export type RoutesPathnames = "/" | "/uc/[id]" | "/distribuidoras/[id]";
+export type RoutesPathnames =
+  | "/"
+  | "/uc/[id]"
+  | "/distribuidoras/[id]"
+  | "/distribuidorasv2/[distributorId]";
 
 export type Route = {
   title: string;

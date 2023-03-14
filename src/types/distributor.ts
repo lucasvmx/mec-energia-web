@@ -1,3 +1,4 @@
+import { CardProps } from "./app";
 import { Tariff } from "./tariffs";
 
 export interface DistributorPropsTariffs {
@@ -54,6 +55,35 @@ export interface CreateDistributorResponsePayload {
   isActive: boolean;
 }
 
+// TODO Remove above
+
+// Only used for payload
+export type DistributorResponsePayload = {
+  id: number;
+  universityId: number;
+  name: string;
+  cnpj: string;
+  isActive: boolean;
+  consumerUnitsCount: number;
+  pendingTariffsCount: number;
+};
+
+export type Distributor = {
+  id: number;
+  universityId: number;
+  name: string;
+  cnpj: string;
+  isActive: boolean;
+  consumerUnitsCount: number;
+  pendingTariffsCount: number;
+};
+
+export interface DistributorCardProps extends CardProps {
+  id: number;
+  name: string;
+  isActive: boolean;
+  pendingTariffsCount: number;
+}
 export interface EditDistributorRequestPayload {
   university: number;
   name: string;

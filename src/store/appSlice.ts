@@ -35,7 +35,7 @@ const initialState: AppState = {
     },
   },
   distributor: {
-    activeId: 1,
+    activeId: null,
     activeSubgroup: null,
     isCreateFormOpen: false,
     isEditFormOpen: false,
@@ -224,9 +224,7 @@ export const appSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(STORE_HYDRATE, (state, action) => {
-      state.consumerUnit.activeId = action.payload.app.consumerUnit.activeId;
-
-      return state;
+      return action.payload.app;
     });
   },
 });
@@ -293,6 +291,11 @@ export const selectRoutes = (state: RootState) => {
       title: "Distribuidoras",
       Icon: FactoryRoundedIcon,
       href: "/distribuidoras/1",
+    },
+    "/distribuidorasv2/[distributorId]": {
+      title: "Distribuidoras V2",
+      Icon: FactoryRoundedIcon,
+      href: "/distribuidorasv2/1",
     },
   };
 

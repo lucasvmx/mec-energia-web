@@ -38,7 +38,7 @@ const Card = ({
         justifyContent="space-between"
         height="100%"
       >
-        <Box display="flex">
+        <Box display="flex" minHeight="28px">
           {shouldShowFavoriteIconButton && (
             <IconButton
               edge="start"
