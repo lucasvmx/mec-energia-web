@@ -1,10 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { format } from "date-fns";
 import {
   Box,
-  Paper,
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  Divider,
   Table,
   TableBody,
   TableCell,
@@ -20,6 +24,7 @@ import {
   selectActiveSubgroup,
 } from "@/store/appSlice";
 import { useGetDistributorSubgroupsQuery, useGetTariffQuery } from "@/api";
+import WarningRounded from "@mui/icons-material/WarningRounded";
 
 const getTariffQueryParams = (
   activeDistributorId: number | null,
@@ -94,153 +99,185 @@ const DistributorContentTariffsTable = () => {
     return () => clearTimeout(timeoutId);
   }, [overdue]);
 
+  const handleOnEditTariffButtonClick = useCallback(() => {
+    console.log("handleOnEditTariffButtonClick");
+  }, []);
+
+  const handleOnCreateTariffButtonClick = useCallback(() => {
+    console.log("handleOnCreateTariffButtonClick");
+  }, []);
+
   return (
-    <Paper sx={{ p: 2 }}>
-      <Typography variant="h5">{title}</Typography>
+    <Card>
+      <CardContent>
+        <Typography variant="h5">{title}</Typography>
 
-      <Box display="flex" py={2}>
-        <Box>
-          <Typography variant="body2" color="textSecondary">
-            Início da vigência
-          </Typography>
+        {blue && green && (
+          <Fragment>
+            <Box display="flex" py={2}>
+              <Box>
+                <Typography variant="body2" color="textSecondary">
+                  Início da vigência
+                </Typography>
 
-          <Typography variant="body2">{startDate}</Typography>
-        </Box>
+                <Typography variant="body2">{startDate}</Typography>
+              </Box>
 
-        <Box ml={2}>
-          <Typography variant="body2">Fim da vigência</Typography>
+              <Box ml={2}>
+                <Typography variant="body2">Fim da vigência</Typography>
 
-          <Box display="flex" alignItems="center">
-            <Tooltip
-              componentsProps={{
-                tooltip: {
-                  sx: {
-                    bgcolor: "warning.main",
-                    color: "warning.contrastText",
-                    "& .MuiTooltip-arrow": {
-                      color: "warning.main",
-                    },
-                  },
-                },
-              }}
-              arrow
-              placement="right"
-              title="Vencida"
-              open={isTooltipOpen}
-            >
-              <Typography
-                variant="body2"
-                {...(overdue && { color: "warning.main" })}
-              >
-                {endDate}
-              </Typography>
-            </Tooltip>
-          </Box>
-        </Box>
-      </Box>
+                <Box display="flex" alignItems="center">
+                  <Tooltip
+                    componentsProps={{
+                      tooltip: {
+                        sx: {
+                          bgcolor: "warning.main",
+                          color: "warning.contrastText",
+                          "& .MuiTooltip-arrow": {
+                            color: "warning.main",
+                          },
+                        },
+                      },
+                    }}
+                    arrow
+                    placement="right"
+                    title="Vencida"
+                    open={isTooltipOpen}
+                  >
+                    <Typography
+                      variant="body2"
+                      {...(overdue && { color: "warning.main" })}
+                    >
+                      {endDate}
+                    </Typography>
+                  </Tooltip>
+                </Box>
+              </Box>
+            </Box>
 
-      {blue && green && (
-        <TableContainer>
-          <Table>
-            <TableHead
-              sx={{
-                backgroundColor: "primary.main",
-              }}
-            >
-              <TableRow>
-                <TableCell sx={{ color: "white" }}>Modalidade</TableCell>
-                <TableCell sx={{ color: "white" }}>Posto tatrifário</TableCell>
-
-                <Tooltip
-                  arrow
-                  placement="top"
-                  title="Tarifa de uso do sistema de distribuição"
-                >
-                  <TableCell sx={{ color: "white" }}>TUSD R$/kW</TableCell>
-                </Tooltip>
-
-                <Tooltip
-                  arrow
-                  placement="top"
-                  title="Tarifa de uso do sistema de distribuição"
-                >
-                  <TableCell sx={{ color: "white" }}>TUSD R$/MWh</TableCell>
-                </Tooltip>
-                <Tooltip arrow placement="top" title="Tarifa de energia">
-                  <TableCell sx={{ color: "white" }}>TE R$/MWh</TableCell>
-                </Tooltip>
-              </TableRow>
-            </TableHead>
-
-            <TableBody>
-              <TableRow>
-                <TableCell
-                  rowSpan={2}
+            <TableContainer>
+              <Table>
+                <TableHead
                   sx={{
-                    backgroundColor: "RGBA(10, 92, 103, 0.12)",
+                    backgroundColor: "primary.main",
                   }}
                 >
-                  Azul
-                </TableCell>
-                <TableCell>Ponta</TableCell>
+                  <TableRow>
+                    <TableCell sx={{ color: "white" }}>Modalidade</TableCell>
+                    <TableCell sx={{ color: "white" }}>
+                      Posto tatrifário
+                    </TableCell>
 
-                <TableCell>{blue.peakTusdInReaisPerKw}</TableCell>
-                <TableCell>{blue.peakTusdInReaisPerMwh}</TableCell>
-                <TableCell>{blue.peakTeInReaisPerMwh}</TableCell>
-              </TableRow>
+                    <Tooltip
+                      arrow
+                      placement="top"
+                      title="Tarifa de uso do sistema de distribuição"
+                    >
+                      <TableCell sx={{ color: "white" }}>TUSD R$/kW</TableCell>
+                    </Tooltip>
 
-              <TableRow
-                sx={{
-                  backgroundColor: "RGBA(10, 92, 103, 0.12)",
-                }}
-              >
-                <TableCell>Fora ponta</TableCell>
+                    <Tooltip
+                      arrow
+                      placement="top"
+                      title="Tarifa de uso do sistema de distribuição"
+                    >
+                      <TableCell sx={{ color: "white" }}>TUSD R$/MWh</TableCell>
+                    </Tooltip>
+                    <Tooltip arrow placement="top" title="Tarifa de energia">
+                      <TableCell sx={{ color: "white" }}>TE R$/MWh</TableCell>
+                    </Tooltip>
+                  </TableRow>
+                </TableHead>
 
-                <TableCell>{blue.offPeakTusdInReaisPerKw}</TableCell>
-                <TableCell>{blue.offPeakTusdInReaisPerMwh}</TableCell>
-                <TableCell>{blue.offPeakTeInReaisPerMwh}</TableCell>
-              </TableRow>
+                <TableBody>
+                  <TableRow>
+                    <TableCell
+                      rowSpan={2}
+                      sx={{
+                        backgroundColor: "RGBA(10, 92, 103, 0.12)",
+                      }}
+                    >
+                      Azul
+                    </TableCell>
+                    <TableCell>Ponta</TableCell>
 
-              <TableRow>
-                <TableCell
-                  rowSpan={3}
-                  sx={{
-                    backgroundColor: "RGBA(10, 92, 103, 0.12)",
-                  }}
-                >
-                  Verde
-                </TableCell>
-                <TableCell>NA</TableCell>
+                    <TableCell>{blue.peakTusdInReaisPerKw}</TableCell>
+                    <TableCell>{blue.peakTusdInReaisPerMwh}</TableCell>
+                    <TableCell>{blue.peakTeInReaisPerMwh}</TableCell>
+                  </TableRow>
 
-                <TableCell>{green.naTusdInReaisPerKw}</TableCell>
-                <TableCell>-</TableCell>
-                <TableCell>-</TableCell>
-              </TableRow>
+                  <TableRow
+                    sx={{
+                      backgroundColor: "RGBA(10, 92, 103, 0.12)",
+                    }}
+                  >
+                    <TableCell>Fora ponta</TableCell>
 
-              <TableRow
-                sx={{
-                  backgroundColor: "RGBA(10, 92, 103, 0.12)",
-                }}
-              >
-                <TableCell>Ponta</TableCell>
+                    <TableCell>{blue.offPeakTusdInReaisPerKw}</TableCell>
+                    <TableCell>{blue.offPeakTusdInReaisPerMwh}</TableCell>
+                    <TableCell>{blue.offPeakTeInReaisPerMwh}</TableCell>
+                  </TableRow>
 
-                <TableCell>-</TableCell>
-                <TableCell>{green.peakTusdInReaisPerMwh}</TableCell>
-                <TableCell>{green.peakTeInReaisPerMwh}</TableCell>
-              </TableRow>
+                  <TableRow>
+                    <TableCell
+                      rowSpan={3}
+                      sx={{
+                        backgroundColor: "RGBA(10, 92, 103, 0.12)",
+                      }}
+                    >
+                      Verde
+                    </TableCell>
+                    <TableCell>NA</TableCell>
 
-              <TableRow>
-                <TableCell>Fora ponta</TableCell>
+                    <TableCell>{green.naTusdInReaisPerKw}</TableCell>
+                    <TableCell>-</TableCell>
+                    <TableCell>-</TableCell>
+                  </TableRow>
 
-                <TableCell>-</TableCell>
-                <TableCell>{green.offPeakTusdInReaisPerMwh}</TableCell>
-                <TableCell>{green.offPeakTeInReaisPerMwh}</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>
-      )}
-    </Paper>
+                  <TableRow
+                    sx={{
+                      backgroundColor: "RGBA(10, 92, 103, 0.12)",
+                    }}
+                  >
+                    <TableCell>Ponta</TableCell>
+
+                    <TableCell>-</TableCell>
+                    <TableCell>{green.peakTusdInReaisPerMwh}</TableCell>
+                    <TableCell>{green.peakTeInReaisPerMwh}</TableCell>
+                  </TableRow>
+
+                  <TableRow>
+                    <TableCell>Fora ponta</TableCell>
+
+                    <TableCell>-</TableCell>
+                    <TableCell>{green.offPeakTusdInReaisPerMwh}</TableCell>
+                    <TableCell>{green.offPeakTeInReaisPerMwh}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Fragment>
+        )}
+      </CardContent>
+
+      <Divider />
+
+      <CardActions>
+        {blue && green ? (
+          <Button onClick={handleOnEditTariffButtonClick}>Editar</Button>
+        ) : (
+          <Button
+            variant="contained"
+            color="warning"
+            disableElevation
+            startIcon={<WarningRounded />}
+            onClick={handleOnCreateTariffButtonClick}
+          >
+            Lançar tarifas
+          </Button>
+        )}
+      </CardActions>
+    </Card>
   );
 };
 
