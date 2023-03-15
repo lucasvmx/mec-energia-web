@@ -13,6 +13,7 @@ import {
 } from "@/store/appSlice";
 
 import DistributorContentHeaderTabs from "./Tabs";
+import DistributorEditForm from "@/components/Distributor/Form/DistributorEditForm";
 
 const DistributorContentHeader = () => {
   const dispatch = useDispatch();
@@ -81,6 +82,8 @@ const DistributorContentHeader = () => {
                 >
                   Editar
                 </Button>
+
+                <DistributorEditForm />
               </Box>
             </Box>
 

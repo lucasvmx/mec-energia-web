@@ -6,8 +6,8 @@ import { setActiveDistributorId } from "@/store/appSlice";
 import DefaultTemplateV2 from "@/templates/DefaultV2";
 import DistributorsCardGrid from "@/templates/Distributor/Grid";
 import DistributorContentHeader from "@/templates/Distributor/Header";
-import DistributorEditForm from "@/components/Distributor/Form/DistributorEditForm";
 import DistributorContent from "@/templates/Distributor/Content";
+import DistributorHeaderAction from "@/templates/Distributor/Header/Action";
 
 type ExpectedQuery = {
   distributorId: string;
@@ -49,11 +49,10 @@ const DistributorPage: NextPage = () => {
   return (
     <DefaultTemplateV2
       secondaryDrawer={<DistributorsCardGrid />}
+      headerAction={<DistributorHeaderAction />}
       contentHeader={<DistributorContentHeader />}
     >
       <DistributorContent />
-
-      <DistributorEditForm />
     </DefaultTemplateV2>
   );
 };
