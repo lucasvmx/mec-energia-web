@@ -1,9 +1,9 @@
 import { useSelector } from "react-redux";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 
-import { Box, Grid, Typography } from "@mui/material";
+import { Alert, Box, Grid, Typography } from "@mui/material";
 
-import { useGetDistributorSubgroupsQuery } from "@/api";
+import { useGetDistributorQuery, useGetDistributorSubgroupsQuery } from "@/api";
 import {
   selectActiveDistributorId,
   selectActiveSubgroup,
@@ -11,22 +11,55 @@ import {
 
 import DistributorContentConsumerUnitsList from "./ConsumerUnitsList";
 import DistributorContentTariffsTable from "./TariffsTable";
+import { FlashOffRounded } from "@mui/icons-material";
 
 const DistributorContent = () => {
   const distributorId = useSelector(selectActiveDistributorId);
   const selectedSubgroupTariff = useSelector(selectActiveSubgroup);
 
-  const { isLoading } = useGetDistributorSubgroupsQuery(
+  const { data: distributor, isLoading: isDistributorLoading } =
+    useGetDistributorQuery(distributorId ?? skipToken);
+
+  const { isLoading: isSubgroupLoading } = useGetDistributorSubgroupsQuery(
     distributorId ?? skipToken
   );
 
-  if (isLoading) {
-    return <Box pt={4}>Carregando...</Box>;
+  if (isDistributorLoading || isSubgroupLoading) {
+    return <Box pt={2}>Carregando...</Box>;
+  }
+
+  if (distributor && !distributor.isActive) {
+    return (
+      <Box pt={2}>
+        <Alert
+          color="warning"
+          icon={
+            <FlashOffRounded
+              sx={{
+                color: "black",
+              }}
+            />
+          }
+        >
+          Distribuidora desativada
+        </Alert>
+
+        <Box pt={2}>
+          <DistributorContentConsumerUnitsList />
+        </Box>
+
+        <Box pt={2}>
+          <Typography variant="body2" color="text.secondary">
+            Apenas distribuidoras ativas exibem informações de tarifas.
+          </Typography>
+        </Box>
+      </Box>
+    );
   }
 
   if (!selectedSubgroupTariff) {
     return (
-      <Box pt={4}>
+      <Box pt={2}>
         <Typography variant="h5">
           Nenhuma unidade consumidora associada
         </Typography>
