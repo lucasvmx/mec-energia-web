@@ -19,7 +19,7 @@ import {
   selectActiveDistributorId,
   selectActiveSubgroup,
 } from "@/store/appSlice";
-import { useGetTariffQuery } from "@/api";
+import { useGetDistributorSubgroupsQuery, useGetTariffQuery } from "@/api";
 
 const getTariffQueryParams = (
   activeDistributorId: number | null,
@@ -38,6 +38,19 @@ const getTariffQueryParams = (
 const DistributorContentTariffsTable = () => {
   const activeDistributorId = useSelector(selectActiveDistributorId);
   const activeSubgroup = useSelector(selectActiveSubgroup);
+  const distributorId = useSelector(selectActiveDistributorId);
+
+  const { data: tariffsSubgroups } = useGetDistributorSubgroupsQuery(
+    distributorId ?? skipToken
+  );
+
+  const title = useMemo(() => {
+    if (!activeSubgroup || !tariffsSubgroups || tariffsSubgroups.length > 1) {
+      return "Tarifas";
+    } else if (tariffsSubgroups.length === 1) {
+      return `Tarifas do subgrupo ${activeSubgroup}`;
+    }
+  }, [activeSubgroup, tariffsSubgroups]);
 
   const tariffQueryPayload = useMemo(
     () => getTariffQueryParams(activeDistributorId, activeSubgroup),
@@ -83,7 +96,7 @@ const DistributorContentTariffsTable = () => {
 
   return (
     <Paper sx={{ p: 2 }}>
-      <Typography variant="h5">Tarifas</Typography>
+      <Typography variant="h5">{title}</Typography>
 
       <Box display="flex" py={2}>
         <Box>
