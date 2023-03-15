@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { format } from "date-fns";
@@ -51,7 +51,7 @@ const DistributorContentTariffsTable = () => {
       return {
         startDate: null,
         endDate: null,
-        overdue: null,
+        overdue: false,
         blue: null,
         green: null,
       };
@@ -65,6 +65,21 @@ const DistributorContentTariffsTable = () => {
       green: tariffData.green,
     };
   }, [tariffData]);
+
+  const [isTooltipOpen, setIsTooltipOpen] = useState(false);
+
+  useEffect(() => {
+    if (!overdue) {
+      setIsTooltipOpen(false);
+      return;
+    }
+
+    const timeoutId = setTimeout(() => {
+      setIsTooltipOpen(true);
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }, [overdue]);
 
   return (
     <Paper sx={{ p: 2 }}>
@@ -98,7 +113,7 @@ const DistributorContentTariffsTable = () => {
               arrow
               placement="right"
               title="Vencida"
-              open={Boolean(overdue)}
+              open={isTooltipOpen}
             >
               <Typography
                 variant="body2"

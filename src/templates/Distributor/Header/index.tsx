@@ -1,13 +1,14 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 
-import { Box, Button, Container, Typography } from "@mui/material";
+import { Box, Button, Collapse, Container, Typography } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 
 import { useGetDistributorSubgroupsQuery, useGetDistributorQuery } from "@/api";
 import {
   selectActiveDistributorId,
+  setActiveSubgroup,
   setIsDistributorEditFormOpen,
 } from "@/store/appSlice";
 
@@ -24,10 +25,32 @@ const DistributorContentHeader = () => {
   const { data: tariffsSubgroups, isLoading: isTariffsSubgroupsLoading } =
     useGetDistributorSubgroupsQuery(distributorId ?? skipToken);
 
+  useEffect(() => {
+    if (!tariffsSubgroups || tariffsSubgroups.length === 0) {
+      dispatch(setActiveSubgroup(null));
+
+      return;
+    }
+
+    const firstPendingTariff = tariffsSubgroups.findIndex(
+      ({ pending }) => pending
+    );
+
+    if (firstPendingTariff >= 0) {
+      dispatch(
+        setActiveSubgroup(tariffsSubgroups[firstPendingTariff].subgroup)
+      );
+
+      return;
+    }
+
+    dispatch(setActiveSubgroup(tariffsSubgroups[0].subgroup));
+  }, [dispatch, tariffsSubgroups]);
+
   const shouldShowTabs = useMemo(
     () =>
       tariffsSubgroups &&
-      tariffsSubgroups.length > 0 &&
+      tariffsSubgroups.length > 1 &&
       !isTariffsSubgroupsLoading,
     [tariffsSubgroups, isTariffsSubgroupsLoading]
   );
@@ -67,7 +90,11 @@ const DistributorContentHeader = () => {
           </Box>
         </Box>
 
-        {shouldShowTabs && <DistributorContentHeaderTabs />}
+        <Collapse in={shouldShowTabs}>
+          <Box minHeight={24}>
+            <DistributorContentHeaderTabs />
+          </Box>
+        </Collapse>
       </Container>
     </Box>
   );

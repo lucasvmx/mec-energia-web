@@ -1,10 +1,4 @@
-import {
-  Fragment,
-  SyntheticEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-} from "react";
+import { Fragment, SyntheticEvent, useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 
@@ -30,28 +24,6 @@ const DistributorContentHeaderTabs = () => {
   const { data: tariffsSubgroups } = useGetDistributorSubgroupsQuery(
     distributorId ?? skipToken
   );
-
-  useEffect(() => {
-    if (!tariffsSubgroups || tariffsSubgroups.length === 0) {
-      dispatch(setActiveSubgroup(null));
-
-      return;
-    }
-
-    const firstPendingTariff = tariffsSubgroups.findIndex(
-      ({ pending }) => pending
-    );
-
-    if (firstPendingTariff >= 0) {
-      dispatch(
-        setActiveSubgroup(tariffsSubgroups[firstPendingTariff].subgroup)
-      );
-
-      return;
-    }
-
-    dispatch(setActiveSubgroup(tariffsSubgroups[0].subgroup));
-  }, [dispatch, tariffsSubgroups]);
 
   const selectedTabIndex = useMemo(() => {
     if (!tariffsSubgroups || tariffsSubgroups.length === 0) {
