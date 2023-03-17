@@ -85,7 +85,7 @@ const UniversityUserTemplate = () => {
                   {user.id === session?.user.id ? (
                     <Chip color="primary" label={UserRoleLabelMap[user.type]} />
                   ) : (
-                    <UserRoleSelect type={user.type} />
+                    <UserRoleSelect id={user.id} type={user.type} />
                   )}
                 </TableCell>
 

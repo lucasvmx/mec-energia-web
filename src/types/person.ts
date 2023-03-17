@@ -14,6 +14,13 @@ export type User = {
   university: number;
 };
 
+export type PatchUserRequestPayload = {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  type?: UserRole;
+};
+
 export interface CreatePersonForm {
   firstName: string;
   lastName: string;
