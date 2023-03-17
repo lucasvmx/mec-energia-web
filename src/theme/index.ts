@@ -20,6 +20,7 @@ const theme = createTheme(
     palette: {
       primary: {
         main: primaryMain,
+        contrastText: "#fff",
       },
       secondary: {
         main: "#FB736C",
@@ -33,6 +34,7 @@ const theme = createTheme(
       },
       warning: {
         main: "#FB736C",
+        contrastText: "#000",
       },
       highlighted: {
         main: "rgba(10, 92, 103, 0.12)",
@@ -78,9 +80,9 @@ const theme = createTheme(
             color: "#000",
           },
           outlinedInfo: {
-            backgroundColor: 'rgba(0, 0, 0, 0)',
-            borderColor: 'rgb(41, 109, 204)',
-            color: 'rgb(41, 109, 204)',
+            backgroundColor: "rgba(0, 0, 0, 0)",
+            borderColor: "rgb(41, 109, 204)",
+            color: "rgb(41, 109, 204)",
           },
           standardInfo: {
             backgroundColor: "#E8EFF9",
