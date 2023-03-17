@@ -2,21 +2,26 @@ import { ReactNode } from "react";
 import {
   AppBar,
   Box,
+  Button,
   Container,
   Drawer,
+  Grid,
   IconButton,
   Paper,
   Toolbar,
   Typography,
 } from "@mui/material";
 import { CloseRounded } from "@mui/icons-material";
+import { FormErrorsAlert } from "./FormErrorsAlert";
+import { SubmitButton } from "./SubmitButton";
 
 interface FormDrawerV2Props {
   open: boolean;
   title: string;
   header: ReactNode;
   sections: ReactNode[];
-  footer: ReactNode;
+  isLoading: boolean;
+  errorsLength: number;
   handleCloseDrawer: () => void;
   handleSubmitDrawer: () => void;
 }
@@ -26,7 +31,8 @@ const FormDrawerV2 = ({
   title,
   header,
   sections,
-  footer,
+  isLoading,
+  errorsLength,
   handleSubmitDrawer,
   handleCloseDrawer,
 }: FormDrawerV2Props) => {
@@ -78,7 +84,19 @@ const FormDrawerV2 = ({
             ))}
           </Box>
 
-          <Box mt={4}>{footer}</Box>
+          <Box mt={4}>
+            <FormErrorsAlert
+              hasErrors={errorsLength > 0 ? true : false}
+            />
+            <Grid item xs={12}>
+              <SubmitButton isLoading={isLoading} />
+              <Button variant="text" onClick={handleCloseDrawer} size="large">
+                <Typography pl={3} pr={3}>
+                  Cancelar
+                </Typography>
+              </Button>
+            </Grid>
+          </Box>
         </Box>
       </Container>
     </Drawer >

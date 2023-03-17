@@ -2,7 +2,6 @@ import { Fragment, useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Controller,
-  FormProvider,
   SubmitHandler,
   useForm,
 } from "react-hook-form";
@@ -50,9 +49,7 @@ import { DistributorPropsTariffs } from "@/types/distributor";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { sendFormattedDate } from "@/utils/date";
 import { getSubgroupsText } from "@/utils/get-subgroup-text";
-import { SubmitButton } from "@/components/Form/SubmitButton";
 import { isInSomeSubgroups } from "@/utils/validations/form-validations";
-import { FormErrorsAlert } from "../../Form/FormErrorsAlert";
 import FormDrawerV2 from "@/components/Form/DrawerV2";
 
 const defaultValues: CreateConsumerUnitForm = {
@@ -633,53 +630,35 @@ const ConsumerUnitCreateForm = () => {
     </>
   ), [control, tariffFlag])
 
-  const Footer = useCallback(() => (
-    <>
-      <FormErrorsAlert
-        hasErrors={Object.keys(errors).length > 0 ? true : false}
-      />
-      <Grid item xs={12}>
-        <SubmitButton isLoading={isLoading} />
-        <Button variant="text" onClick={handleCancelEdition} size="large">
-          <Typography pl={3} pr={3}>
-            Cancelar
-          </Typography>
-        </Button>
-      </Grid>
-    </>
-  ), [errors, handleCancelEdition, isLoading])
-
   return (
     <Fragment>
 
-      <FormProvider {...form}>
-        <FormDrawerV2
-          open={isCreateFormOpen}
-          title={"Adicionar Unidade Consumidora"}
-          handleCloseDrawer={handleCancelEdition}
-          handleSubmitDrawer={handleSubmit(onSubmitHandler)}
-          header={<></>}
-          sections={[
-            <ConsumerUnitSection key={0} />,
-            <ContractSection key={1} />,
-            <ContractedDemandSection key={2} />,
-          ]}
-          footer={<Footer />}
-        />
+      <FormDrawerV2
+        open={isCreateFormOpen}
+        title={"Adicionar Unidade Consumidora"}
+        errorsLength={Object.keys(errors).length}
+        isLoading={isLoading}
+        handleCloseDrawer={handleCancelEdition}
+        handleSubmitDrawer={handleSubmit(onSubmitHandler)}
+        header={<></>}
+        sections={[
+          <ConsumerUnitSection key={0} />,
+          <ContractSection key={1} />,
+          <ContractedDemandSection key={2} />,
+        ]}
+      />
 
-        <FormWarningDialog
-          open={shouldShowCancelDialog}
-          entity={"unidade consumidora"}
-          onClose={handleCloseDialog}
-          onDiscard={handleDiscardForm}
-        />
+      <FormWarningDialog
+        open={shouldShowCancelDialog}
+        entity={"unidade consumidora"}
+        onClose={handleCloseDialog}
+        onDiscard={handleDiscardForm}
+      />
 
-        <DistributorCreateFormDialog
-          open={shouldShowDistributorFormDialog}
-          onClose={handleCloseDistributorFormDialog}
-        />
-
-      </FormProvider>
+      <DistributorCreateFormDialog
+        open={shouldShowDistributorFormDialog}
+        onClose={handleCloseDistributorFormDialog}
+      />
 
     </Fragment>
   )
