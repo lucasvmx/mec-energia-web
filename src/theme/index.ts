@@ -145,6 +145,9 @@ const theme = createTheme(
           },
         },
       },
+      MuiDrawer: {
+        styleOverrides: { paper: { backgroundColor: "#EEF4F4" } },
+      },
     },
   },
   ptBR,

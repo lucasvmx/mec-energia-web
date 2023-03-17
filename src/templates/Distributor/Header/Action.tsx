@@ -1,11 +1,15 @@
 import { Fragment, useCallback } from "react";
 import { Button } from "@mui/material";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import { useDispatch } from "react-redux";
+import { setIsDistributorCreateFormOpen } from "@/store/appSlice";
 
 const DistributorHeaderAction = () => {
+  const dispatch = useDispatch()
   const handleOnCreateDistributorButtonClick = useCallback(() => {
     console.log("handleOnCreateDistributorButtonClick");
-  }, []);
+    dispatch(setIsDistributorCreateFormOpen(true))
+  }, [dispatch]);
 
   return (
     <Fragment>

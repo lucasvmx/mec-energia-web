@@ -81,7 +81,11 @@ const Drawer = () => {
   };
 
   return (
-    <StyledDrawer variant="permanent" open={isDrawerOpen}>
+    <StyledDrawer
+      variant="permanent"
+      open={isDrawerOpen}
+      PaperProps={{ sx: { backgroundColor: "#FFFFFF" } }}
+    >
       <Box
         position="relative"
         display="flex"
@@ -171,6 +175,7 @@ const Drawer = () => {
             <DrawerListItem
               Icon={LogoutRoundedIcon}
               text="Sair"
+              href="/"
               onClick={handleSignOutClick}
             />
           </List>

@@ -4,7 +4,7 @@ import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
-import { Box, Button } from "@mui/material";
+import { Box, Button, IconButton } from "@mui/material";
 import {
   DataGrid,
   GridColDef,
@@ -16,6 +16,7 @@ import {
   CheckCircleOutlineRounded,
   InsightsRounded,
   WarningRounded,
+  Edit,
 } from "@mui/icons-material";
 
 import { useFetchInvoicesQuery } from "@/api";
@@ -26,6 +27,7 @@ import {
   setConsumerUnitInvoiceDataGridRows,
   setEnergyBillEdiFormParams,
   setIsEnergyBillCreateFormOpen,
+  setIsEnergyBillEdiFormOpen,
 } from "@/store/appSlice";
 import { ConsumerUnitInvoiceFilter } from "@/types/app";
 import {
@@ -94,6 +96,12 @@ const ConsumerUnitInvoiceContentTable = () => {
   );
   const activeFilter = useSelector(selectConsumerUnitInvoiceActiveFilter);
   const dataGridRows = useSelector(selectConsumerUnitInvoiceDataGridRows);
+
+  const handleEditInvoiceFormOpen = (params: { month: number, year: number, id: number }) => {
+    const { month, year, id } = params
+    dispatch(setEnergyBillEdiFormParams({ month, year, id }))
+    dispatch(setIsEnergyBillEdiFormOpen(true))
+  }
 
   const columns: GridColDef<InvoiceDataGridRow>[] = [
     {
@@ -168,6 +176,29 @@ const ConsumerUnitInvoiceContentTable = () => {
       align: "right",
       flex: 1,
     },
+    {
+      field: "id",
+      headerClassName: "MuiDataGrid-columnHeaderMain",
+      headerName: "",
+      headerAlign: "right",
+      align: "right",
+      flex: 1,
+      renderCell: ({ row: { month, year, energyBillId } }) => {
+
+        if (!energyBillId) return
+
+        return (
+          <>
+            <IconButton
+              onClick={() => handleEditInvoiceFormOpen({ month, year, id: energyBillId })}
+            >
+              <Edit />
+            </IconButton>
+          </>
+        )
+
+      }
+    }
   ];
 
   const columnGroupingModel: GridColumnGroupingModel = [
@@ -212,7 +243,7 @@ const ConsumerUnitInvoiceContentTable = () => {
 
   const renderMonthCell = useCallback(
     (invoiceRow: InvoiceDataGridRow) => {
-      const { activeFilter, isEnergyBillPending, month, year } = invoiceRow;
+      const { activeFilter, isEnergyBillPending, month, year, energyBillId } = invoiceRow;
 
       const buttonLabel =
         "Lançar " +
@@ -239,8 +270,15 @@ const ConsumerUnitInvoiceContentTable = () => {
       const isCurrentMonthInvoice =
         year === currentYear && month === currentMonth;
 
-      if (isCurrentMonthInvoice) {
-        return <Button variant="contained">{buttonLabel}</Button>;
+      if (isCurrentMonthInvoice && !energyBillId) {
+        return (
+          <Button
+            variant="contained"
+            onClick={() => handleOpenAddEnergyBillForm(month, year)}
+          >
+            {buttonLabel}
+          </Button>
+        )
       }
 
       return getMonthFromNumber(month, true);
