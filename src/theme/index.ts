@@ -93,6 +93,28 @@ const theme = createTheme(
           },
         },
       },
+      MuiTableHead: {
+        styleOverrides: {
+          root: {
+            backgroundColor: primaryMain,
+
+            "& .MuiTableCell-root": {
+              color: "white",
+            },
+          },
+        },
+      },
+      MuiTableBody: {
+        styleOverrides: {
+          root: {
+            "& .MuiTableRow-root": {
+              "&:nth-of-type(odd)": {
+                backgroundColor: "white",
+              },
+            },
+          },
+        },
+      },
       MuiDataGrid: {
         styleOverrides: {
           root: {

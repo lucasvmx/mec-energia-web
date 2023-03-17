@@ -52,6 +52,8 @@ import {
   EditPersonRequestPayload,
   EditPersonResponsePayload,
   GetPersonResponsePayload,
+  PatchUserRequestPayload,
+  User,
 } from "@/types/person";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -320,6 +322,21 @@ export const mecEnergiaApi = createApi({
       keepUnusedDataFor: 120,
       providesTags: ["Recommendation"],
     }),
+    getUsers: builder.query<User[], number>({
+      query: (universityId) => `users/?university_id=${universityId}`,
+      providesTags: ["Person"],
+    }),
+    editUser: builder.mutation<
+      User,
+      { userId: number; body: PatchUserRequestPayload }
+    >({
+      query: ({ userId, body }) => ({
+        url: `users/${userId}/`,
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: ["Person"],
+    }),
   }),
 });
 
@@ -353,4 +370,6 @@ export const {
   useRecommendationQuery,
   useRecommendationSettingsQuery,
   useGetDistributorSubgroupsQuery,
+  useGetUsersQuery,
+  useEditUserMutation,
 } = mecEnergiaApi;
