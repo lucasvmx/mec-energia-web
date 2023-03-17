@@ -86,6 +86,7 @@ export const mecEnergiaApi = createApi({
   endpoints: (builder) => ({
     fetchConsumerUnits: builder.query<ConsumerUnitsPayload, number>({
       query: (universityId) => `consumer-units?university_id=${universityId}`,
+      providesTags: ["ConsumerUnit"],
     }),
     getConsumerUnit: builder.query<ConsumerUnit, number>({
       query: (consumerUnitId) => `consumer-units/${consumerUnitId}`,
@@ -94,6 +95,7 @@ export const mecEnergiaApi = createApi({
     getDistributorSubgroups: builder.query<DistributorSubgroup[], number>({
       query: (distributorId) =>
         `/distributors/${distributorId}/consumer-units-by-subgroup/`,
+      providesTags: ["Subgroups"],
     }),
     fetchInvoices: builder.query<InvoicesPayload, number>({
       query: (consumerUnitId) =>
@@ -110,6 +112,7 @@ export const mecEnergiaApi = createApi({
     }),
     fetchDistributors: builder.query<Distributor[], number>({
       query: (universityId) => `distributors?university_id=${universityId}`,
+      providesTags: ["Distributors"],
       transformResponse: (distributors: DistributorResponsePayload[]) => {
         // Sorts alphabetically by default
         return distributors.sort((a, b) => {
@@ -176,10 +179,10 @@ export const mecEnergiaApi = createApi({
       providesTags: (result, error, arg) =>
         result
           ? [
-              { type: "CurrentContract", arg },
-              "CurrentContract",
-              "Recommendation",
-            ]
+            { type: "CurrentContract", arg },
+            "CurrentContract",
+            "Recommendation",
+          ]
           : ["CurrentContract", "Recommendation"],
     }),
     renewContract: builder.mutation<

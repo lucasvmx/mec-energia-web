@@ -18,6 +18,7 @@ interface FormDrawerV2Props {
   sections: ReactNode[];
   footer: ReactNode;
   handleCloseDrawer: () => void;
+  handleSubmitDrawer: () => void;
 }
 
 const FormDrawerV2 = ({
@@ -26,6 +27,7 @@ const FormDrawerV2 = ({
   header,
   sections,
   footer,
+  handleSubmitDrawer,
   handleCloseDrawer,
 }: FormDrawerV2Props) => {
   return (
@@ -57,7 +59,7 @@ const FormDrawerV2 = ({
       </AppBar>
 
       <Container maxWidth="sm">
-        <Box mt={3} mb={6}>
+        <Box mt={3} mb={6} component="form" onSubmit={handleSubmitDrawer}>
           {header}
 
           <Box my={4}>
@@ -79,7 +81,7 @@ const FormDrawerV2 = ({
           <Box mt={4}>{footer}</Box>
         </Box>
       </Container>
-    </Drawer>
+    </Drawer >
   );
 };
 

@@ -157,11 +157,15 @@ const FormExamplePage: NextPage = () => {
     setOpen(false);
   };
 
+  const handleSumit = () => {
+    console.log("Testando")
+  }
   return (
     <Fragment>
       <Button onClick={() => setOpen(true)}>Abrir formulário</Button>
 
       <FormDrawerV2
+        handleSubmitDrawer={handleSumit}
         open={open}
         title="Lançar tarifas"
         header={<Header />}

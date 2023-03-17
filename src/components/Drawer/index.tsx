@@ -175,6 +175,7 @@ const Drawer = () => {
             <DrawerListItem
               Icon={LogoutRoundedIcon}
               text="Sair"
+              href="/"
               onClick={handleSignOutClick}
             />
           </List>
