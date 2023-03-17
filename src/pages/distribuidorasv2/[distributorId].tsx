@@ -8,6 +8,11 @@ import DistributorsCardGrid from "@/templates/Distributor/Grid";
 import DistributorContentHeader from "@/templates/Distributor/Header";
 import DistributorContent from "@/templates/Distributor/Content";
 import DistributorHeaderAction from "@/templates/Distributor/Header/Action";
+import DistributorCreateForm from "@/components/Distributor/Form/DistributorCreateForm";
+import DistributorEditForm from "@/components/Distributor/Form/DistributorEditForm";
+import TariffCreateEditForm from "@/components/Tariff/Form/TariffCreateForm";
+import ErrorNotification from "@/components/Notification/FailNotification";
+import SuccessNotification from "@/components/Notification/SuccessNotification";
 
 type ExpectedQuery = {
   distributorId: string;
@@ -53,6 +58,11 @@ const DistributorPage: NextPage = () => {
       contentHeader={<DistributorContentHeader />}
     >
       <DistributorContent />
+      <DistributorCreateForm />
+      <DistributorEditForm />
+      <TariffCreateEditForm />
+      <SuccessNotification />
+      <ErrorNotification />
     </DefaultTemplateV2>
   );
 };
