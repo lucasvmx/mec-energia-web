@@ -51,7 +51,7 @@ import FormDrawerV2 from "@/components/Form/DrawerV2";
 
 const defaultValues: CreateAndEditEnergyBillForm = {
   date: new Date(),
-  invoiceInReais: undefined,
+  invoiceInReais: "",
   isIncludedInAnalysis: true,
   peakMeasuredDemandInKw: "",
   peakConsumptionInKwh: "",
@@ -102,6 +102,7 @@ const CreateEditEnergyBillForm = () => {
   const { data: currentInvoice } = useGetCurrentInvoiceQuery(
     currentInvoiceId || skipToken
   );
+
   const [currentDistributor, setCurrentDistributor] =
     useState<DistributorPropsTariffs>();
 
@@ -136,7 +137,7 @@ const CreateEditEnergyBillForm = () => {
       setValue("peakMeasuredDemandInKw", "");
       setValue("offPeakMeasuredDemandInKw", "");
     } else if (isEditEnergyBillFormOpen) {
-      setValue("invoiceInReais", currentInvoice?.invoiceInReais);
+      setValue("invoiceInReais", currentInvoice?.invoiceInReais.toString());
       setValue("peakConsumptionInKwh", currentInvoice?.peakConsumptionInKwh);
       setValue(
         "offPeakConsumptionInKwh",
@@ -240,7 +241,7 @@ const CreateEditEnergyBillForm = () => {
       contract: contract?.id ?? 0,
       date: date ? sendFormattedDate(date) : "",
       isAtypical: !isIncludedInAnalysis,
-      invoiceInReais: invoiceInReais as number,
+      invoiceInReais: Number(invoiceInReais),
       offPeakConsumptionInKwh: offPeakConsumptionInKwh as number,
       peakConsumptionInKwh: peakConsumptionInKwh as number,
       peakMeasuredDemandInKw: peakMeasuredDemandInKw as number,

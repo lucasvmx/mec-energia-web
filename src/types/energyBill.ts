@@ -1,6 +1,6 @@
 export interface CreateAndEditEnergyBillForm {
   date: Date;
-  invoiceInReais?: number | "";
+  invoiceInReais?: string;
   isIncludedInAnalysis: boolean;
   peakMeasuredDemandInKw?: number | "";
   offPeakMeasuredDemandInKw?: number | "";
