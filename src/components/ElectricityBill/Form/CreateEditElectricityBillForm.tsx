@@ -638,7 +638,7 @@ const CreateEditEnergyBillForm = () => {
   ), [control])
 
 
-  if (true) return (
+  return (
     <Fragment>
       <FormDrawerV2
         open={isCreateEnergyBillFormOpen || isEditEnergyBillFormOpen}

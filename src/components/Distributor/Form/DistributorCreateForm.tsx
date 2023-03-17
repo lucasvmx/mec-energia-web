@@ -178,7 +178,7 @@ const DistributorCreateForm = () => {
     </>
   ), [control])
 
-  if (true) return (
+  return (
 
     <Fragment>
       <FormDrawerV2

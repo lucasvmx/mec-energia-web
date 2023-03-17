@@ -590,7 +590,7 @@ const ConsumerUnitRenewContractForm = () => {
   ), [control, tariffFlag])
 
 
-  if (true) return (
+  return (
     <Fragment>
       <FormDrawerV2
         open={isRenewContractFormOpen}

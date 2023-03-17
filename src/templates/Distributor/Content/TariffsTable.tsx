@@ -1,5 +1,5 @@
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { format } from "date-fns";
 import {
@@ -22,6 +22,8 @@ import {
 import {
   selectActiveDistributorId,
   selectActiveSubgroup,
+  setIsTariffCreateFormOpen,
+  setIsTariffEdiFormOpen,
 } from "@/store/appSlice";
 import { useGetDistributorSubgroupsQuery, useGetTariffQuery } from "@/api";
 import WarningRounded from "@mui/icons-material/WarningRounded";
@@ -48,6 +50,8 @@ const DistributorContentTariffsTable = () => {
   const { data: tariffsSubgroups } = useGetDistributorSubgroupsQuery(
     distributorId ?? skipToken
   );
+
+  const dispatch = useDispatch()
 
   const title = useMemo(() => {
     if (!activeSubgroup || !tariffsSubgroups || tariffsSubgroups.length > 1) {
@@ -100,12 +104,12 @@ const DistributorContentTariffsTable = () => {
   }, [overdue]);
 
   const handleOnEditTariffButtonClick = useCallback(() => {
-    console.log("handleOnEditTariffButtonClick");
-  }, []);
+    dispatch(setIsTariffEdiFormOpen(true))
+  }, [dispatch]);
 
   const handleOnCreateTariffButtonClick = useCallback(() => {
-    console.log("handleOnCreateTariffButtonClick");
-  }, []);
+    dispatch(setIsTariffCreateFormOpen(true))
+  }, [dispatch]);
 
   return (
     <Card>

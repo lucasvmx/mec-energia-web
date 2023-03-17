@@ -243,7 +243,7 @@ const ConsumerUnitInvoiceContentTable = () => {
 
   const renderMonthCell = useCallback(
     (invoiceRow: InvoiceDataGridRow) => {
-      const { activeFilter, isEnergyBillPending, month, year } = invoiceRow;
+      const { activeFilter, isEnergyBillPending, month, year, energyBillId } = invoiceRow;
 
       const buttonLabel =
         "Lançar " +
@@ -270,8 +270,15 @@ const ConsumerUnitInvoiceContentTable = () => {
       const isCurrentMonthInvoice =
         year === currentYear && month === currentMonth;
 
-      if (isCurrentMonthInvoice) {
-        return <Button variant="contained">{buttonLabel}</Button>;
+      if (isCurrentMonthInvoice && !energyBillId) {
+        return (
+          <Button
+            variant="contained"
+            onClick={() => handleOpenAddEnergyBillForm(month, year)}
+          >
+            {buttonLabel}
+          </Button>
+        )
       }
 
       return getMonthFromNumber(month, true);
