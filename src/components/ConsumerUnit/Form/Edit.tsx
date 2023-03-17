@@ -2,7 +2,6 @@ import { Fragment, useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Controller,
-  FormProvider,
   SubmitHandler,
   useForm,
 } from "react-hook-form";
@@ -37,7 +36,6 @@ import {
   setIsSuccessNotificationOpen,
   setIsErrorNotificationOpen,
 } from "@/store/appSlice";
-import FormDrawer from "@/components/Form/Drawer";
 import {
   EditConsumerUnitForm,
   EditConsumerUnitRequestPayload,
@@ -708,7 +706,7 @@ const ConsumerUnitEditForm = () => {
       )}
     </>), [control, tariffFlag])
 
-  if (true) return (
+  return (
     <Fragment>
       <FormDrawerV2
         open={isEditFormOpen}
@@ -739,24 +737,6 @@ const ConsumerUnitEditForm = () => {
 
     </Fragment>
   )
-
-  return (
-    <FormDrawer open={isEditFormOpen} handleCloseDrawer={handleCancelEdition}>
-      <FormProvider {...form}>
-        <Box component="form" onSubmit={handleSubmit(onSubmitHandler)}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Typography variant="h4">Editar Unidade Consumidora</Typography>
-            </Grid>
-
-            <Grid item xs={12}>
-              <Typography>* campos obrigatórios</Typography>
-            </Grid>
-          </Grid>
-        </Box>
-      </FormProvider>
-    </FormDrawer>
-  );
 };
 
 export default ConsumerUnitEditForm;
