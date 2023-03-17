@@ -56,6 +56,7 @@ const authOptions: NextAuthOptions = {
     },
     async jwt({ token, user }) {
       if (user) {
+        token.id = user.id;
         token.token = user.token;
         token.universityId = user.universityId;
         token.type = user.type;
@@ -65,6 +66,7 @@ const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       if (token) {
+        session.user.id = token.id;
         session.user.token = token.token;
         session.user.universityId = token.universityId;
         session.user.type = token.type;

@@ -4,6 +4,16 @@ export enum UserRole {
   UNIVERSITY_ADMIN = "university_admin",
 }
 
+export type User = {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  type: UserRole;
+  createdOn: Date;
+  university: number;
+};
+
 export interface CreatePersonForm {
   firstName: string;
   lastName: string;

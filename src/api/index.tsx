@@ -52,6 +52,7 @@ import {
   EditPersonRequestPayload,
   EditPersonResponsePayload,
   GetPersonResponsePayload,
+  User,
 } from "@/types/person";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -317,6 +318,10 @@ export const mecEnergiaApi = createApi({
       keepUnusedDataFor: 120,
       providesTags: ["Recommendation"],
     }),
+    getUsers: builder.query<User[], number>({
+      query: (universityId) => `users/?university_id=${universityId}`,
+      providesTags: ["Person"],
+    }),
   }),
 });
 
@@ -350,4 +355,5 @@ export const {
   useRecommendationQuery,
   useRecommendationSettingsQuery,
   useGetDistributorSubgroupsQuery,
+  useGetUsersQuery,
 } = mecEnergiaApi;

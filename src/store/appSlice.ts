@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
 import TungstenRoundedIcon from "@mui/icons-material/TungstenRounded";
 import FactoryRoundedIcon from "@mui/icons-material/FactoryRounded";
+import { GroupsRounded } from "@mui/icons-material";
 
 import {
   AppState,
@@ -296,6 +297,11 @@ export const selectRoutes = (state: RootState) => {
       title: "Distribuidoras V2",
       Icon: FactoryRoundedIcon,
       href: "/distribuidorasv2/1",
+    },
+    "/pessoas": {
+      title: "Pessoas",
+      Icon: GroupsRounded,
+      href: "pessoas",
     },
   };
 

@@ -5,7 +5,8 @@ export type RoutesPathnames =
   | "/"
   | "/uc/[id]"
   | "/distribuidoras/[id]"
-  | "/distribuidorasv2/[distributorId]";
+  | "/distribuidorasv2/[distributorId]"
+  | "/pessoas";
 
 export type Route = {
   title: string;
