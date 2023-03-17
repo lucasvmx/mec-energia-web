@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { Fragment, useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectIsDistributorCreateFormOpen,
@@ -10,21 +10,18 @@ import {
   CreateDistributorForm,
   CreateDistributorRequestPayload,
 } from "../../../types/distributor";
-import FormDrawer from "../../Form/Drawer";
 import { PatternFormat } from "react-number-format";
 
 import {
   Controller,
-  FormProvider,
   SubmitHandler,
   useForm,
 } from "react-hook-form";
-import { Box, Button, Grid, TextField, Typography } from "@mui/material";
+import { Grid, TextField, Typography } from "@mui/material";
 import FormWarningDialog from "../../ConsumerUnit/Form/WarningDialog";
 import { useCreateDistributorMutation } from "@/api";
 import { useSession } from "next-auth/react";
-import { SubmitButton } from "@/components/Form/SubmitButton";
-import { FormErrorsAlert } from "@/components/Form/FormErrorsAlert";
+import FormDrawerV2 from "@/components/Form/DrawerV2";
 
 const defaultValues: CreateDistributorForm = {
   name: "",
@@ -114,106 +111,96 @@ const DistributorCreateForm = () => {
     return true;
   };
 
-  return (
-    <FormDrawer open={isCreateFormOpen} handleCloseDrawer={handleCancelEdition}>
-      <FormProvider {...form}>
-        <Box component="form" onSubmit={handleSubmit(onSubmitHandler)}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Typography variant="h4">Adicionar Distribuidora</Typography>
-              <Typography>* campos obrigatórios</Typography>
-            </Grid>
+  const DistributorSection = useCallback(() => (
+    <>
+      <Grid item xs={12}>
+        <Typography variant="h5">Distribuidora</Typography>
+      </Grid>
 
-            <Grid item xs={12}>
-              <Typography variant="h5">Distribuidora</Typography>
-            </Grid>
-
-            <Grid item xs={12}>
-              <Controller
-                control={control}
-                name="name"
-                rules={{
-                  required: "Preencha este campo",
-                  validate: hasEnoughCaracteresLength,
-                }}
-                render={({
-                  field: { onChange, onBlur, value, ref },
-                  fieldState: { error },
-                }) => (
-                  <TextField
-                    ref={ref}
-                    value={value}
-                    label="Nome *"
-                    placeholder="Ex.: CEMIG, Enel, Neonergia"
-                    error={Boolean(error)}
-                    helperText={error?.message ?? " "}
-                    fullWidth
-                    onChange={onChange}
-                    onBlur={onBlur}
-                  />
-                )}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <Controller
-                control={control}
-                name="cnpj"
-                rules={{
-                  required: "Preencha este campo",
-                  pattern: {
-                    value:
-                      /([0-9]{2}[\.]?[0-9]{3}[\.]?[0-9]{3}[\/]?[0-9]{4}[-]?[0-9]{2})/,
-                    message: "Insira um CNPJ válido com 14 dígitos",
-                  },
-                }}
-                render={({
-                  field: { onChange, onBlur, value },
-                  fieldState: { error },
-                }) => (
-                  <PatternFormat
-                    value={value}
-                    customInput={TextField}
-                    label="CNPJ *"
-                    format="##.###.###/####-##"
-                    placeholder="Ex.: 12345678000167"
-                    error={Boolean(error)}
-                    helperText={error?.message ?? " "}
-                    fullWidth
-                    onChange={onChange}
-                    onBlur={onBlur}
-                  />
-                )}
-              />
-            </Grid>
-
-            <FormErrorsAlert
-              hasErrors={Object.keys(errors).length > 0 ? true : false}
+      <Grid item xs={12}>
+        <Controller
+          control={control}
+          name="name"
+          rules={{
+            required: "Preencha este campo",
+            validate: hasEnoughCaracteresLength,
+          }}
+          render={({
+            field: { onChange, onBlur, value, ref },
+            fieldState: { error },
+          }) => (
+            <TextField
+              ref={ref}
+              value={value}
+              label="Nome *"
+              placeholder="Ex.: CEMIG, Enel, Neonergia"
+              error={Boolean(error)}
+              helperText={error?.message ?? " "}
+              fullWidth
+              onChange={onChange}
+              onBlur={onBlur}
             />
+          )}
+        />
+      </Grid>
 
-            <Grid item xs={3}>
-              <SubmitButton isLoading={isLoading} />
-            </Grid>
+      <Grid item xs={12}>
+        <Controller
+          control={control}
+          name="cnpj"
+          rules={{
+            required: "Preencha este campo",
+            pattern: {
+              value:
+                /([0-9]{2}[\.]?[0-9]{3}[\.]?[0-9]{3}[\/]?[0-9]{4}[-]?[0-9]{2})/,
+              message: "Insira um CNPJ válido com 14 dígitos",
+            },
+          }}
+          render={({
+            field: { onChange, onBlur, value },
+            fieldState: { error },
+          }) => (
+            <PatternFormat
+              value={value}
+              customInput={TextField}
+              label="CNPJ *"
+              format="##.###.###/####-##"
+              placeholder="Ex.: 12345678000167"
+              error={Boolean(error)}
+              helperText={error?.message ?? " "}
+              fullWidth
+              onChange={onChange}
+              onBlur={onBlur}
+            />
+          )}
+        />
+      </Grid>
+    </>
+  ), [control])
 
-            <Grid item xs={2}>
-              <Button variant="text" onClick={handleCancelEdition} size="large">
-                <Typography pl={3} pr={3}>
-                  Cancelar
-                </Typography>
-              </Button>
-            </Grid>
-          </Grid>
+  if (true) return (
 
-          <FormWarningDialog
-            open={shouldShowCancelDialog}
-            entity={"distribuidora"}
-            onClose={handleCloseDialog}
-            onDiscard={handleDiscardForm}
-          />
-        </Box>
-      </FormProvider>
-    </FormDrawer>
-  );
+    <Fragment>
+      <FormDrawerV2
+        open={isCreateFormOpen}
+        title={"Adicionar Distribuidora"}
+        errorsLength={Object.keys(errors).length}
+        isLoading={isLoading}
+        handleCloseDrawer={handleCancelEdition}
+        handleSubmitDrawer={handleSubmit(onSubmitHandler)}
+        header={<></>}
+        sections={[
+          <DistributorSection key={0} />,
+        ]}
+      />
+      <FormWarningDialog
+        open={shouldShowCancelDialog}
+        entity={"distribuidora"}
+        onClose={handleCloseDialog}
+        onDiscard={handleDiscardForm}
+      />
+    </Fragment>
+  )
 };
 
 export default DistributorCreateForm;
