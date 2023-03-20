@@ -7,32 +7,32 @@ import { skipToken } from "@reduxjs/toolkit/dist/query";
 
 import { Box, CircularProgress } from "@mui/material";
 
-import { selectActiveConsumerUnitId } from "@/store/appSlice";
-import { useFetchConsumerUnitsQuery } from "@/api";
+import { selectActiveDistributorId } from "@/store/appSlice";
+import { useFetchDistributorsQuery } from "@/api";
 import DefaultTemplateV2 from "@/templates/DefaultV2";
 
-const ConsumerUnitLoadingPage: NextPage = () => {
+const DistributorLoadingPage: NextPage = () => {
   const router = useRouter();
   const { data: session } = useSession();
-  const activeConsumerUnitId = useSelector(selectActiveConsumerUnitId);
+  const activeDistributorId = useSelector(selectActiveDistributorId);
 
-  if (activeConsumerUnitId) {
-    router.push(`/uc/${activeConsumerUnitId}`);
+  if (activeDistributorId) {
+    router.push(`/distribuidoras/${activeDistributorId}`);
   }
 
   if (session && session.user.universityId === undefined) {
     router.push("/instituicoes");
   }
 
-  const { data: consumerUnits } = useFetchConsumerUnitsQuery(
+  const { data: distributors } = useFetchDistributorsQuery(
     session?.user.universityId ?? skipToken
   );
 
   useEffect(() => {
-    if (consumerUnits) {
-      router.push(`/uc/${consumerUnits[0].id}`);
+    if (distributors) {
+      router.push(`/distribuidoras/${distributors[0].id}`);
     }
-  }, [consumerUnits, router]);
+  }, [distributors, router]);
 
   return (
     <DefaultTemplateV2>
@@ -48,4 +48,4 @@ const ConsumerUnitLoadingPage: NextPage = () => {
   );
 };
 
-export default ConsumerUnitLoadingPage;
+export default DistributorLoadingPage;

@@ -23,13 +23,7 @@ const routes: Route[] = [
     title: "Distribuidoras",
     Icon: FactoryRoundedIcon,
     href: "/distribuidoras",
-    pathnames: ["/distribuidoras", "/distribuidoras/[id]"],
-  },
-  {
-    title: "Distribuidoras V2",
-    Icon: FactoryRoundedIcon,
-    href: "/distribuidorasv2",
-    pathnames: ["/distribuidorasv2", "/distribuidorasv2/[distributorId]"],
+    pathnames: ["/distribuidoras", "/distribuidoras/[distributorId]"],
   },
   {
     title: "Pessoas",
