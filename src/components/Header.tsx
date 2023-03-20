@@ -1,14 +1,12 @@
 import { ReactNode } from "react";
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
 
 import { AppBar, Box, Toolbar, Typography } from "@mui/material";
-import { selectRoutes } from "@/store/appSlice";
 import { RoutesPathnames } from "@/types/router";
+import routes from "@/routes";
 
 const Header = ({ children }: { children?: ReactNode }) => {
   const { pathname } = useRouter();
-  const routes = useSelector(selectRoutes);
   const { Icon, title } = routes[pathname as RoutesPathnames];
 
   return (

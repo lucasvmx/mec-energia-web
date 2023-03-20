@@ -1,3 +1,4 @@
+import { useCallback, useMemo } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,13 +18,15 @@ import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 
-import {
-  selectIsDrawerOpen,
-  selectRoutes,
-  setIsDrawerOpen,
-} from "@/store/appSlice";
+import { selectIsDrawerOpen, setIsDrawerOpen } from "@/store/appSlice";
 
 import DrawerListItem from "@/components/Drawer/ListItem";
+import routes from "@/routes";
+import { Route, RoutesPathnames } from "@/types/router";
+
+interface RouteItem extends Route {
+  active: boolean;
+}
 
 export const openDrawerWidth = 224;
 export const closedDrawerWidth = `calc(${theme.spacing(8)} + 1px)`;
@@ -67,10 +70,35 @@ const Drawer = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { data: session } = useSession();
-  const routes = useSelector(selectRoutes);
   const isDrawerOpen = useSelector(selectIsDrawerOpen);
 
-  const isCurrentRoute = (pathname: string) => pathname === router.pathname;
+  const allowedRoutes = useMemo(() => {
+    if (!session) {
+      return [];
+    }
+
+    const allowedRoutes: RouteItem[] = [];
+
+    for (const pathname in routes) {
+      const routeItem = {
+        ...routes[pathname as RoutesPathnames],
+        active: pathname === router.pathname,
+      };
+
+      if (!routeItem.roles) {
+        allowedRoutes.push(routeItem);
+      } else if (routeItem.roles.includes(session.user.type)) {
+        allowedRoutes.push(routeItem);
+      }
+    }
+
+    return allowedRoutes;
+  }, [session, router.pathname]);
+
+  const isCurrentRoute = useCallback(
+    (pathname: string) => pathname === router.pathname,
+    [router.pathname]
+  );
 
   const handleSignOutClick = () => {
     signOut({ callbackUrl: "/" });
@@ -144,18 +172,16 @@ const Drawer = () => {
       </Box>
 
       <List sx={{ padding: 0 }}>
-        {Object.entries(routes).map(
-          ([pathname, { title, Icon, href }], index) => (
-            <Box mt={index > 0 ? 1 : 0} key={pathname}>
-              <DrawerListItem
-                Icon={Icon}
-                text={title}
-                href={href}
-                active={isCurrentRoute(pathname)}
-              />
-            </Box>
-          )
-        )}
+        {allowedRoutes.map(({ title, Icon, href, active }, index) => (
+          <Box mt={index > 0 ? 1 : 0} key={href}>
+            <DrawerListItem
+              Icon={Icon}
+              text={title}
+              href={href}
+              active={active}
+            />
+          </Box>
+        ))}
       </List>
 
       {session && (
