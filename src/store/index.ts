@@ -1,7 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { createWrapper } from "next-redux-wrapper";
 import { mecEnergiaApi } from "@/api";
-import { mecEnergiaMockedApi } from "@/api/mocked";
 import app from "./appSlice";
 
 export const makeStore = () =>
@@ -9,13 +8,9 @@ export const makeStore = () =>
     reducer: {
       app,
       [mecEnergiaApi.reducerPath]: mecEnergiaApi.reducer,
-      [mecEnergiaMockedApi.reducerPath]: mecEnergiaMockedApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat(
-        mecEnergiaApi.middleware,
-        mecEnergiaMockedApi.middleware
-      ),
+      getDefaultMiddleware().concat(mecEnergiaApi.middleware),
   });
 
 export const wrapper = createWrapper(makeStore);
