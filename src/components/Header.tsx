@@ -1,13 +1,13 @@
-import { ReactNode } from "react";
+import { ReactNode, useMemo } from "react";
 import { useRouter } from "next/router";
 
 import { AppBar, Box, Toolbar, Typography } from "@mui/material";
-import { RoutesPathnames } from "@/types/router";
-import routes from "@/routes";
+
+import { getRouteByPathname } from "@/routes";
 
 const Header = ({ children }: { children?: ReactNode }) => {
   const { pathname } = useRouter();
-  const { Icon, title } = routes[pathname as RoutesPathnames];
+  const route = useMemo(() => getRouteByPathname(pathname), [pathname]);
 
   return (
     <AppBar
@@ -18,11 +18,15 @@ const Header = ({ children }: { children?: ReactNode }) => {
       <Toolbar sx={{ px: 2 }} disableGutters>
         <Box flexGrow={1}>
           <Box display="flex" alignItems="center">
-            <Icon fontSize="large" color="primary" />
+            {route && (
+              <>
+                <route.Icon fontSize="large" color="primary" />
 
-            <Typography sx={{ ml: 1 }} variant="h6" color="primary">
-              {title}
-            </Typography>
+                <Typography sx={{ ml: 1 }} variant="h6" color="primary">
+                  {route.title}
+                </Typography>
+              </>
+            )}
           </Box>
         </Box>
 

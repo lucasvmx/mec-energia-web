@@ -22,7 +22,7 @@ import { selectIsDrawerOpen, setIsDrawerOpen } from "@/store/appSlice";
 
 import DrawerListItem from "@/components/Drawer/ListItem";
 import routes from "@/routes";
-import { Route, RoutesPathnames } from "@/types/router";
+import { Route } from "@/types/router";
 
 interface RouteItem extends Route {
   active: boolean;
@@ -79,10 +79,10 @@ const Drawer = () => {
 
     const allowedRoutes: RouteItem[] = [];
 
-    for (const pathname in routes) {
+    routes.forEach((route) => {
       const routeItem = {
-        ...routes[pathname as RoutesPathnames],
-        active: pathname === router.pathname,
+        ...route,
+        active: route.pathnames.includes(router.pathname),
       };
 
       if (!routeItem.roles) {
@@ -90,7 +90,7 @@ const Drawer = () => {
       } else if (routeItem.roles.includes(session.user.type)) {
         allowedRoutes.push(routeItem);
       }
-    }
+    });
 
     return allowedRoutes;
   }, [session, router.pathname]);

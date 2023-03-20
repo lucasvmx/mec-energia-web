@@ -3,36 +3,47 @@ import TungstenRoundedIcon from "@mui/icons-material/TungstenRounded";
 import FactoryRoundedIcon from "@mui/icons-material/FactoryRounded";
 import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
 
-import { Routes } from "@/types/router";
+import { Route } from "@/types/router";
 import { UserRole } from "@/types/person";
 
-const routes: Routes = {
-  "/": {
+const routes: Route[] = [
+  {
     title: "Painel",
     Icon: DashboardRoundedIcon,
     href: "/",
+    pathnames: ["/"],
   },
-  "/uc/[id]": {
+  {
     title: "Unidades Consumidoras",
     Icon: TungstenRoundedIcon,
     href: "/uc",
+    pathnames: ["/uc", "/uc/[id]"],
   },
-  "/distribuidoras/[id]": {
+  {
     title: "Distribuidoras",
     Icon: FactoryRoundedIcon,
     href: "/distribuidoras",
+    pathnames: ["/distribuidoras", "/distribuidoras/[id]"],
   },
-  "/distribuidorasv2/[distributorId]": {
+  {
     title: "Distribuidoras V2",
     Icon: FactoryRoundedIcon,
     href: "/distribuidorasv2",
+    pathnames: ["/distribuidorasv2", "/distribuidorasv2/[distributorId]"],
   },
-  "/pessoas": {
+  {
     title: "Pessoas",
     Icon: GroupsRoundedIcon,
     href: "/pessoas",
+    pathnames: ["/pessoas"],
     roles: [UserRole.SUPER_USER, UserRole.UNIVERSITY_ADMIN],
   },
-};
+];
 
 export default routes;
+
+export const getRouteByPathname = (pathname: string) => {
+  const route = routes.find((route) => route.pathnames.includes(pathname));
+
+  return route;
+};
