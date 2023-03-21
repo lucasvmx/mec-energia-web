@@ -34,3 +34,12 @@ export interface EditInstitutionRequestPayload {
 }
 
 export type EditInstitutionResponsePayload = GetInstitutionResponsePayload;
+
+export type Institution = {
+  id: number;
+  name: string;
+  cnpj: string;
+
+  acronym?: string;
+  createdOn?: string;
+};

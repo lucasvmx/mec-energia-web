@@ -45,6 +45,7 @@ import {
   EditInstitutionRequestPayload,
   EditInstitutionResponsePayload,
   GetInstitutionResponsePayload,
+  Institution,
 } from "@/types/institution";
 import {
   CreatePersonRequestPayload,
@@ -181,10 +182,10 @@ export const mecEnergiaApi = createApi({
       providesTags: (result, error, arg) =>
         result
           ? [
-            { type: "CurrentContract", arg },
-            "CurrentContract",
-            "Recommendation",
-          ]
+              { type: "CurrentContract", arg },
+              "CurrentContract",
+              "Recommendation",
+            ]
           : ["CurrentContract", "Recommendation"],
     }),
     renewContract: builder.mutation<
@@ -337,6 +338,10 @@ export const mecEnergiaApi = createApi({
       }),
       invalidatesTags: ["Person"],
     }),
+    fetchInstitutions: builder.query<Institution[], void>({
+      query: () => `/universities`,
+      providesTags: ["Institution"],
+    }),
   }),
 });
 
@@ -372,4 +377,5 @@ export const {
   useGetDistributorSubgroupsQuery,
   useGetUsersQuery,
   useEditUserMutation,
+  useFetchInstitutionsQuery,
 } = mecEnergiaApi;
