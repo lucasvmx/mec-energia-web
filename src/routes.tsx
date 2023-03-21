@@ -20,18 +20,21 @@ const routes: Route[] = [
     Icon: DashboardRoundedIcon,
     href: "/",
     pathnames: ["/"],
+    roles: [UserRole.UNIVERSITY_ADMIN, UserRole.UNIVERSITY_USER],
   },
   {
     title: "Unidades Consumidoras",
     Icon: TungstenRoundedIcon,
     href: "/uc",
     pathnames: ["/uc", "/uc/[id]"],
+    roles: [UserRole.UNIVERSITY_ADMIN, UserRole.UNIVERSITY_USER],
   },
   {
     title: "Distribuidoras",
     Icon: FactoryRoundedIcon,
     href: "/distribuidoras",
     pathnames: ["/distribuidoras", "/distribuidoras/[distributorId]"],
+    roles: [UserRole.UNIVERSITY_ADMIN, UserRole.UNIVERSITY_USER],
   },
   {
     title: "Pessoas",
