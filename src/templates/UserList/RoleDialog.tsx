@@ -13,7 +13,7 @@ import {
 import { UserRole } from "@/types/person";
 import { UserRoleLabelMap } from "./constants";
 
-const UniversityUserRoleDialog = () => {
+const UserRoleDialog = () => {
   const [open, setOpen] = useState(false);
 
   const handleDialogOpen = () => {
@@ -70,4 +70,4 @@ const UniversityUserRoleDialog = () => {
   );
 };
 
-export default UniversityUserRoleDialog;
+export default UserRoleDialog;

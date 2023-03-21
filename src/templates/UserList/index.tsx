@@ -1,10 +1,8 @@
 import { useSession } from "next-auth/react";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
-import { LockResetRounded } from "@mui/icons-material";
 import {
   Box,
   Chip,
-  IconButton,
   Link,
   Table,
   TableBody,
@@ -19,11 +17,12 @@ import { User, UserRole } from "@/types/person";
 import { UserRoleLabelMap } from "./constants";
 import UniversityUserRoleDialog from "./RoleDialog";
 import UserRoleSelect from "./RoleSelect";
+import UserListPasswordResetButton from "./PasswordResetButton";
 
 const isUniversityAdmin = (user: User) =>
   user.type === UserRole.UNIVERSITY_ADMIN;
 
-const UniversityUserTemplate = () => {
+const UserListTemplate = () => {
   const { data: session } = useSession();
 
   const { data: users } = useGetUsersQuery(
@@ -90,9 +89,7 @@ const UniversityUserTemplate = () => {
                 </TableCell>
 
                 <TableCell>
-                  <IconButton>
-                    <LockResetRounded />
-                  </IconButton>
+                  <UserListPasswordResetButton />
                 </TableCell>
               </TableRow>
             ))}
@@ -102,4 +99,4 @@ const UniversityUserTemplate = () => {
   );
 };
 
-export default UniversityUserTemplate;
+export default UserListTemplate;

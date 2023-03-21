@@ -1,11 +1,11 @@
 import { NextPage } from "next";
 import DefaultTemplateV2 from "@/templates/DefaultV2";
-import UniversityUserTemplate from "@/templates/UniversityUser";
+import UserListTemplate from "@/templates/UserList";
 
-const PeoplePage: NextPage = () => (
+const UserListPage: NextPage = () => (
   <DefaultTemplateV2>
-    <UniversityUserTemplate />
+    <UserListTemplate />
   </DefaultTemplateV2>
 );
 
-export default PeoplePage;
+export default UserListPage;
