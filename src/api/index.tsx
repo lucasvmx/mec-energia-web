@@ -53,6 +53,7 @@ import {
   EditPersonRequestPayload,
   EditPersonResponsePayload,
   GetPersonResponsePayload,
+  GetPersonUniversityResponsePayload,
   PatchUserRequestPayload,
   User,
 } from "@/types/person";
@@ -289,6 +290,10 @@ export const mecEnergiaApi = createApi({
       invalidatesTags: ["Institution"],
     }),
     getPerson: builder.query<GetPersonResponsePayload, number>({
+      query: (personId) => `users/${personId}/`,
+      providesTags: ["Person"],
+    }),
+    getUniversityPerson: builder.query<GetPersonUniversityResponsePayload, number>({
       query: (personId) => `university-user/${personId}/`,
       providesTags: ["Person"],
     }),
@@ -376,6 +381,7 @@ export const {
   useCreateInstitutionMutation,
   useEditInstitutionMutation,
   useGetPersonQuery,
+  useGetUniversityPersonQuery,
   useCreatePersonMutation,
   useEditPersonMutation,
   useRecommendationQuery,

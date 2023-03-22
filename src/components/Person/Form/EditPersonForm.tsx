@@ -27,6 +27,7 @@ import {
 import {
   useEditPersonMutation,
   useGetPersonQuery,
+  useGetUniversityPersonQuery,
 } from "@/api";
 import { isValidEmail } from "@/utils/validations/form-validations";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
@@ -48,6 +49,7 @@ const EditPersonForm = () => {
   const { data: currentPerson } = useGetPersonQuery(
     currentPersonId || skipToken
   );
+  const { data: universityPerson } = useGetUniversityPersonQuery(currentPersonId || skipToken)
   const [editPerson, { isError, isSuccess, isLoading, reset: resetMutation }] =
     useEditPersonMutation();
   const form = useForm({ defaultValues });
@@ -86,13 +88,14 @@ const EditPersonForm = () => {
   const onSubmitHandler: SubmitHandler<EditPersonForm> = async (data) => {
     const { email, firstName, lastName } = data;
 
-    if (!currentPerson?.id) return;
+    if (!currentPerson) return;
+    if (!universityPerson) return;
     const body: EditPersonRequestPayload = {
       email,
       firstName,
       lastName,
       type: currentPerson.type,
-      university: currentPerson.university,
+      university: universityPerson.university,
       id: currentPerson?.id,
     };
     await editPerson(body);

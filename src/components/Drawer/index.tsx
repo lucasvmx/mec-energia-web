@@ -201,14 +201,14 @@ const Drawer = () => {
         ))}
       </List>
 
-      {currentUser && (
+      {session && (
         <>
           <Box flexGrow={1} />
 
           <List>
             <DrawerListItem
               Icon={AccountCircleRoundedIcon}
-              text={currentUser.firstName}
+              text={currentUser?.firstName ?? ""}
               href="/perfil"
               active={isCurrentRoute("/perfil")}
             />

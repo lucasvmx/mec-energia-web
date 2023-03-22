@@ -30,9 +30,13 @@ const ProfileTemplate = () => {
       <Box display="flex" alignItems="center">
         <Typography variant="h4">{userFullName}</Typography>
 
-        <Box ml={2}>
-          <ProfileEditButton personId={currentUser.id as number} />
-        </Box>
+        {
+          currentUser.type !== "super_user" &&
+          <Box ml={2}>
+            <ProfileEditButton personId={currentUser.id as number} />
+          </Box>
+
+        }
 
         <Box ml={2}>
           <ProfileResetPasswordButton />
