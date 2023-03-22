@@ -397,6 +397,17 @@ const ConsumerUnitCreateForm = () => {
       </Grid>
 
       <Tooltip
+        componentsProps={{
+          tooltip: {
+            sx: {
+              bgcolor: "warning.main",
+              color: "warning.contrastText",
+              "& .MuiTooltip-arrow": {
+                color: "warning.main",
+              },
+            },
+          },
+        }}
         title={
           <div style={{ whiteSpace: "pre-line" }}>
             {subgroupsList
