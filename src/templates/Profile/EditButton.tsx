@@ -3,14 +3,19 @@ import { useDispatch } from "react-redux";
 import { Button } from "@mui/material";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import EditPersonForm from "@/components/Person/Form/EditPersonForm";
-import { setIsPersonEditFormOpen } from "@/store/appSlice";
+import { setActivePersonId, setIsPersonEditFormOpen } from "@/store/appSlice";
 
-const ProfileEditButton = () => {
+interface ProfileEditButtonProps {
+  personId: number;
+}
+
+const ProfileEditButton = (props: ProfileEditButtonProps) => {
   const dispatch = useDispatch();
 
   const handleClick = useCallback(() => {
+    dispatch(setActivePersonId(props.personId))
     dispatch(setIsPersonEditFormOpen(true));
-  }, [dispatch]);
+  }, [dispatch, props.personId]);
 
   return (
     <>

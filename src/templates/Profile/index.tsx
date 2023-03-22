@@ -9,7 +9,6 @@ import ProfileResetPasswordButton from "./ResetPasswordButton";
 
 const ProfileTemplate = () => {
   const { data: session } = useSession();
-
   const userFullName = useMemo(() => {
     if (!session) {
       return null;
@@ -28,7 +27,7 @@ const ProfileTemplate = () => {
         <Typography variant="h4">{userFullName}</Typography>
 
         <Box ml={2}>
-          <ProfileEditButton />
+          <ProfileEditButton personId={session.user.id as number} />
         </Box>
 
         <Box ml={2}>
