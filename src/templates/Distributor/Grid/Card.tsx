@@ -77,7 +77,7 @@ const DistributorCard = ({
   );
 
   const handleDistributorCardClick = useCallback(() => {
-    router.push(`/distribuidorasv2/${id}`);
+    router.push(`/distribuidoras/${id}`);
   }, [router, id]);
 
   return (

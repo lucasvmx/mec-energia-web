@@ -51,7 +51,7 @@ const DistributorContentTariffsTable = () => {
     distributorId ?? skipToken
   );
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const title = useMemo(() => {
     if (!activeSubgroup || !tariffsSubgroups || tariffsSubgroups.length > 1) {
@@ -104,11 +104,11 @@ const DistributorContentTariffsTable = () => {
   }, [overdue]);
 
   const handleOnEditTariffButtonClick = useCallback(() => {
-    dispatch(setIsTariffEdiFormOpen(true))
+    dispatch(setIsTariffEdiFormOpen(true));
   }, [dispatch]);
 
   const handleOnCreateTariffButtonClick = useCallback(() => {
-    dispatch(setIsTariffCreateFormOpen(true))
+    dispatch(setIsTariffCreateFormOpen(true));
   }, [dispatch]);
 
   return (
@@ -140,6 +140,11 @@ const DistributorContentTariffsTable = () => {
                           "& .MuiTooltip-arrow": {
                             color: "warning.main",
                           },
+                        },
+                      },
+                      popper: {
+                        sx: {
+                          zIndex: 0,
                         },
                       },
                     }}

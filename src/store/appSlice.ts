@@ -1,8 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
-import TungstenRoundedIcon from "@mui/icons-material/TungstenRounded";
-import FactoryRoundedIcon from "@mui/icons-material/FactoryRounded";
-import { GroupsRounded } from "@mui/icons-material";
 
 import {
   AppState,
@@ -16,7 +12,6 @@ import {
   STORE_HYDRATE,
 } from "@/types/app";
 import { InvoiceDataGridRow } from "@/types/consumerUnit";
-import { Routes } from "@/types/router";
 
 const initialState: AppState = {
   isDrawerOpen: true,
@@ -270,42 +265,6 @@ export const {
 // App
 export const selectIsDrawerOpen = (state: RootState) => {
   return state.app.isDrawerOpen;
-};
-
-export const selectRoutes = (state: RootState) => {
-  const {
-    consumerUnit: { activeId },
-  } = state.app;
-
-  const routes: Routes = {
-    "/": {
-      title: "Painel",
-      Icon: DashboardRoundedIcon,
-      href: "/",
-    },
-    "/uc/[id]": {
-      title: "Unidades Consumidoras",
-      Icon: TungstenRoundedIcon,
-      ...(activeId && { href: `/uc/${activeId}` }),
-    },
-    "/distribuidoras/[id]": {
-      title: "Distribuidoras",
-      Icon: FactoryRoundedIcon,
-      href: "/distribuidoras/1",
-    },
-    "/distribuidorasv2/[distributorId]": {
-      title: "Distribuidoras V2",
-      Icon: FactoryRoundedIcon,
-      href: "/distribuidorasv2/1",
-    },
-    "/pessoas": {
-      title: "Pessoas",
-      Icon: GroupsRounded,
-      href: "pessoas",
-    },
-  };
-
-  return routes;
 };
 
 // Dashboard

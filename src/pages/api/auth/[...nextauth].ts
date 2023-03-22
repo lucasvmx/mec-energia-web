@@ -60,6 +60,9 @@ const authOptions: NextAuthOptions = {
         token.token = user.token;
         token.universityId = user.universityId;
         token.type = user.type;
+        token.firstName = user.firstName;
+        token.lastName = user.lastName;
+        token.email = user.email;
       }
 
       return token;
@@ -70,6 +73,9 @@ const authOptions: NextAuthOptions = {
         session.user.token = token.token;
         session.user.universityId = token.universityId;
         session.user.type = token.type;
+        session.user.firstName = token.firstName;
+        session.user.lastName = token.lastName;
+        session.user.email = token.email;
       }
 
       return session;
