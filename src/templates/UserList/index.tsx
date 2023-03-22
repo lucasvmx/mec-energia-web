@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { useGetUsersQuery } from "@/api";
 import { User, UserRole } from "@/types/person";
-import { UserRoleLabelMap } from "./constants";
+import { UserRoleLabelMap } from "@/components/Person/Role/constants";
 import UniversityUserRoleDialog from "./RoleDialog";
 import UserRoleSelect from "./RoleSelect";
 import UserListPasswordResetButton from "./PasswordResetButton";

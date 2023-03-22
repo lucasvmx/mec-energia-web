@@ -18,10 +18,16 @@ import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 
-import { selectIsDrawerOpen, setIsDrawerOpen } from "@/store/appSlice";
-
 import DrawerListItem from "@/components/Drawer/ListItem";
-import routes from "@/routes";
+
+import { selectIsDrawerOpen, setIsDrawerOpen } from "@/store/appSlice";
+import {
+  CONSUMER_UNITS_ROUTE,
+  DASHBOARD_ROUTE,
+  DISTRIBUTORS_ROUTE,
+  INSTITUTIONS_ROUTE,
+  USER_LIST_ROUTE,
+} from "@/routes";
 import { Route } from "@/types/router";
 
 interface RouteItem extends Route {
@@ -66,6 +72,14 @@ const StyledDrawer = styled(MuiDrawer, {
   }),
 }));
 
+const drawerListedRoutes = [
+  INSTITUTIONS_ROUTE,
+  DASHBOARD_ROUTE,
+  CONSUMER_UNITS_ROUTE,
+  DISTRIBUTORS_ROUTE,
+  USER_LIST_ROUTE,
+];
+
 const Drawer = () => {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -79,7 +93,7 @@ const Drawer = () => {
 
     const allowedRoutes: RouteItem[] = [];
 
-    routes.forEach((route) => {
+    drawerListedRoutes.forEach((route) => {
       const routeItem = {
         ...route,
         active: route.pathnames.includes(router.pathname),

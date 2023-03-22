@@ -11,7 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import { UserRole } from "@/types/person";
-import { UserRoleLabelMap } from "./constants";
+import { UserRoleLabelMap } from "@/components/Person/Role/constants";
 
 const UserRoleDialog = () => {
   const [open, setOpen] = useState(false);

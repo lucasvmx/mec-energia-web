@@ -6,7 +6,7 @@ import {
 } from "@mui/material";
 import { useEditUserMutation } from "@/api";
 import { User, UserRole } from "@/types/person";
-import { UserRoleLabelMap } from "./constants";
+import { UserRoleLabelMap } from "@/components/Person/Role/constants";
 
 interface UserRoleSelectProps {
   id: number;
