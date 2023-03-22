@@ -6,18 +6,22 @@ import UserRoleChip from "@/components/Person/Role/Chip";
 
 import ProfileEditButton from "./EditButton";
 import ProfileResetPasswordButton from "./ResetPasswordButton";
+import { useGetPersonQuery } from "@/api";
+import { skipToken } from "@reduxjs/toolkit/dist/query";
 
 const ProfileTemplate = () => {
   const { data: session } = useSession();
+  const { data: currentUser } = useGetPersonQuery(session?.user.id as number || skipToken)
+
   const userFullName = useMemo(() => {
-    if (!session) {
+    if (!currentUser) {
       return null;
     }
 
-    return `${session.user.firstName} ${session.user.lastName}`;
-  }, [session]);
+    return `${currentUser.firstName} ${currentUser.lastName}`;
+  }, [currentUser]);
 
-  if (!session) {
+  if (!currentUser) {
     return <>Carregando...</>;
   }
 
@@ -27,7 +31,7 @@ const ProfileTemplate = () => {
         <Typography variant="h4">{userFullName}</Typography>
 
         <Box ml={2}>
-          <ProfileEditButton personId={session.user.id as number} />
+          <ProfileEditButton personId={currentUser.id as number} />
         </Box>
 
         <Box ml={2}>
@@ -35,10 +39,10 @@ const ProfileTemplate = () => {
         </Box>
       </Box>
 
-      <Typography variant="subtitle1">{session.user.email}</Typography>
+      <Typography variant="subtitle1">{currentUser.email}</Typography>
 
       <Box mt={3}>
-        <UserRoleChip role={session.user.type} />
+        <UserRoleChip role={currentUser.type} />
       </Box>
     </Box>
   );
