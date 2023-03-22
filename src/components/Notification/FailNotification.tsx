@@ -5,7 +5,7 @@ import {
 import { Alert, Snackbar } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 
-const ErrorNotification = () => {
+const FailNotification = () => {
   const dispatch = useDispatch();
   const notification = useSelector(selectErrorNotification);
   const handleClose = (
@@ -35,4 +35,4 @@ const ErrorNotification = () => {
     </Snackbar>
   );
 };
-export default ErrorNotification;
+export default FailNotification;

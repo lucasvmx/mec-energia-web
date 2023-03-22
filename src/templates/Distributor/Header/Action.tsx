@@ -7,7 +7,6 @@ import { setIsDistributorCreateFormOpen } from "@/store/appSlice";
 const DistributorHeaderAction = () => {
   const dispatch = useDispatch()
   const handleOnCreateDistributorButtonClick = useCallback(() => {
-    console.log("handleOnCreateDistributorButtonClick");
     dispatch(setIsDistributorCreateFormOpen(true))
   }, [dispatch]);
 

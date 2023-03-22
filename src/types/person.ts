@@ -36,6 +36,9 @@ export interface GetPersonResponsePayload {
   email: string;
   type: UserRole;
   createOn: Date;
+}
+
+export interface GetPersonUniversityResponsePayload extends GetPersonResponsePayload{
   university: number;
 }
 

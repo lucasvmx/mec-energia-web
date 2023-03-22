@@ -29,6 +29,8 @@ import {
   USER_LIST_ROUTE,
 } from "@/routes";
 import { Route } from "@/types/router";
+import { useGetPersonQuery } from "@/api";
+import { skipToken } from "@reduxjs/toolkit/dist/query";
 
 interface RouteItem extends Route {
   active: boolean;
@@ -84,6 +86,7 @@ const Drawer = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { data: session } = useSession();
+  const { data: currentUser } = useGetPersonQuery(session?.user.id as number || skipToken)
   const isDrawerOpen = useSelector(selectIsDrawerOpen);
 
   const allowedRoutes = useMemo(() => {
@@ -205,7 +208,7 @@ const Drawer = () => {
           <List>
             <DrawerListItem
               Icon={AccountCircleRoundedIcon}
-              text={session.user.firstName}
+              text={currentUser?.firstName ?? ""}
               href="/perfil"
               active={isCurrentRoute("/perfil")}
             />

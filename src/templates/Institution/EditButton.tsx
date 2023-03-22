@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { IconButton } from "@mui/material";
 import { EditRounded } from "@mui/icons-material";
 import EditInstitutionForm from "@/components/Institution/Form/EditInstitutionForm";
-import { setIsInstitutionEditFormOpen } from "@/store/appSlice";
+import { setActiveInstitutionId, setIsInstitutionEditFormOpen } from "@/store/appSlice";
 
 interface InstitutionEditButtonProps {
   institutionId: number;
@@ -15,8 +15,7 @@ const InstitutionEditButton = ({
   const dispatch = useDispatch();
 
   const handleClick = useCallback(() => {
-    console.log(institutionId);
-
+    dispatch(setActiveInstitutionId(institutionId))
     dispatch(setIsInstitutionEditFormOpen(true));
   }, [dispatch, institutionId]);
 
