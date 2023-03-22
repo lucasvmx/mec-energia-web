@@ -1,5 +1,9 @@
-import { EditRounded } from "@mui/icons-material";
+import { useCallback } from "react";
+import { useDispatch } from "react-redux";
 import { IconButton } from "@mui/material";
+import { EditRounded } from "@mui/icons-material";
+import EditInstitutionForm from "@/components/Institution/Form/EditInstitutionForm";
+import { setIsInstitutionEditFormOpen } from "@/store/appSlice";
 
 interface InstitutionEditButtonProps {
   institutionId: number;
@@ -8,14 +12,22 @@ interface InstitutionEditButtonProps {
 const InstitutionEditButton = ({
   institutionId,
 }: InstitutionEditButtonProps) => {
-  const handleClick = () => {
-    console.log("Edit institution", institutionId);
-  };
+  const dispatch = useDispatch();
+
+  const handleClick = useCallback(() => {
+    console.log(institutionId);
+
+    dispatch(setIsInstitutionEditFormOpen(true));
+  }, [dispatch, institutionId]);
 
   return (
-    <IconButton size="small" disabled onClick={handleClick}>
-      <EditRounded />
-    </IconButton>
+    <>
+      <IconButton size="small" onClick={handleClick}>
+        <EditRounded />
+      </IconButton>
+
+      <EditInstitutionForm />
+    </>
   );
 };
 
