@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { Fragment, useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectActiveInstitutionId,
@@ -7,25 +7,23 @@ import {
   setIsInstitutionEditFormOpen,
   setIsSuccessNotificationOpen,
 } from "../../../store/appSlice";
-import FormDrawer from "../../Form/Drawer";
 import { PatternFormat } from "react-number-format";
 
 import {
   Controller,
-  FormProvider,
   SubmitHandler,
   useForm,
 } from "react-hook-form";
-import { Box, Button, Grid, TextField, Typography } from "@mui/material";
+import { Grid, TextField, Typography } from "@mui/material";
 import FormWarningDialog from "../../ConsumerUnit/Form/WarningDialog";
 import { useEditInstitutionMutation, useGetInstitutionQuery } from "@/api";
-import { SubmitButton } from "@/components/Form/SubmitButton";
-import { FormErrorsAlert } from "@/components/Form/FormErrorsAlert";
+
 import {
   EditInstitutionForm,
   EditInstitutionRequestPayload,
 } from "@/types/institution";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
+import FormDrawerV2 from "@/components/Form/DrawerV2";
 
 const defaultValues: EditInstitutionForm = {
   acronym: "",
@@ -126,133 +124,124 @@ const EditInstitutionForm = () => {
     return true;
   };
 
-  return (
-    <FormDrawer open={isEditFormOpen} handleCloseDrawer={handleCancelEdition}>
-      <FormProvider {...form}>
-        <Box component="form" onSubmit={handleSubmit(onSubmitHandler)}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Typography variant="h4">Adicionar Instituição</Typography>
-              <Typography>* campos obrigatórios</Typography>
-            </Grid>
+  const InstitutionSection = useCallback(() => (
+    <>
+      <Grid item xs={12}>
+        <Typography variant="h5">Instituição</Typography>
+      </Grid>
 
-            <Grid item xs={12}>
-              <Typography variant="h5">Instituição</Typography>
-            </Grid>
-
-            <Grid item xs={12}>
-              <Controller
-                control={control}
-                name="acronym"
-                rules={{
-                  required: "Preencha este campo",
-                  validate: hasEnoughCaracteresLength,
-                }}
-                render={({
-                  field: { onChange, onBlur, value, ref },
-                  fieldState: { error },
-                }) => (
-                  <TextField
-                    ref={ref}
-                    value={value}
-                    label="Sigla *"
-                    placeholder="Ex.: UFX"
-                    error={Boolean(error)}
-                    helperText={error?.message ?? " "}
-                    fullWidth
-                    onChange={onChange}
-                    onBlur={onBlur}
-                  />
-                )}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <Controller
-                control={control}
-                name="name"
-                rules={{
-                  required: "Preencha este campo",
-                  validate: hasEnoughCaracteresLength,
-                }}
-                render={({
-                  field: { onChange, onBlur, value, ref },
-                  fieldState: { error },
-                }) => (
-                  <TextField
-                    ref={ref}
-                    value={value}
-                    label="Nome *"
-                    placeholder="Ex.: Universidade Federal de ..."
-                    error={Boolean(error)}
-                    helperText={error?.message ?? " "}
-                    fullWidth
-                    onChange={onChange}
-                    onBlur={onBlur}
-                  />
-                )}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <Controller
-                control={control}
-                name="cnpj"
-                rules={{
-                  required: "Preencha este campo",
-                  pattern: {
-                    value:
-                      /([0-9]{2}[\.]?[0-9]{3}[\.]?[0-9]{3}[\/]?[0-9]{4}[-]?[0-9]{2})/,
-                    message: "Insira um CNPJ válido com 14 dígitos",
-                  },
-                }}
-                render={({
-                  field: { onChange, onBlur, value },
-                  fieldState: { error },
-                }) => (
-                  <PatternFormat
-                    value={value}
-                    customInput={TextField}
-                    label="CNPJ *"
-                    format="##.###.###/####-##"
-                    placeholder="Ex.: 12345678000167"
-                    error={Boolean(error)}
-                    helperText={error?.message ?? " "}
-                    fullWidth
-                    onChange={onChange}
-                    onBlur={onBlur}
-                  />
-                )}
-              />
-            </Grid>
-
-            <FormErrorsAlert
-              hasErrors={Object.keys(errors).length > 0 ? true : false}
+      <Grid item xs={12}>
+        <Controller
+          control={control}
+          name="acronym"
+          rules={{
+            required: "Preencha este campo",
+            validate: hasEnoughCaracteresLength,
+          }}
+          render={({
+            field: { onChange, onBlur, value, ref },
+            fieldState: { error },
+          }) => (
+            <TextField
+              ref={ref}
+              value={value}
+              label="Sigla *"
+              placeholder="Ex.: UFX"
+              error={Boolean(error)}
+              helperText={error?.message ?? " "}
+              fullWidth
+              onChange={onChange}
+              onBlur={onBlur}
             />
+          )}
+        />
+      </Grid>
 
-            <Grid item xs={3}>
-              <SubmitButton isLoading={isLoading} />
-            </Grid>
+      <Grid item xs={12}>
+        <Controller
+          control={control}
+          name="name"
+          rules={{
+            required: "Preencha este campo",
+            validate: hasEnoughCaracteresLength,
+          }}
+          render={({
+            field: { onChange, onBlur, value, ref },
+            fieldState: { error },
+          }) => (
+            <TextField
+              ref={ref}
+              value={value}
+              label="Nome *"
+              placeholder="Ex.: Universidade Federal de ..."
+              error={Boolean(error)}
+              helperText={error?.message ?? " "}
+              fullWidth
+              onChange={onChange}
+              onBlur={onBlur}
+            />
+          )}
+        />
+      </Grid>
 
-            <Grid item xs={2}>
-              <Button variant="text" onClick={handleCancelEdition} size="large">
-                <Typography pl={3} pr={3}>
-                  Cancelar
-                </Typography>
-              </Button>
-            </Grid>
-          </Grid>
+      <Grid item xs={12}>
+        <Controller
+          control={control}
+          name="cnpj"
+          rules={{
+            required: "Preencha este campo",
+            pattern: {
+              value:
+                /([0-9]{2}[\.]?[0-9]{3}[\.]?[0-9]{3}[\/]?[0-9]{4}[-]?[0-9]{2})/,
+              message: "Insira um CNPJ válido com 14 dígitos",
+            },
+          }}
+          render={({
+            field: { onChange, onBlur, value },
+            fieldState: { error },
+          }) => (
+            <PatternFormat
+              value={value}
+              customInput={TextField}
+              label="CNPJ *"
+              format="##.###.###/####-##"
+              placeholder="Ex.: 12345678000167"
+              error={Boolean(error)}
+              helperText={error?.message ?? " "}
+              fullWidth
+              onChange={onChange}
+              onBlur={onBlur}
+            />
+          )}
+        />
+      </Grid>
+    </>
+  ), [control])
 
-          <FormWarningDialog
-            open={shouldShowCancelDialog}
-            entity={"instituição"}
-            onClose={handleCloseDialog}
-            onDiscard={handleDiscardForm}
-          />
-        </Box>
-      </FormProvider>
-    </FormDrawer>
-  );
+
+  return (
+    <Fragment>
+      <FormDrawerV2
+        errorsLength={Object.keys(errors).length}
+        open={isEditFormOpen}
+        handleCloseDrawer={handleCancelEdition}
+        handleSubmitDrawer={handleSubmit(onSubmitHandler)}
+        isLoading={isLoading}
+        title="Editar Instituição"
+        header={<></>}
+        sections={[<InstitutionSection key={0} />]}
+
+      />
+      <FormWarningDialog
+        open={shouldShowCancelDialog}
+        entity={"instituição"}
+        onClose={handleCloseDialog}
+        onDiscard={handleDiscardForm}
+      />
+
+
+    </Fragment>
+  )
 };
 
 export default EditInstitutionForm;

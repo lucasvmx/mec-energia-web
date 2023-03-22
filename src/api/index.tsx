@@ -177,15 +177,15 @@ export const mecEnergiaApi = createApi({
       invalidatesTags: ["ConsumerUnit", "CurrentContract"],
     }),
     getContract: builder.query<GetContractsResponsePayload, number>({
-      query: (consumerunitId) =>
-        `contracts/get-current-contract-of-consumer-unit/?consumer_unit_id=${consumerunitId}`,
+      query: (consumerUnitId) =>
+        `contracts/get-current-contract-of-consumer-unit/?consumer_unit_id=${consumerUnitId}`,
       providesTags: (result, error, arg) =>
         result
           ? [
-              { type: "CurrentContract", arg },
-              "CurrentContract",
-              "Recommendation",
-            ]
+            { type: "CurrentContract", arg },
+            "CurrentContract",
+            "Recommendation",
+          ]
           : ["CurrentContract", "Recommendation"],
     }),
     renewContract: builder.mutation<
