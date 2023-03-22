@@ -11,7 +11,7 @@ import DistributorHeaderAction from "@/templates/Distributor/Header/Action";
 import DistributorCreateForm from "@/components/Distributor/Form/DistributorCreateForm";
 import DistributorEditForm from "@/components/Distributor/Form/DistributorEditForm";
 import TariffCreateEditForm from "@/components/Tariff/Form/TariffCreateForm";
-import ErrorNotification from "@/components/Notification/FailNotification";
+import FailNotification from "@/components/Notification/FailNotification";
 import SuccessNotification from "@/components/Notification/SuccessNotification";
 
 type ExpectedQuery = {
@@ -62,7 +62,7 @@ const DistributorPage: NextPage = () => {
       <DistributorEditForm />
       <TariffCreateEditForm />
       <SuccessNotification />
-      <ErrorNotification />
+      <FailNotification />
     </DefaultTemplateV2>
   );
 };
