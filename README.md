@@ -1,116 +1,41 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# MEC-Energia Web
 
-## Development
+Este repositório contém a implementação do frontend web do sistema MEC-Energia.
 
-Regardless of running locally or through docker, you need to install the dependencies for the commit hooks (husky, commitlint and lint-staged) to work.
+O sistema MEC-Energia tem por objetivo auxiliar as instituições de ensino superior (IES) a gerenciar e avaliar a adequação de contratos de conta de energia elétrica a partir do registro das faturas mensais de energia, gerando relatórios de recomendações de ajustes nos contratos visando economia de recursos.
+
+A documentação online do sistema está disponível em [Documentação](https://lappis-unb.gitlab.io/projects/mec-energia/documentacao)
+
+## Como executar o serviço em modo DEV
+
+### 1. Pré-requisito Instalação das dependências de commit hooks
+
+O projeto utiliza ferramentas para controlar o formato dos commits. Neste caso, é necessário ter o yarn e node instalados e instalar as dependências pelo comando abaixo.
 
 ```bash
 yarn install
 ```
 
-### Docker
-
-Create a network, which allows containers to communicate with each other, by using their container name as a hostname.
-
-```bash
-docker network create mec-energia-network
-```
-
-Install the dependencies.
-
-```bash
-docker-compose -f docker-compose.dev.yml build
-```
-
-Start the development server.
-
-```bash
-docker-compose -f docker-compose.dev.yml up
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-### Local
-
-Start the development server.
+### 2. Executando o projeto localmente em modo DEV
 
 ```bash
 yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+O servidor será iniciado em [http://localhost:3000](http://localhost:3000).
 
-## Production
+## Para rodar em modo PRODUÇÃO
 
-Set environment variables. If just testing, you can use the `.env.development` file.
-
-```bash
-cp .env.development .env.production.local
-```
-
-### Docker
-
-Multistage builds are highly recommended in production. Combined with the Next Output Standalone feature, only node_modules files required for production are copied into the final Docker image.
-
-Create a network, which allows containers to communicate with each other, by using their container name as a hostname.
-
-```bash
-docker network create mec-energia-network
-```
-
-Generate an optimized version of your application for production.
-
-```bash
-docker-compose -f docker-compose.prod.yml build
-```
-
-Start the production server.
-
-```bash
-docker-compose -f docker-compose.prod.yml up
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-### Local
-
-Install the dependencies.
-
-```bash
-yarn install
-```
-
-Generate an optimized version of your application for production.
+Efetua e build do projeto, versão otimizada da aplicação para produção.
 
 ```bash
 yarn build
 ```
 
-Start the production server.
+Inicie o servidor em produção.
 
 ```bash
 yarn start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Opcionalmente, defina a porta para rodar o serviço. Ex: `yarn start -p 80`.
