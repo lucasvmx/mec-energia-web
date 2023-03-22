@@ -18,16 +18,35 @@ import { UserRoleLabelMap } from "@/components/Person/Role/constants";
 import UniversityUserRoleDialog from "./RoleDialog";
 import UserRoleSelect from "./RoleSelect";
 import UserListPasswordResetButton from "./PasswordResetButton";
+import { Session } from "next-auth";
+import { useMemo } from "react";
 
 const isUniversityAdmin = (user: User) =>
   user.type === UserRole.UNIVERSITY_ADMIN;
 
+const getUsersQueryParams = (session: Session | null) => {
+  if (!session) {
+    return skipToken;
+  }
+
+  const {
+    user: { type, universityId },
+  } = session;
+
+  if (type === UserRole.UNIVERSITY_ADMIN) {
+    return universityId;
+  }
+};
+
 const UserListTemplate = () => {
   const { data: session } = useSession();
 
-  const { data: users } = useGetUsersQuery(
-    session?.user.universityId ?? skipToken
+  const usersQueryPayload = useMemo(
+    () => getUsersQueryParams(session),
+    [session]
   );
+
+  const { data: users } = useGetUsersQuery(usersQueryPayload);
 
   if (!session) {
     return <Typography>Carregando...</Typography>;

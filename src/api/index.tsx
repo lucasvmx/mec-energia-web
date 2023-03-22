@@ -323,8 +323,14 @@ export const mecEnergiaApi = createApi({
       keepUnusedDataFor: 120,
       providesTags: ["Recommendation"],
     }),
-    getUsers: builder.query<User[], number>({
-      query: (universityId) => `users/?university_id=${universityId}`,
+    getUsers: builder.query<User[], number | void>({
+      query: (universityId) => {
+        if (universityId) {
+          return `users/?university_id=${universityId}`;
+        }
+
+        return "users/";
+      },
       providesTags: ["Person"],
     }),
     editUser: builder.mutation<
