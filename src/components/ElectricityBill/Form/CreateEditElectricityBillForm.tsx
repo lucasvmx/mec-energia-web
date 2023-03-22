@@ -393,7 +393,7 @@ const CreateEditEnergyBillForm = () => {
             type="text"
             allowNegative={false}
             isAllowed={({ floatValue }) =>
-              !floatValue || floatValue <= 999999999999.99
+              !floatValue || floatValue <= 99999999.99
             }
             decimalScale={2}
             decimalSeparator=","
