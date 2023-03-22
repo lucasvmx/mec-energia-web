@@ -98,7 +98,7 @@ export const mecEnergiaApi = createApi({
     getDistributorSubgroups: builder.query<DistributorSubgroup[], number>({
       query: (distributorId) =>
         `/distributors/${distributorId}/consumer-units-by-subgroup/`,
-      providesTags: ["Subgroups"],
+      providesTags: ["Subgroups", "Tariffs"],
     }),
     fetchInvoices: builder.query<InvoicesPayload, number>({
       query: (consumerUnitId) =>
@@ -111,11 +111,11 @@ export const mecEnergiaApi = createApi({
     }),
     getDistributors: builder.query<Array<DistributorPropsTariffs>, number>({
       query: (universityId) => `distributors/?university_id=${universityId}`,
-      providesTags: ["Distributors"],
+      providesTags: ["Distributors", "Tariffs"],
     }),
     fetchDistributors: builder.query<Distributor[], number>({
       query: (universityId) => `distributors?university_id=${universityId}`,
-      providesTags: ["Distributors"],
+      providesTags: ["Distributors", "Tariffs"],
       transformResponse: (distributors: DistributorResponsePayload[]) => {
         // Sorts alphabetically by default
         return distributors.sort((a, b) => {
@@ -133,7 +133,7 @@ export const mecEnergiaApi = createApi({
     }),
     getDistributor: builder.query<DistributorPropsTariffs, number>({
       query: (distributorId) => `distributors/${distributorId}/`,
-      providesTags: ["Distributors"],
+      providesTags: ["Distributors", "Tariffs"],
     }),
     createDistributor: builder.mutation<
       CreateDistributorResponsePayload,
@@ -233,7 +233,7 @@ export const mecEnergiaApi = createApi({
         `distributors/${payload.distributor}/get-tariffs/?subgroup=${payload.subgroup}`,
       providesTags: (result, error, arg) =>
         result
-          ? [{ type: "Invoices", arg }, "Invoices", "Recommendation"]
+          ? [{ type: "Invoices", arg }, "Invoices", "Recommendation", "Tariffs"]
           : ["Tariffs"],
     }),
     createTariff: builder.mutation<
