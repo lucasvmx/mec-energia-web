@@ -17,9 +17,10 @@ import {
   InsightsRounded,
   WarningRounded,
   Edit,
+  Delete,
 } from "@mui/icons-material";
 
-import { useFetchInvoicesQuery } from "@/api";
+import { useFetchInvoicesQuery, useDeleteEnergiBillMutation } from "@/api";
 import {
   selectActiveConsumerUnitId,
   selectConsumerUnitInvoiceActiveFilter,
@@ -90,6 +91,7 @@ const NoRowsOverlay = () => (
 const ConsumerUnitInvoiceContentTable = () => {
   const dispatch = useDispatch();
   const consumerUnitId = useSelector(selectActiveConsumerUnitId);
+  const [deleteEnergiBill] = useDeleteEnergiBillMutation();
 
   const { data: invoicesPayload } = useFetchInvoicesQuery(
     consumerUnitId ?? skipToken
@@ -97,19 +99,35 @@ const ConsumerUnitInvoiceContentTable = () => {
   const activeFilter = useSelector(selectConsumerUnitInvoiceActiveFilter);
   const dataGridRows = useSelector(selectConsumerUnitInvoiceDataGridRows);
 
-  const handleEditInvoiceFormOpen = (params: { month: number, year: number, id: number }) => {
-    const { month, year, id } = params
-    dispatch(setEnergyBillEdiFormParams({ month, year, id }))
-    dispatch(setIsEnergyBillEdiFormOpen(true))
-  }
+  const handleEditInvoiceFormOpen = (params: {
+    month: number;
+    year: number;
+    id: number;
+  }) => {
+    const { month, year, id } = params;
+    dispatch(setEnergyBillEdiFormParams({ month, year, id }));
+    dispatch(setIsEnergyBillEdiFormOpen(true));
+  };
+
+  const handleDeleteInvoice = async (params: { id: number }) => {
+    const { id } = params;
+    try {
+      await deleteEnergiBill(id);
+      console.log("Invoice deleted successfully");
+      // Handle the successful deletion here
+    } catch (error) {
+      console.error("Failed to delete invoice:", error);
+      // Handle the error here
+    }
+  };
 
   const columns: GridColDef<InvoiceDataGridRow>[] = [
     {
       field: "month",
       headerName: "Mês",
-      headerAlign: "left",
+      headerAlign: "center",
       align: "left",
-      flex: 1,
+      flex: 2,
       valueGetter: ({ row: { id } }) => id,
       renderCell: ({ row }) => renderMonthCell(row),
       colSpan: ({ row: { isEnergyBillPending } }) => {
@@ -140,65 +158,72 @@ const ConsumerUnitInvoiceContentTable = () => {
       field: "peakConsumptionInKwh",
       headerClassName: "MuiDataGrid-columnHeaderMain",
       headerName: "Ponta",
-      headerAlign: "right",
-      align: "right",
+      headerAlign: "center",
+      align: "center",
       flex: 1,
     },
     {
       field: "offPeakConsumptionInKwh",
       headerClassName: "MuiDataGrid-columnHeaderMain",
       headerName: "Fora Ponta",
-      headerAlign: "right",
-      align: "right",
+      headerAlign: "center",
+      align: "center",
       flex: 1,
     },
     {
       field: "peakMeasuredDemandInKw",
       headerClassName: "MuiDataGrid-columnHeaderMain",
       headerName: "Ponta",
-      headerAlign: "right",
-      align: "right",
+      headerAlign: "center",
+      align: "center",
       flex: 1,
     },
     {
       field: "offPeakMeasuredDemandInKw",
       headerClassName: "MuiDataGrid-columnHeaderMain",
       headerName: "Fora Ponta",
-      headerAlign: "right",
-      align: "right",
+      headerAlign: "center",
+      align: "center",
       flex: 1,
     },
     {
       field: "invoiceInReais",
       headerClassName: "MuiDataGrid-columnHeaderMain",
       headerName: "Valor (R$)",
-      headerAlign: "right",
-      align: "right",
+      headerAlign: "center",
+      align: "center",
       flex: 1,
     },
     {
       field: "id",
       headerClassName: "MuiDataGrid-columnHeaderMain",
-      headerName: "",
-      headerAlign: "right",
-      align: "right",
+      headerName: "ações",
+      headerAlign: "center",
+      align: "center",
       flex: 1,
       renderCell: ({ row: { month, year, energyBillId } }) => {
-
-        if (!energyBillId) return
+        if (!energyBillId) {
+          return <></>;
+        }
 
         return (
           <>
             <IconButton
-              onClick={() => handleEditInvoiceFormOpen({ month, year, id: energyBillId })}
+              onClick={() =>
+                handleEditInvoiceFormOpen({ month, year, id: energyBillId })
+              }
             >
               <Edit />
             </IconButton>
+            <IconButton
+              onClick={() => handleDeleteInvoice({ id: energyBillId })}
+            >
+              <Delete />
+            </IconButton>
           </>
-        )
-
-      }
-    }
+        );
+      },
+    },
   ];
 
   const columnGroupingModel: GridColumnGroupingModel = [
@@ -243,7 +268,8 @@ const ConsumerUnitInvoiceContentTable = () => {
 
   const renderMonthCell = useCallback(
     (invoiceRow: InvoiceDataGridRow) => {
-      const { activeFilter, isEnergyBillPending, month, year, energyBillId } = invoiceRow;
+      const { activeFilter, isEnergyBillPending, month, year, energyBillId } =
+        invoiceRow;
 
       const buttonLabel =
         "Lançar " +
@@ -278,7 +304,7 @@ const ConsumerUnitInvoiceContentTable = () => {
           >
             {buttonLabel}
           </Button>
-        )
+        );
       }
 
       return getMonthFromNumber(month, true);
