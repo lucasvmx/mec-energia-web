@@ -200,7 +200,8 @@ const ConsumerUnitInvoiceContentTable = () => {
       headerName: "ações",
       headerAlign: "center",
       align: "center",
-      flex: 1,
+      flex: 1.5,
+      sortable: false,
       renderCell: ({ row: { month, year, energyBillId } }) => {
         if (!energyBillId) {
           return <></>;

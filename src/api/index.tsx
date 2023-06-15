@@ -177,7 +177,7 @@ export const mecEnergiaApi = createApi({
       }),
       invalidatesTags: ["ConsumerUnit", "CurrentContract"],
     }),
-    deleteEnergiBill: builder.mutation({
+    deleteEnergiBill: builder.mutation<void, number>({
       query: (id) => ({
         url: `/energy-bills/${id}`,
         method: "DELETE",
