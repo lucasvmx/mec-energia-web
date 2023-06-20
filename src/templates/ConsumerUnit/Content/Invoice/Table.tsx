@@ -1,8 +1,9 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import ConfirmWarning from "@/components/ConfirmWarning/ConfirmWarning";
 
 import { Box, Button, IconButton } from "@mui/material";
 import {
@@ -92,6 +93,8 @@ const ConsumerUnitInvoiceContentTable = () => {
   const dispatch = useDispatch();
   const consumerUnitId = useSelector(selectActiveConsumerUnitId);
   const [deleteEnergiBill] = useDeleteEnergiBillMutation();
+  const [isWarningOpen, setIsWarningOpen] = useState(false);
+  const [selectedBillenergyId, setSelectedEnergyBillId] = useState<number>(0);
 
   const { data: invoicesPayload } = useFetchInvoicesQuery(
     consumerUnitId ?? skipToken
@@ -99,26 +102,37 @@ const ConsumerUnitInvoiceContentTable = () => {
   const activeFilter = useSelector(selectConsumerUnitInvoiceActiveFilter);
   const dataGridRows = useSelector(selectConsumerUnitInvoiceDataGridRows);
 
+  console.log(dataGridRows);
+
   const handleEditInvoiceFormOpen = (params: {
     month: number;
     year: number;
     id: number;
   }) => {
-    const { month, year, id } = params;
+    let { month } = params;
+    const { year, id } = params;
+    month += 1;
     dispatch(setEnergyBillEdiFormParams({ month, year, id }));
     dispatch(setIsEnergyBillEdiFormOpen(true));
   };
 
-  const handleDeleteInvoice = async (params: { id: number }) => {
-    const { id } = params;
+  const handleDeleteInvoice = async () => {
     try {
-      await deleteEnergiBill(id);
-      console.log("Invoice deleted successfully");
-      // Handle the successful deletion here
+      await deleteEnergiBill(selectedBillenergyId);
     } catch (error) {
       console.error("Failed to delete invoice:", error);
-      // Handle the error here
     }
+  };
+
+  const confirmWarning = () => {
+    setIsWarningOpen(false);
+    console.log("ueeeee");
+    handleDeleteInvoice();
+  };
+
+  const cancelWarning = () => {
+    setIsWarningOpen(false);
+    console.log("hmmmm");
   };
 
   const columns: GridColDef<InvoiceDataGridRow>[] = [
@@ -210,14 +224,18 @@ const ConsumerUnitInvoiceContentTable = () => {
         return (
           <>
             <IconButton
-              onClick={() =>
-                handleEditInvoiceFormOpen({ month, year, id: energyBillId })
-              }
+              onClick={() => {
+                console.log(month, year, energyBillId);
+                handleEditInvoiceFormOpen({ month, year, id: energyBillId });
+              }}
             >
               <Edit />
             </IconButton>
             <IconButton
-              onClick={() => handleDeleteInvoice({ id: energyBillId })}
+              onClick={() => {
+                setSelectedEnergyBillId(energyBillId);
+                setIsWarningOpen(true);
+              }}
             >
               <Delete />
             </IconButton>
@@ -282,7 +300,7 @@ const ConsumerUnitInvoiceContentTable = () => {
           <Button
             variant="contained"
             color="secondary"
-            onClick={() => handleOpenAddEnergyBillForm(month, year)}
+            onClick={() => handleOpenAddEnergyBillForm(month + 1, year)}
             startIcon={<WarningRounded />}
           >
             {buttonLabel}
@@ -314,17 +332,24 @@ const ConsumerUnitInvoiceContentTable = () => {
   );
 
   return (
-    <DataGrid
-      experimentalFeatures={{ columnGrouping: true }}
-      columnGroupingModel={columnGroupingModel}
-      columns={columns}
-      rows={dataGridRows}
-      initialState={initialState}
-      components={{ NoRowsOverlay }}
-      autoHeight
-      hideFooter
-      disableColumnMenu
-    />
+    <>
+      <DataGrid
+        experimentalFeatures={{ columnGrouping: true }}
+        columnGroupingModel={columnGroupingModel}
+        columns={columns}
+        rows={dataGridRows}
+        initialState={initialState}
+        components={{ NoRowsOverlay }}
+        autoHeight
+        hideFooter
+        disableColumnMenu
+      />
+      <ConfirmWarning
+        open={isWarningOpen}
+        onConfirm={confirmWarning}
+        onCancel={cancelWarning}
+      />
+    </>
   );
 };
 
