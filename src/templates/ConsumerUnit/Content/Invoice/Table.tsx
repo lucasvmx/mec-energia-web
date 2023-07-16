@@ -38,8 +38,12 @@ import {
   InvoicesPayload,
 } from "@/types/consumerUnit";
 
-const getMonthFromNumber = (month: number, shouldCapitalize?: boolean) => {
-  const date = new Date().setMonth(month);
+const getMonthFromNumber = (
+  month: number,
+  year: number,
+  shouldCapitalize?: boolean
+) => {
+  const date = new Date(year, month, 1);
   const monthFullName = format(date, "MMMM", { locale: ptBR });
 
   if (!shouldCapitalize) {
@@ -102,18 +106,14 @@ const ConsumerUnitInvoiceContentTable = () => {
   const activeFilter = useSelector(selectConsumerUnitInvoiceActiveFilter);
   const dataGridRows = useSelector(selectConsumerUnitInvoiceDataGridRows);
 
-  console.log(dataGridRows);
-
   const handleEditInvoiceFormOpen = (params: {
     month: number;
     year: number;
     id: number;
   }) => {
-    let { month } = params;
-    const { year, id } = params;
-    month += 1;
-    dispatch(setEnergyBillEdiFormParams({ month, year, id }));
+    const { month, year, id } = params;
     dispatch(setIsEnergyBillEdiFormOpen(true));
+    dispatch(setEnergyBillEdiFormParams({ month, year, id }));
   };
 
   const handleDeleteInvoice = async () => {
@@ -126,13 +126,11 @@ const ConsumerUnitInvoiceContentTable = () => {
 
   const confirmWarning = () => {
     setIsWarningOpen(false);
-    console.log("ueeeee");
     handleDeleteInvoice();
   };
 
   const cancelWarning = () => {
     setIsWarningOpen(false);
-    console.log("hmmmm");
   };
 
   const columns: GridColDef<InvoiceDataGridRow>[] = [
@@ -225,7 +223,6 @@ const ConsumerUnitInvoiceContentTable = () => {
           <>
             <IconButton
               onClick={() => {
-                console.log(month, year, energyBillId);
                 handleEditInvoiceFormOpen({ month, year, id: energyBillId });
               }}
             >
@@ -279,8 +276,8 @@ const ConsumerUnitInvoiceContentTable = () => {
 
   const handleOpenAddEnergyBillForm = useCallback(
     (month: number, year: number) => {
-      dispatch(setEnergyBillEdiFormParams({ month, year }));
       dispatch(setIsEnergyBillCreateFormOpen(true));
+      dispatch(setEnergyBillEdiFormParams({ month, year }));
     },
     [dispatch]
   );
@@ -292,7 +289,7 @@ const ConsumerUnitInvoiceContentTable = () => {
 
       const buttonLabel =
         "Lançar " +
-        getMonthFromNumber(month) +
+        getMonthFromNumber(month, year) +
         `${activeFilter === "pending" ? " — " + year : ""}`;
 
       if (isEnergyBillPending) {
@@ -300,7 +297,7 @@ const ConsumerUnitInvoiceContentTable = () => {
           <Button
             variant="contained"
             color="secondary"
-            onClick={() => handleOpenAddEnergyBillForm(month + 1, year)}
+            onClick={() => handleOpenAddEnergyBillForm(month, year)}
             startIcon={<WarningRounded />}
           >
             {buttonLabel}
@@ -326,7 +323,7 @@ const ConsumerUnitInvoiceContentTable = () => {
         );
       }
 
-      return getMonthFromNumber(month, true);
+      return getMonthFromNumber(month, year, true);
     },
     [handleOpenAddEnergyBillForm]
   );
