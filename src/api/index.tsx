@@ -177,16 +177,23 @@ export const mecEnergiaApi = createApi({
       }),
       invalidatesTags: ["ConsumerUnit", "CurrentContract"],
     }),
+    deleteEnergiBill: builder.mutation<void, number>({
+      query: (id) => ({
+        url: `/energy-bills/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Invoices"],
+    }),
     getContract: builder.query<GetContractsResponsePayload, number>({
       query: (consumerUnitId) =>
         `contracts/get-current-contract-of-consumer-unit/?consumer_unit_id=${consumerUnitId}`,
       providesTags: (result, error, arg) =>
         result
           ? [
-            { type: "CurrentContract", arg },
-            "CurrentContract",
-            "Recommendation",
-          ]
+              { type: "CurrentContract", arg },
+              "CurrentContract",
+              "Recommendation",
+            ]
           : ["CurrentContract", "Recommendation"],
     }),
     renewContract: builder.mutation<
@@ -293,7 +300,10 @@ export const mecEnergiaApi = createApi({
       query: (personId) => `users/${personId}/`,
       providesTags: ["Person"],
     }),
-    getUniversityPerson: builder.query<GetPersonUniversityResponsePayload, number>({
+    getUniversityPerson: builder.query<
+      GetPersonUniversityResponsePayload,
+      number
+    >({
       query: (personId) => `university-user/${personId}/`,
       providesTags: ["Person"],
     }),
@@ -390,4 +400,5 @@ export const {
   useGetUsersQuery,
   useEditUserMutation,
   useFetchInstitutionsQuery,
+  useDeleteEnergiBillMutation,
 } = mecEnergiaApi;

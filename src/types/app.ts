@@ -93,7 +93,7 @@ export interface NotificationProps {
 }
 
 export interface EnergyBillEdiFormParams {
-  month?: number;
-  year?: number;
-  id?: number;
+  month?: number | null;
+  year?: number | null;
+  id?: number | null;
 }

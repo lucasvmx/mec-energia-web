@@ -10,11 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import React, { Fragment, useCallback, useEffect, useState } from "react";
-import {
-  Controller,
-  SubmitHandler,
-  useForm,
-} from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectActiveConsumerUnitId,
@@ -25,6 +21,7 @@ import {
   setIsEnergyBillEdiFormOpen,
   setIsErrorNotificationOpen,
   setIsSuccessNotificationOpen,
+  setEnergyBillEdiFormParams,
 } from "../../../store/appSlice";
 import { DatePicker } from "@mui/x-date-pickers";
 import { NumericFormat } from "react-number-format";
@@ -123,11 +120,11 @@ const CreateEditEnergyBillForm = () => {
   const offPeakMeasuredDemandInKw = watch("offPeakMeasuredDemandInKw");
 
   useEffect(() => {
-    if (month) {
+    if (month != null || month != undefined) {
       const date = new Date(`${year}-${month + 1}`);
       setValue("date", date);
     }
-  });
+  }, [month, isCreateEnergyBillFormOpen, isEditEnergyBillFormOpen]);
 
   useEffect(() => {
     if (isCreateEnergyBillFormOpen) {
@@ -214,9 +211,15 @@ const CreateEditEnergyBillForm = () => {
   const handleDiscardForm = () => {
     handleCloseDialog();
     reset();
-    if (isCreateEnergyBillFormOpen)
+    if (isCreateEnergyBillFormOpen) {
+      dispatch(
+        setEnergyBillEdiFormParams({ month: null, year: null, id: null })
+      );
       dispatch(setIsEnergyBillCreateFormOpen(false));
-    else dispatch(setIsEnergyBillEdiFormOpen(false));
+      console.log("passou");
+    } else {
+      dispatch(setIsEnergyBillEdiFormOpen(false));
+    }
   };
 
   const handleCloseDialog = () => {
@@ -314,329 +317,342 @@ const CreateEditEnergyBillForm = () => {
     handleNotification();
   }, [handleNotification, isPostInvoiceSuccess, isPostInvoiceError]);
 
-  const Header = useCallback(() => (
-    <>
-      <Typography variant="h4">{consumerUnit?.name}</Typography>
-      <Typography>Un. Consumidora: {consumerUnit?.code}</Typography>
-      <Typography>Distribuidora: {currentDistributor?.name}</Typography>
-    </>
-  ), [consumerUnit?.code, consumerUnit?.name, currentDistributor?.name])
+  const Header = useCallback(
+    () => (
+      <>
+        <Typography variant="h4">{consumerUnit?.name}</Typography>
+        <Typography>Un. Consumidora: {consumerUnit?.code}</Typography>
+        <Typography>Distribuidora: {currentDistributor?.name}</Typography>
+      </>
+    ),
+    [consumerUnit?.code, consumerUnit?.name, currentDistributor?.name]
+  );
 
-  const InvoiceSection = useCallback(() => (<>
-    <Grid item xs={8}>
-      <Typography variant="h5">Fatura</Typography>
-    </Grid>
-    <Grid item xs={12}>
-      <Controller
-        control={control}
-        name="date"
-        rules={{
-          required: "Já existe uma fatura lançada neste mês",
-          validate: () => true,
-        }}
-        render={({
-          field: { value, onChange },
-          fieldState: { error },
-        }) => (
-          <DatePicker
-            inputFormat="MMMM/yyyy"
-            value={value}
-            label="Mês de referência *"
-            minDate={new Date("2010")}
-            disableFuture
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                inputProps={{
-                  ...params.inputProps,
-                  placeholder: "mm/aaaa",
-                }}
-                helperText={error?.message ?? " "}
-                error={!!error}
-              />
-            )}
-            onChange={onChange}
-          />
-        )}
-      />
-    </Grid>
-
-    <Grid item xs={4}>
-      <Controller
-        control={control}
-        name={"invoiceInReais"}
-        rules={{
-          required: "Preencha este campo",
-          min: {
-            value: 0.01,
-            message: "Insira um valor maior que R$ 0,00",
-          },
-        }}
-        render={({
-          field: { onChange, onBlur, value },
-          fieldState: { error },
-        }) => (
-          <NumericFormat
-            value={value}
-            width="20%"
-            customInput={TextField}
-            label="Valor total"
-            helperText={error?.message ?? "Campo opcional"}
-            error={!!error}
-            fullWidth
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">R$</InputAdornment>
-              ),
-              placeholder: "0,00",
+  const InvoiceSection = useCallback(
+    () => (
+      <>
+        <Grid item xs={8}>
+          <Typography variant="h5">Fatura</Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <Controller
+            control={control}
+            name="date"
+            rules={{
+              required: "Já existe uma fatura lançada neste mês",
+              validate: () => true,
             }}
-            type="text"
-            allowNegative={false}
-            isAllowed={({ floatValue }) =>
-              !floatValue || floatValue <= 99999999.99
-            }
-            decimalScale={2}
-            decimalSeparator=","
-            thousandSeparator={" "}
-            onValueChange={(values) => onChange(values.floatValue)}
-            onBlur={onBlur}
-          />
-        )}
-      />
-    </Grid>
-
-    <Grid container mt={2}>
-      <Grid item xs={8}>
-        <Controller
-          name="isIncludedInAnalysis"
-          control={control}
-          render={({ field: { onChange, value } }) => (
-            <FormGroup>
-              <Box>
-                {isCreateEnergyBillFormOpen && (
-                  <Box
-                    display="flex"
-                    justifyContent="flex-start"
-                    alignItems="center"
-                  >
-                    <InsightsIcon color="primary" />
-                    <FormControlLabel
-                      value="start"
-                      label="Incluir na análise"
-                      labelPlacement="start"
-                      control={
-                        <Switch
-                          value={value}
-                          defaultChecked
-                          onChange={onChange}
-                        />
-                      }
-                    />
-                  </Box>
-                )}
-                {isEditEnergyBillFormOpen && currentInvoice && (
-                  <Box
-                    display="flex"
-                    justifyContent="flex-start"
-                    alignItems="center"
-                  >
-                    <InsightsIcon color="primary" />
-                    <FormControlLabel
-                      value="start"
-                      label="Incluir na análise"
-                      labelPlacement="start"
-                      control={
-                        <Switch
-                          value={value}
-                          defaultChecked={!currentInvoice?.isAtypical}
-                          onChange={onChange}
-                        />
-                      }
-                    />
-                  </Box>
-                )}
-                <FormHelperText>
-                  <p>
-                    Inclua todas as faturas, exceto casos radicalmente
-                    excepcionais como greves ou a pandemia
-                  </p>
-                </FormHelperText>
-              </Box>
-            </FormGroup>
-          )}
-        />
-      </Grid>
-    </Grid>
-  </>
-  ), [control, currentInvoice, isCreateEnergyBillFormOpen, isEditEnergyBillFormOpen])
-
-  const MeasuredDemandSection = useCallback(() => (
-    <>
-      <Grid item xs={8} mb={2}>
-        <Typography variant="h5">Demanda medida</Typography>
-      </Grid>
-
-      <Grid container spacing={2}>
-        <Grid item xs={4}>
-          <Controller
-            control={control}
-            name="peakMeasuredDemandInKw"
-            rules={{ required: "Preencha este campo" }}
-            render={({
-              field: { onChange, onBlur, value },
-              fieldState: { error },
-            }) => (
-              <NumericFormat
+            render={({ field: { value, onChange }, fieldState: { error } }) => (
+              <DatePicker
+                inputFormat="MMMM/yyyy"
                 value={value}
-                customInput={TextField}
-                label="Ponta *"
-                fullWidth
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">kW</InputAdornment>
-                  ),
-                }}
-                type="text"
-                allowNegative={false}
-                isAllowed={({ floatValue }) =>
-                  !floatValue || floatValue <= 99999.99
-                }
-                placeholder="0"
-                decimalScale={2}
-                decimalSeparator=","
-                thousandSeparator={" "}
-                error={Boolean(error)}
-                helperText={error?.message ?? " "}
-                onValueChange={(values) => onChange(values.floatValue)}
-                onBlur={onBlur}
+                label="Mês de referência *"
+                minDate={new Date("2010")}
+                disableFuture
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    inputProps={{
+                      ...params.inputProps,
+                      placeholder: "mm/aaaa",
+                    }}
+                    helperText={error?.message ?? " "}
+                    error={!!error}
+                  />
+                )}
+                onChange={onChange}
               />
             )}
           />
         </Grid>
+
         <Grid item xs={4}>
           <Controller
             control={control}
-            name="offPeakMeasuredDemandInKw"
-            rules={{ required: "Preencha este campo" }}
+            name={"invoiceInReais"}
+            rules={{
+              required: "Preencha este campo",
+              min: {
+                value: 0.01,
+                message: "Insira um valor maior que R$ 0,00",
+              },
+            }}
             render={({
               field: { onChange, onBlur, value },
               fieldState: { error },
             }) => (
               <NumericFormat
                 value={value}
+                width="20%"
                 customInput={TextField}
-                label="Fora Ponta *"
-                fullWidth
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">kW</InputAdornment>
-                  ),
-                }}
-                type="text"
-                allowNegative={false}
-                isAllowed={({ floatValue }) =>
-                  !floatValue || floatValue <= 99999.99
-                }
-                placeholder="0"
-                decimalScale={2}
-                decimalSeparator=","
-                thousandSeparator={" "}
+                label="Valor total"
+                helperText={error?.message ?? "Campo opcional"}
                 error={!!error}
-                helperText={error?.message ?? " "}
-                onValueChange={(values) => onChange(values.floatValue)}
-                onBlur={onBlur}
-              />
-            )}
-          />
-        </Grid>
-      </Grid>
-    </>
-  ), [control])
-
-  const MeasuredConsumption = useCallback(() => (
-    <>
-      <Grid item xs={10}>
-        <Typography variant="h5">Consumo medido</Typography>
-      </Grid>
-
-      <Grid container spacing={2}>
-        <Grid item xs={4}>
-          <Controller
-            control={control}
-            name="peakConsumptionInKwh"
-            rules={{ required: "Preencha este campo" }}
-            render={({
-              field: { onChange, onBlur, value },
-              fieldState: { error },
-            }) => (
-              <NumericFormat
-                value={value}
-                customInput={TextField}
-                label="Ponta *"
                 fullWidth
                 InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">kWh</InputAdornment>
+                  startAdornment: (
+                    <InputAdornment position="start">R$</InputAdornment>
                   ),
+                  placeholder: "0,00",
                 }}
                 type="text"
                 allowNegative={false}
                 isAllowed={({ floatValue }) =>
-                  !floatValue || floatValue <= 99999.99
+                  !floatValue || floatValue <= 99999999.99
                 }
                 decimalScale={2}
-                placeholder="0"
                 decimalSeparator=","
                 thousandSeparator={" "}
-                error={Boolean(error)}
-                helperText={error?.message ?? " "}
                 onValueChange={(values) => onChange(values.floatValue)}
                 onBlur={onBlur}
               />
             )}
           />
         </Grid>
-        <Grid item xs={4}>
-          <Controller
-            control={control}
-            name="offPeakConsumptionInKwh"
-            rules={{ required: "Preencha este campo" }}
-            render={({
-              field: { onChange, onBlur, value },
-              fieldState: { error },
-            }) => (
-              <NumericFormat
-                value={value}
-                customInput={TextField}
-                label="Fora Ponta *"
-                fullWidth
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">kWh</InputAdornment>
-                  ),
-                }}
-                type="text"
-                allowNegative={false}
-                isAllowed={({ floatValue }) =>
-                  !floatValue || floatValue <= 99999.99
-                }
-                placeholder="0"
-                decimalScale={2}
-                decimalSeparator=","
-                thousandSeparator={" "}
-                error={Boolean(error)}
-                helperText={error?.message ?? " "}
-                onValueChange={(values) => onChange(values.floatValue)}
-                onBlur={onBlur}
-              />
-            )}
-          />
+
+        <Grid container mt={2}>
+          <Grid item xs={8}>
+            <Controller
+              name="isIncludedInAnalysis"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <FormGroup>
+                  <Box>
+                    {isCreateEnergyBillFormOpen && (
+                      <Box
+                        display="flex"
+                        justifyContent="flex-start"
+                        alignItems="center"
+                      >
+                        <InsightsIcon color="primary" />
+                        <FormControlLabel
+                          value="start"
+                          label="Incluir na análise"
+                          labelPlacement="start"
+                          control={
+                            <Switch
+                              value={value}
+                              defaultChecked
+                              onChange={onChange}
+                            />
+                          }
+                        />
+                      </Box>
+                    )}
+                    {isEditEnergyBillFormOpen && currentInvoice && (
+                      <Box
+                        display="flex"
+                        justifyContent="flex-start"
+                        alignItems="center"
+                      >
+                        <InsightsIcon color="primary" />
+                        <FormControlLabel
+                          value="start"
+                          label="Incluir na análise"
+                          labelPlacement="start"
+                          control={
+                            <Switch
+                              value={value}
+                              defaultChecked={!currentInvoice?.isAtypical}
+                              onChange={onChange}
+                            />
+                          }
+                        />
+                      </Box>
+                    )}
+                    <FormHelperText>
+                      <p>
+                        Inclua todas as faturas, exceto casos radicalmente
+                        excepcionais como greves ou a pandemia
+                      </p>
+                    </FormHelperText>
+                  </Box>
+                </FormGroup>
+              )}
+            />
+          </Grid>
         </Grid>
-      </Grid>
+      </>
+    ),
+    [
+      control,
+      currentInvoice,
+      isCreateEnergyBillFormOpen,
+      isEditEnergyBillFormOpen,
+    ]
+  );
 
-    </>
-  ), [control])
+  const MeasuredDemandSection = useCallback(
+    () => (
+      <>
+        <Grid item xs={8} mb={2}>
+          <Typography variant="h5">Demanda medida</Typography>
+        </Grid>
 
+        <Grid container spacing={2}>
+          <Grid item xs={4}>
+            <Controller
+              control={control}
+              name="peakMeasuredDemandInKw"
+              rules={{ required: "Preencha este campo" }}
+              render={({
+                field: { onChange, onBlur, value },
+                fieldState: { error },
+              }) => (
+                <NumericFormat
+                  value={value}
+                  customInput={TextField}
+                  label="Ponta *"
+                  fullWidth
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">kW</InputAdornment>
+                    ),
+                  }}
+                  type="text"
+                  allowNegative={false}
+                  isAllowed={({ floatValue }) =>
+                    !floatValue || floatValue <= 99999.99
+                  }
+                  placeholder="0"
+                  decimalScale={2}
+                  decimalSeparator=","
+                  thousandSeparator={" "}
+                  error={Boolean(error)}
+                  helperText={error?.message ?? " "}
+                  onValueChange={(values) => onChange(values.floatValue)}
+                  onBlur={onBlur}
+                />
+              )}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <Controller
+              control={control}
+              name="offPeakMeasuredDemandInKw"
+              rules={{ required: "Preencha este campo" }}
+              render={({
+                field: { onChange, onBlur, value },
+                fieldState: { error },
+              }) => (
+                <NumericFormat
+                  value={value}
+                  customInput={TextField}
+                  label="Fora Ponta *"
+                  fullWidth
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">kW</InputAdornment>
+                    ),
+                  }}
+                  type="text"
+                  allowNegative={false}
+                  isAllowed={({ floatValue }) =>
+                    !floatValue || floatValue <= 99999.99
+                  }
+                  placeholder="0"
+                  decimalScale={2}
+                  decimalSeparator=","
+                  thousandSeparator={" "}
+                  error={!!error}
+                  helperText={error?.message ?? " "}
+                  onValueChange={(values) => onChange(values.floatValue)}
+                  onBlur={onBlur}
+                />
+              )}
+            />
+          </Grid>
+        </Grid>
+      </>
+    ),
+    [control]
+  );
+
+  const MeasuredConsumption = useCallback(
+    () => (
+      <>
+        <Grid item xs={10}>
+          <Typography variant="h5">Consumo medido</Typography>
+        </Grid>
+
+        <Grid container spacing={2}>
+          <Grid item xs={4}>
+            <Controller
+              control={control}
+              name="peakConsumptionInKwh"
+              rules={{ required: "Preencha este campo" }}
+              render={({
+                field: { onChange, onBlur, value },
+                fieldState: { error },
+              }) => (
+                <NumericFormat
+                  value={value}
+                  customInput={TextField}
+                  label="Ponta *"
+                  fullWidth
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">kWh</InputAdornment>
+                    ),
+                  }}
+                  type="text"
+                  allowNegative={false}
+                  isAllowed={({ floatValue }) =>
+                    !floatValue || floatValue <= 99999.99
+                  }
+                  decimalScale={2}
+                  placeholder="0"
+                  decimalSeparator=","
+                  thousandSeparator={" "}
+                  error={Boolean(error)}
+                  helperText={error?.message ?? " "}
+                  onValueChange={(values) => onChange(values.floatValue)}
+                  onBlur={onBlur}
+                />
+              )}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <Controller
+              control={control}
+              name="offPeakConsumptionInKwh"
+              rules={{ required: "Preencha este campo" }}
+              render={({
+                field: { onChange, onBlur, value },
+                fieldState: { error },
+              }) => (
+                <NumericFormat
+                  value={value}
+                  customInput={TextField}
+                  label="Fora Ponta *"
+                  fullWidth
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">kWh</InputAdornment>
+                    ),
+                  }}
+                  type="text"
+                  allowNegative={false}
+                  isAllowed={({ floatValue }) =>
+                    !floatValue || floatValue <= 99999.99
+                  }
+                  placeholder="0"
+                  decimalScale={2}
+                  decimalSeparator=","
+                  thousandSeparator={" "}
+                  error={Boolean(error)}
+                  helperText={error?.message ?? " "}
+                  onValueChange={(values) => onChange(values.floatValue)}
+                  onBlur={onBlur}
+                />
+              )}
+            />
+          </Grid>
+        </Grid>
+      </>
+    ),
+    [control]
+  );
 
   return (
     <Fragment>
@@ -651,9 +667,8 @@ const CreateEditEnergyBillForm = () => {
         sections={[
           <InvoiceSection key={0} />,
           <MeasuredDemandSection key={1} />,
-          <MeasuredConsumption key={2} />
+          <MeasuredConsumption key={2} />,
         ]}
-
       />
       <FormWarningDialog
         entity="fatura"
@@ -661,9 +676,8 @@ const CreateEditEnergyBillForm = () => {
         onClose={handleCloseDialog}
         onDiscard={handleDiscardForm}
       />
-
     </Fragment>
-  )
+  );
 };
 
 export default CreateEditEnergyBillForm;
