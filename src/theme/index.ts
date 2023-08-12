@@ -13,7 +13,7 @@ declare module "@mui/material/styles" {
   }
 }
 
-const primaryMain = "#0A5C67";
+const primaryMain = "#071E41";
 
 const theme = createTheme(
   {
@@ -26,14 +26,14 @@ const theme = createTheme(
         main: "#FB736C",
       },
       background: {
-        default: "#EEF4F4",
+        default: "#fff",
         paper: "#fff",
       },
       error: {
         main: "#B31B0A",
       },
       warning: {
-        main: "#FB736C",
+        main: "#F5BC22",
         contrastText: "#000",
       },
       highlighted: {
