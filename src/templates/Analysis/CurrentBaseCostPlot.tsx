@@ -23,13 +23,13 @@ export const CurrentBaseCostPlot = ({
           {
             label: "Valor de Demanda",
             data: currentContractCostsPlot.demandCostInReais,
-            backgroundColor: "#0A5C67",
+            backgroundColor: "#0E438C",
             pointStyle: "rect",
           },
           {
             label: "Valor de Consumo",
             data: currentContractCostsPlot.consumptionCostInReais,
-            backgroundColor: "#FB736C",
+            backgroundColor: "#C48508",
             pointStyle: "triangle",
           },
         ],

@@ -896,7 +896,7 @@ export const DetailedAnalysisDrawer = ({
                 <>
                   <Typography variant="h5"> Recomendação: </Typography>
                   {recommendation.shouldRenewContract ? (
-                    <ColoredText color="warning.main">
+                    <ColoredText color="secondary.main">
                       Ajuste o contrato
                     </ColoredText>
                   ) : (

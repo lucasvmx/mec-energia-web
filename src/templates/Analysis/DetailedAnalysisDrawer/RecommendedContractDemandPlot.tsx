@@ -114,8 +114,8 @@ export const RecommendedContractDemandPlot = ({
     {
       label: "Proposta",
       data: contractPeakDemands,
-      backgroundColor: "#F2B63D",
-      borderColor: "#F2B63D",
+      backgroundColor: "#fb736c",
+      borderColor: "#fb736c",
       borderWidth: 4,
       pointStyle: "rect",
       pointRadius: 4,
@@ -133,8 +133,8 @@ export const RecommendedContractDemandPlot = ({
     {
       label: "Med. Ponta",
       data: recommendation.consumptionHistoryPlot.peakMeasuredDemandInKw,
-      backgroundColor: "#0F8999",
-      borderColor: "#0F8999",
+      backgroundColor: "#1451B4",
+      borderColor: "#1451B4",
       pointStyle: "triangle",
       pointRadius: 4,
       pointHoverRadius: 11,

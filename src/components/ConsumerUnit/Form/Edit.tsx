@@ -26,6 +26,7 @@ import {
   TextField,
   Tooltip,
   Typography,
+  colors,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 
@@ -343,7 +344,7 @@ const ConsumerUnitEditForm = () => {
       </Grid>
 
       <Grid item xs={12} pb={1}>
-        <Alert severity="warning">
+        <Alert severity="warning" style={{backgroundColor: '#fff2e6', color: '#733C06'}}>
           Modifique o contrato apenas em caso de erro de digitação. Para
           alterações legais ou novo contrato, use a opção{" "}
           <strong>Renovar</strong> na tela anterior.

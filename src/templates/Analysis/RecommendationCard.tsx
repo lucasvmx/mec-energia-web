@@ -123,7 +123,7 @@ const ColoredText = ({ text, highlighted }: ColoredTextProps) => {
       <Typography
         sx={{
           boxSizing: "initial",
-          bgcolor: highlighted ? "warning.main" : "",
+          bgcolor: highlighted ? "secondary.main" : "",
           cursor: "auto",
           borderRadius: 1,
           display: "inline",

@@ -90,7 +90,7 @@ export const BaseCostComparisonCard = ({
               p: 0.5,
               borderRadius: 1,
               display: "inline",
-              bgcolor: "warning.main",
+              bgcolor: "secondary.main",
             }}
           >
             {recommendation.nominalSavingsPercentage.toFixed(1)}% de economia

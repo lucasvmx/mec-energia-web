@@ -108,7 +108,7 @@ export const DetailedBaseCostsComparisonPlot = ({ dates, costs }: Props) => (
         {
           label: "Valor Dem. + Cons. atuais",
           data: costs.totalCostInReaisInCurrent,
-          backgroundColor: "#CC443D",
+          backgroundColor: "#C62828",
           pointStyle: "circle",
           stack: "Atual",
           barPercentage: 0.5,

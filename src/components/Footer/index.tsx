@@ -1,10 +1,10 @@
 import Image from "next/image";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 
 const Footer = () => {
   return (
     <Box
-      sx={{ backgroundColor: "primary.dark" }}
+      sx={{ backgroundColor: "" }}
       height="220px"
       minHeight="220px"
       display="flex"
@@ -19,18 +19,18 @@ const Footer = () => {
       */}
 
       <Box display="flex" justifyContent="center">
-        <Box>
+        {/* <Box>
           <Image
             src="/icons/lappis.svg"
             alt="LAPPIS"
             height="40px"
             width={`${324 / 2.075}px`}
           />
-        </Box>
+        </Box> */}
 
         <Box ml={4}>
           <Image
-            src="/icons/unb-energia.svg"
+            src="/icons/unb_cor.svg"
             alt="UnB Energia"
             height="40px"
             width={`${379 / 2.075}px`}
@@ -39,7 +39,7 @@ const Footer = () => {
 
         <Box ml={4}>
           <Image
-            src="/icons/cgee.svg"
+            src="/icons/cgee_cor.svg"
             alt="CGEE"
             height="40px"
             width={`${279 / 2.075}px`}
@@ -48,7 +48,7 @@ const Footer = () => {
 
         <Box ml={4}>
           <Image
-            src="/icons/mec.svg"
+            src="/icons/brasil_cor.svg"
             alt="MEC Energia"
             height="40px"
             width={`${335 / 2.075}px`}

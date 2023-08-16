@@ -3,6 +3,7 @@ import { Box, Container, ContainerProps } from "@mui/material";
 import Drawer from "@/components/Drawer";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import Divider from "@mui/material/Divider";
 
 type DefaultTemplateProps = {
   headerAction?: ReactNode;
@@ -46,6 +47,8 @@ const DefaultTemplateV2 = ({
                 {children}
               </Container>
             </Box>
+
+            <Divider />
 
             <Footer />
           </Box>

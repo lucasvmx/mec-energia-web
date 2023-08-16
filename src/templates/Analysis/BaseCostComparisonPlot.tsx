@@ -17,7 +17,7 @@ export const BaseCostComparisonPlot = ({ dates, recommendation }: Props) => {
           {
             label: "Custo-base atual",
             data: recommendation?.costsComparisonPlot.totalCostInReaisInCurrent,
-            backgroundColor: "#0A5C67",
+            backgroundColor: "#0E438C",
             pointStyle: "rect",
             stack: "Atual",
           },
@@ -25,7 +25,7 @@ export const BaseCostComparisonPlot = ({ dates, recommendation }: Props) => {
             label: "Custo-base proposto",
             data: recommendation?.costsComparisonPlot
               .totalCostInReaisInRecommended,
-            backgroundColor: "#FB736C",
+            backgroundColor: "#C48508",
             pointStyle: "circle",
             stack: "Proposto",
           },
