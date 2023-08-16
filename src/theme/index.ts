@@ -13,17 +13,22 @@ declare module "@mui/material/styles" {
   }
 }
 
-const primaryMain = "#071E41";
+const primaryMain = "#1451B4";
 
 const theme = createTheme(
   {
     palette: {
       primary: {
-        main: primaryMain,
+        main: "#1451B4",
+        dark: "#071E41",
+        light: "#42A5F5",
         contrastText: "#fff",
       },
       secondary: {
-        main: "#FB736C",
+        main: "#F5BC22",
+        dark: "#C48508",
+        light: "#BA68C8",
+        contrastText: "#000",
       },
       background: {
         default: "#fff",
@@ -31,10 +36,27 @@ const theme = createTheme(
       },
       error: {
         main: "#B31B0A",
+        dark: "#C62828",
+        light: "#EF5350",
+        contrastText: "#fff",
       },
       warning: {
-        main: "#F5BC22",
+        main: "#E67100",
+        dark: "#E65100",
+        light: "#FF9800",
         contrastText: "#000",
+      },
+      info: {
+        main: "#0E438C",
+        dark: "#01579B",
+        light: "#03A9F4",
+        contrastText: "#FFF",
+      },
+      success: {
+        main: "#008C32",
+        dark: "#1B5E20",
+        light: "#4CAF50",
+        contrastText: "#FFF",
       },
       highlighted: {
         main: "rgba(10, 92, 103, 0.12)",

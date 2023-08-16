@@ -4,7 +4,7 @@ import { Box, Typography } from "@mui/material";
 const Footer = () => {
   return (
     <Box
-      sx={{ backgroundColor: "primary.main" }}
+      sx={{ backgroundColor: "primary.dark" }}
       height="220px"
       minHeight="220px"
       display="flex"
@@ -12,11 +12,13 @@ const Footer = () => {
       justifyContent="center"
       alignItems="center"
     >
+      {/* 
       <Typography variant="body2" color="white">
         © 2022 • Suporte técnico: pessoa@mec.gov.br
       </Typography>
+      */}
 
-      <Box mt={5} display="flex" justifyContent="center">
+      <Box display="flex" justifyContent="center">
         <Box>
           <Image
             src="/icons/lappis.svg"

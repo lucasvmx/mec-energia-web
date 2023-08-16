@@ -25,7 +25,7 @@ const CardWrapper = ({
           }),
 
       ...(variant === "warning" && {
-        backgroundColor: "warning.main",
+        backgroundColor: "secondary.main",
       }),
 
       ...(variant === "disabled" && {
