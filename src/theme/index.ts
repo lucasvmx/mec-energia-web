@@ -168,7 +168,7 @@ const theme = createTheme(
         },
       },
       MuiDrawer: {
-        styleOverrides: { paper: { backgroundColor: "rgb(248, 248, 248)" } },
+        styleOverrides: { paper: { backgroundColor: "rgb(250, 250, 250)" } },
       },
     },
   },

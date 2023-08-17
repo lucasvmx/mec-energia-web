@@ -37,7 +37,7 @@ const SignInTemplate = () => {
         <title>{headTitle}</title>
       </Head>
 
-      <Grid container rowSpacing={2} columnSpacing={{ xs: 2, sm: 4, md: 5 }}>
+      <Grid container rowSpacing={2} columnSpacing={{ xs: 9, sm: 11, md: 13 }} sx={{backgroundColor: "rgb(250, 250, 250)"}}>
         <Grid item xs={6}>
           <Box
             flexGrow={1}

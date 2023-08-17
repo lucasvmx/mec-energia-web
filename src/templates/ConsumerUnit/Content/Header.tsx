@@ -49,7 +49,7 @@ const ConsumerUnitContentHeader = () => {
       position="sticky"
       top={0}
       zIndex={1}
-      sx={{ backgroundColor: "background.default" }}
+      sx={{ backgroundColor: "rgb(250, 250, 250)" }}
     >
       <Container>
         <Box display="flex">
