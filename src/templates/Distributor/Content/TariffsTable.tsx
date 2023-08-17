@@ -135,10 +135,10 @@ const DistributorContentTariffsTable = () => {
                     componentsProps={{
                       tooltip: {
                         sx: {
-                          bgcolor: "warning.main",
-                          color: "warning.contrastText",
+                          bgcolor: "secondary.main",
+                          color: "secondary.contrastText",
                           "& .MuiTooltip-arrow": {
-                            color: "warning.main",
+                            color: "secondary.main",
                           },
                         },
                       },
@@ -203,7 +203,7 @@ const DistributorContentTariffsTable = () => {
                     <TableCell
                       rowSpan={2}
                       sx={{
-                        backgroundColor: "RGBA(10, 92, 103, 0.12)",
+                        backgroundColor: "rgba(20, 81, 180, 0.12)",
                       }}
                     >
                       Azul
@@ -217,7 +217,7 @@ const DistributorContentTariffsTable = () => {
 
                   <TableRow
                     sx={{
-                      backgroundColor: "RGBA(10, 92, 103, 0.12)",
+                      backgroundColor: "rgba(20, 81, 180, 0.12)",
                     }}
                   >
                     <TableCell>Fora ponta</TableCell>
@@ -231,7 +231,7 @@ const DistributorContentTariffsTable = () => {
                     <TableCell
                       rowSpan={3}
                       sx={{
-                        backgroundColor: "RGBA(10, 92, 103, 0.12)",
+                        backgroundColor: "rgba(20, 81, 180, 0.12)",
                       }}
                     >
                       Verde
@@ -245,7 +245,7 @@ const DistributorContentTariffsTable = () => {
 
                   <TableRow
                     sx={{
-                      backgroundColor: "RGBA(10, 92, 103, 0.12)",
+                      backgroundColor: "rgba(20, 81, 180, 0.12)",
                     }}
                   >
                     <TableCell>Ponta</TableCell>

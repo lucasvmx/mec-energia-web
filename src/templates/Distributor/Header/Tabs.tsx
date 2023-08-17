@@ -59,7 +59,7 @@ const DistributorContentHeaderTabs = () => {
             label={getTabLabel(subgroup)}
             iconPosition="start"
             {...(pending && {
-              icon: <WarningRoundedIcon color="warning" />,
+              icon: <WarningRoundedIcon color="secondary" />,
             })}
           />
         ))}
