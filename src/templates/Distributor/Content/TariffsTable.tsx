@@ -277,7 +277,7 @@ const DistributorContentTariffsTable = () => {
         ) : (
           <Button
             variant="contained"
-            color="warning"
+            color="secondary"
             disableElevation
             startIcon={<WarningRounded />}
             onClick={handleOnCreateTariffButtonClick}

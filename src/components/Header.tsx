@@ -13,7 +13,7 @@ const Header = ({ children }: { children?: ReactNode }) => {
     <AppBar
       position="sticky"
       elevation={0}
-      sx={{ backgroundColor: "background.default" }}
+      sx={{ backgroundColor: "rgb(248, 248, 248)" }}
     >
       <Toolbar sx={{ px: 2 }} disableGutters>
         <Box flexGrow={1}>

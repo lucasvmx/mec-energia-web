@@ -129,7 +129,7 @@ const Drawer = () => {
     <StyledDrawer
       variant="permanent"
       open={isDrawerOpen}
-      PaperProps={{ sx: { backgroundColor: "#FFFFFF" } }}
+      PaperProps={{ sx: { backgroundColor: "rgba(7, 30, 65, 0.05)"} }}
     >
       <Box
         position="relative"

@@ -59,7 +59,7 @@ const theme = createTheme(
         contrastText: "#FFF",
       },
       highlighted: {
-        main: "rgba(10, 92, 103, 0.12)",
+        main: "rgba(20, 81, 180, 0.12)",
       },
     },
     typography: {
@@ -141,7 +141,7 @@ const theme = createTheme(
         styleOverrides: {
           root: {
             "& .MuiDataGrid-columnHeader--filledGroup": {
-              backgroundColor: "rgba(10, 92, 103, 0.08)",
+              backgroundColor: "rgba(20, 81, 180, 0.08)",
               color: "rgba(0, 0, 0, 0.87)",
             },
             "& .MuiDataGrid-columnHeader--emptyGroup": {
@@ -168,7 +168,7 @@ const theme = createTheme(
         },
       },
       MuiDrawer: {
-        styleOverrides: { paper: { backgroundColor: "#EEF4F4" } },
+        styleOverrides: { paper: { backgroundColor: "rgb(248, 248, 248)" } },
       },
     },
   },

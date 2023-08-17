@@ -4,7 +4,7 @@ import { Box } from "@mui/material";
 const Footer = () => {
   return (
     <Box
-      sx={{ backgroundColor: "" }}
+      sx={{ backgroundColor: "#fff" }}
       height="220px"
       minHeight="220px"
       display="flex"

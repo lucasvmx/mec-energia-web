@@ -39,6 +39,7 @@ const DefaultTemplateV2 = ({
             overflow="scroll"
             display="flex"
             flexDirection="column"
+            bgcolor="rgb(248, 248, 248)"
           >
             <Box sx={{ flexGrow: 1, position: "relative", pb: 5 }}>
               {contentHeader}
