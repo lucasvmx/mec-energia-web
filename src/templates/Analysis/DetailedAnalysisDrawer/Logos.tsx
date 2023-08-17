@@ -1,15 +1,12 @@
 import { Box } from "@mui/material";
 import Image from "next/image";
 
-/**
- * FIXME: Não está no esquema de cores do Sketch. Logos deveriam ser pretas
- * com certe transparência com fundo (Box) totalmente transparente
- */
 export const Logos = () => (
   <Box
     display="flex"
     justifyContent="space-between"
-    sx={{ p: 2, borderRadius: 2 }}
+    alignItems="center"
+    sx={{ paddingTop: 2, paddingBottom: 2, opacity: 0.8 }}
   >
     {/* 
     <Box>
@@ -24,25 +21,26 @@ export const Logos = () => (
     <Box>
       <Image
         src="/icons/unb.svg"
-        alt="unb"
-        height="40px"
-        width={`${324 / 2.075}px`}
+        alt="Universidade de Brasília"
+        height="35.26px"
+        width="137.2px"
+
       />
     </Box>
     <Box>
       <Image
         src="/icons/cgee.svg"
-        alt="gcee"
-        height="40px"
-        width={`${324 / 2.075}px`}
+        alt="CGEE"
+        height="35.26px"
+        width="120.41px"
       />
     </Box>
     <Box>
       <Image
         src="/icons/brasil.svg"
-        alt="mec"
-        height="40px"
-        width={`${324 / 2.075}px`}
+        alt="Governo Federal"
+        height="64.96px"
+        width="266.04px"
       />
     </Box>
   </Box>

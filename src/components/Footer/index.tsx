@@ -31,7 +31,7 @@ const Footer = () => {
         <Box>
           <Image
             src="/icons/unb_cor.svg"
-            alt="Teste"
+            alt="Universidade de Brasília"
             height="38px"
             width="147.84px"
           />
