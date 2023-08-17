@@ -18,7 +18,7 @@ const Footer = () => {
       </Typography>
       */}
 
-      <Box display="flex" justifyContent="center">
+      <Box display="flex" justifyContent="center" alignItems="center" gap="60px">
         {/* <Box>
           <Image
             src="/icons/lappis.svg"
@@ -28,30 +28,30 @@ const Footer = () => {
           />
         </Box> */}
 
-        <Box ml={4}>
+        <Box>
           <Image
             src="/icons/unb_cor.svg"
-            alt="UnB Energia"
-            height="40px"
-            width={`${379 / 2.075}px`}
+            alt="Teste"
+            height="38px"
+            width="147.84px"
           />
         </Box>
 
-        <Box ml={4}>
+        <Box>
           <Image
             src="/icons/cgee_cor.svg"
             alt="CGEE"
-            height="40px"
-            width={`${279 / 2.075}px`}
+            height="37.86px"
+            width="129.39px"
           />
         </Box>
 
-        <Box ml={4}>
+        <Box>
           <Image
             src="/icons/brasil_cor.svg"
-            alt="MEC Energia"
-            height="40px"
-            width={`${335 / 2.075}px`}
+            alt="Governo Federal"
+            height="70px"
+            width="286.63px"
           />
         </Box>
       </Box>
