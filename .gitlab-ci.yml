@@ -1,0 +1,10 @@
+stages:
+- build
+
+image: node:18.12.0
+
+build-web:
+  stage: build
+  script:
+    - yarn install
+    - yarn build
