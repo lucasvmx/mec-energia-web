@@ -46,6 +46,7 @@ import { DistributorPropsTariffs } from "@/types/distributor";
 import { sendFormattedDate } from "@/utils/date";
 import FormDrawerV2 from "@/components/Form/DrawerV2";
 
+
 const defaultValues: CreateAndEditEnergyBillForm = {
   date: new Date(),
   invoiceInReais: "",
@@ -512,7 +513,7 @@ const CreateEditEnergyBillForm = () => {
                   type="text"
                   allowNegative={false}
                   isAllowed={({ floatValue }) =>
-                    !floatValue || floatValue <= 99999.99
+                    !floatValue || floatValue <= 999999.99
                   }
                   placeholder="0"
                   decimalScale={2}
@@ -548,7 +549,7 @@ const CreateEditEnergyBillForm = () => {
                   type="text"
                   allowNegative={false}
                   isAllowed={({ floatValue }) =>
-                    !floatValue || floatValue <= 99999.99
+                    !floatValue || floatValue <= 999999.99
                   }
                   placeholder="0"
                   decimalScale={2}
@@ -598,7 +599,7 @@ const CreateEditEnergyBillForm = () => {
                   type="text"
                   allowNegative={false}
                   isAllowed={({ floatValue }) =>
-                    !floatValue || floatValue <= 99999.99
+                    !floatValue || floatValue <= 999999.99
                   }
                   decimalScale={2}
                   placeholder="0"
@@ -634,7 +635,7 @@ const CreateEditEnergyBillForm = () => {
                   type="text"
                   allowNegative={false}
                   isAllowed={({ floatValue }) =>
-                    !floatValue || floatValue <= 99999.99
+                    !floatValue || floatValue <= 999999.99
                   }
                   placeholder="0"
                   decimalScale={2}
