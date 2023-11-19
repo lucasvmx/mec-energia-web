@@ -58,24 +58,41 @@ import {
   User,
 } from "@/types/person";
 
+import { signOut } from "next-auth/react";
 const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
-const baseQuery = fetchBaseQuery({
-  baseUrl,
-  prepareHeaders: async (headers) => {
-    const session = await getSession();
-
-    if (session) {
-      headers.set("Authorization", `Token ${session.user.token}`);
-    }
-
-    return headers;
-  },
-});
 
 export const mecEnergiaApi = createApi({
   reducerPath: "mecEnergiaApi",
-  baseQuery,
+    baseQuery: fetchBaseQuery({
+    baseUrl,
+    prepareHeaders: async (headers) => {
+      const session = await getSession();
+      if (session) {
+        try {
+          const response = await fetch(`${baseUrl}/token`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${session.user.token}`,
+            },
+          });
+          if (!response.ok) {
+            // Token validation failed, sign out user and trigger a redirect action
+            signOut();
+            // Trigger a Redux action here to inform your app to redirect the user
+            // This will depend on how your store and reducers are set up
+            //store.dispatch({ type: 'USER_TOKEN_INVALID' });
+          } else {
+            headers.set("Authorization", `Token ${session.user.token}`);
+          }
+        } catch (error) {
+          console.error("Erro ao verificar o token:", error);
+        }
+      }
+      return headers;
+    },
+  }),
   tagTypes: [
     "Distributors",
     "ConsumerUnit",
